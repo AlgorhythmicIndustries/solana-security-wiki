@@ -11,7 +11,10 @@ import json
 import logging
 import os
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
+
+if TYPE_CHECKING:
+    from report import RunReport
 
 import anthropic
 import requests
@@ -19,7 +22,7 @@ from bs4 import BeautifulSoup
 
 log = logging.getLogger(__name__)
 
-MODEL = "claude-opus-4-6"
+MODEL = "claude-opus-4-8"
 USER_AGENT = "incident-watcher/1.0"
 
 # Schema for each incident record. Matches the existing incidents.json structure
@@ -143,6 +146,92 @@ CANONICAL_EXAMPLE = {
     ],
 }
 
+# Stable instructions reused on every call of a given stage (cached via `system` when enabled).
+TRIAGE_SYSTEM = """You are screening news articles to identify NEW security incidents in the Solana blockchain ecosystem.
+
+Decide for each candidate:
+1. Is this article reporting a SECURITY INCIDENT (hack, exploit, drain, rug pull, phishing campaign, key compromise, supply chain attack)? Not just price commentary, regulatory news, or general security analysis.
+2. Does the incident affect the SOLANA ecosystem (Solana-native protocol, Solana wallet, Solana-side of an exchange, Solana staking infra)? Mere mentions of Solana alongside other chains do not count.
+3. Is this a NEW incident not already in the existing database? Re-coverage of an existing entry should be skipped.
+
+Respond with ONLY a single JSON object, no other text:
+{"verdict": "include" | "skip", "reason": "brief reason"}"""
+
+_EXTRACTION_EXAMPLE_JSON = json.dumps(CANONICAL_EXAMPLE, indent=2, ensure_ascii=False)
+EXTRACTION_SYSTEM = f"""You are extracting a structured security-incident record for a Solana ecosystem wiki, from one or more news articles about a single incident.
+
+The wiki has a strict schema. Every record must conform to it exactly. Here is the field-by-field specification:
+{INCIDENT_SCHEMA_DESCRIPTION}
+
+Here is a canonical example record from the wiki, showing the exact style, level of technical detail, and tone you should match:
+{_EXTRACTION_EXAMPLE_JSON}
+
+Rules:
+1. Output a single JSON object matching the schema. Same field order as the example. Use the exact same field NAMES (camelCase: `estimatedLossUsd`, `lossDescription`, `relatedIds`, NOT snake_case).
+2. The `id` must be unique — check the existing list and choose something not already taken.
+3. Every source URL provided in the user message must appear in the `sources` array. If multiple articles from the same publication exist, include them all (with disambiguating labels like "CoinDesk — initial report" and "CoinDesk — durable nonce").
+4. The `summary` and `details` and `lesson` should be in the same neutral, technical, slightly dry voice as the example. Do not editorialize, speculate, or use marketing language.
+5. The `mitigations` should be specific and actionable, in the same style as the example. Avoid generic advice.
+6. If multiple sources cite different loss figures, pick the most-corroborated one for `estimatedLossUsd` and explain the variation in `lossDescription`.
+7. The `category` and `severity` values must be EXACTLY one of the enumerated values from the schema description.
+
+If after reading the articles you conclude this is NOT actually a Solana security incident (e.g. the articles are about a Sui or Ethereum protocol, or are general security commentary, or describe an incident that's already in the existing database), output exactly: {{"skip": true, "reason": "<brief reason>"}}
+
+Output ONLY the JSON object. No prose, no markdown fences, no explanation."""
+
+CLUSTER_SYSTEM = """These articles all describe Solana ecosystem security incidents. Group them by which articles describe the SAME underlying incident.
+
+Output ONLY a JSON array of arrays, where each inner array contains the indices of articles describing the same incident.
+Example: [[0, 2], [1], [3, 4, 5]]
+Output only the JSON array, nothing else."""
+
+
+def _prompt_cache_enabled() -> bool:
+    """Opt out with ANTHROPIC_PROMPT_CACHE=0 in scripts/.env."""
+    return os.environ.get("ANTHROPIC_PROMPT_CACHE", "1").strip().lower() not in (
+        "0", "false", "no", "off",
+    )
+
+
+def _create_message(
+    client: anthropic.Anthropic,
+    *,
+    max_tokens: int,
+    system: Union[str, List[Dict[str, Any]]],
+    user_content: str,
+    stage: str,
+) -> Any:
+    """Messages API wrapper with optional ephemeral prompt caching.
+
+    Static `system` text is identical across repeated calls in one run; only
+    `user_content` changes. Top-level cache_control matches Anthropic's
+    automatic caching pattern (see prompt caching docs).
+    """
+    kwargs: Dict[str, Any] = {
+        "model": MODEL,
+        "max_tokens": max_tokens,
+        "system": system,
+        "messages": [{"role": "user", "content": user_content}],
+    }
+    if _prompt_cache_enabled():
+        kwargs["cache_control"] = {"type": "ephemeral"}
+    resp = client.messages.create(**kwargs)
+    _log_cache_usage(resp, stage)
+    return resp
+
+
+def _log_cache_usage(resp: Any, stage: str) -> None:
+    usage = getattr(resp, "usage", None)
+    if not usage:
+        return
+    read = getattr(usage, "cache_read_input_tokens", None) or 0
+    created = getattr(usage, "cache_creation_input_tokens", None) or 0
+    if read or created:
+        log.info(
+            "Prompt cache [%s]: read=%s tokens, created=%s tokens",
+            stage, read, created,
+        )
+
 
 def _fetch_article_text(url: str, max_chars: int = 12000) -> Optional[str]:
     """Fetch and clean an article. Returns up to max_chars of body text."""
@@ -192,6 +281,7 @@ def triage_candidates(
     candidates: List[Dict[str, Any]],
     existing_incidents: List[Dict[str, Any]],
     seen_urls: set,
+    report: Optional["RunReport"] = None,
 ) -> List[Dict[str, Any]]:
     """Ask Claude which candidates are real new Solana incidents.
 
@@ -199,37 +289,35 @@ def triage_candidates(
     proceeding to extraction.
     """
     existing_summary = _existing_incident_summary(existing_incidents)
-    fresh_candidates = [c for c in candidates if c["url"] not in seen_urls]
+    fresh_candidates = []
+    for c in candidates:
+        if c["url"] in seen_urls:
+            if report:
+                report.record_already_seen(c)
+        else:
+            fresh_candidates.append(c)
     log.info("Triaging %d fresh candidates (skipping %d already seen)",
              len(fresh_candidates), len(candidates) - len(fresh_candidates))
 
+    triage_system = (
+        f"{TRIAGE_SYSTEM}\n\nExisting incidents already in our database:\n{existing_summary}"
+    )
     survivors = []
     for cand in fresh_candidates:
-        prompt = f"""You are screening news articles to identify NEW security incidents in the Solana blockchain ecosystem.
-
-Existing incidents already in our database:
-{existing_summary}
-
-Candidate article:
+        user_content = f"""Candidate article:
 - Title: {cand['title']}
 - URL: {cand['url']}
 - Published: {cand['published_date']}
 - Source: {cand['source_name']} (tier {cand['source_tier']})
-- Snippet: {cand['snippet']}
-
-Decide:
-1. Is this article reporting a SECURITY INCIDENT (hack, exploit, drain, rug pull, phishing campaign, key compromise, supply chain attack)? Not just price commentary, regulatory news, or general security analysis.
-2. Does the incident affect the SOLANA ecosystem (Solana-native protocol, Solana wallet, Solana-side of an exchange, Solana staking infra)? Mere mentions of Solana alongside other chains do not count.
-3. Is this a NEW incident not already in the existing database? Re-coverage of an existing entry should be skipped.
-
-Respond with ONLY a single JSON object, no other text:
-{{"verdict": "include" | "skip", "reason": "brief reason"}}"""
+- Snippet: {cand['snippet']}"""
 
         try:
-            resp = client.messages.create(
-                model=MODEL,
+            resp = _create_message(
+                client,
                 max_tokens=200,
-                messages=[{"role": "user", "content": prompt}],
+                system=triage_system,
+                user_content=user_content,
+                stage="triage",
             )
             text = resp.content[0].text.strip()
             # Strip code fences if Claude added them
@@ -239,14 +327,21 @@ Respond with ONLY a single JSON object, no other text:
                     text = text[4:]
                 text = text.strip()
             verdict = json.loads(text)
+            reason = verdict.get("reason", "")
             if verdict.get("verdict") == "include":
-                cand["_triage_reason"] = verdict.get("reason", "")
+                cand["_triage_reason"] = reason
                 survivors.append(cand)
-                log.info("INCLUDE: %s — %s", cand["title"][:60], verdict.get("reason"))
+                if report:
+                    report.record_triage(cand, "include", reason)
+                log.info("INCLUDE: %s — %s — %s", cand["url"], cand["title"][:50], reason)
             else:
-                log.info("SKIP: %s — %s", cand["title"][:60], verdict.get("reason"))
+                if report:
+                    report.record_triage(cand, "skip", reason)
+                log.info("SKIP: %s — %s — %s", cand["url"], cand["title"][:50], reason)
         except Exception as e:
             log.error("Triage failed for %s: %s", cand["url"], e)
+            if report:
+                report.record_triage(cand, "error", error=str(e))
             # Be conservative: failed triage → skip, don't pollute the PR with garbage
             continue
 
@@ -261,6 +356,7 @@ def extract_incidents(
     client: anthropic.Anthropic,
     survivors: List[Dict[str, Any]],
     existing_incidents: List[Dict[str, Any]],
+    report: Optional["RunReport"] = None,
 ) -> List[Dict[str, Any]]:
     """For each surviving candidate, fetch full article and extract structured record."""
     incidents_out = []
@@ -275,7 +371,12 @@ def extract_incidents(
 
     log.info("Extracting %d incident clusters from %d articles", len(clusters), len(survivors))
 
-    example_str = json.dumps(CANONICAL_EXAMPLE, indent=2, ensure_ascii=False)
+    existing_compact = _existing_incident_summary(existing_incidents)
+    extraction_system = (
+        f"{EXTRACTION_SYSTEM}\n\n"
+        f"Existing incidents already in the database (for duplicate-checking and for `relatedIds`):\n"
+        f"{existing_compact}"
+    )
 
     for cluster in clusters:
         # Fetch article bodies for the whole cluster (each gives different angle)
@@ -294,6 +395,11 @@ def extract_incidents(
             )
 
         if not article_blocks:
+            if report:
+                report.record_extraction(
+                    cluster, "no_body",
+                    reason="Could not fetch article text for any URL in cluster",
+                )
             continue
 
         joined_articles = "\n\n".join(article_blocks)
@@ -302,42 +408,15 @@ def extract_incidents(
         if len(joined_articles) > 40000:
             joined_articles = joined_articles[:40000] + "\n\n[truncated]"
 
-        existing_compact = _existing_incident_summary(existing_incidents)
-
-        prompt = f"""You are extracting a structured security-incident record for a Solana ecosystem wiki, from one or more news articles about a single incident.
-
-The wiki has a strict schema. Every record must conform to it exactly. Here is the field-by-field specification:
-
-{INCIDENT_SCHEMA_DESCRIPTION}
-
-Here is a canonical example record from the wiki, showing the exact style, level of technical detail, and tone you should match:
-
-{example_str}
-
-Source articles for the new incident you should extract:
-{joined_articles}
-
-Existing incidents already in the database (for duplicate-checking and for `relatedIds`):
-{existing_compact}
-
-Rules:
-1. Output a single JSON object matching the schema. Same field order as the example. Use the exact same field NAMES (camelCase: `estimatedLossUsd`, `lossDescription`, `relatedIds`, NOT snake_case).
-2. The `id` must be unique — check the existing list and choose something not already taken.
-3. Every source URL provided to you above must appear in the `sources` array. If multiple articles from the same publication exist, include them all (with disambiguating labels like "CoinDesk — initial report" and "CoinDesk — durable nonce").
-4. The `summary` and `details` and `lesson` should be in the same neutral, technical, slightly dry voice as the example. Do not editorialize, speculate, or use marketing language.
-5. The `mitigations` should be specific and actionable, in the same style as the example. Avoid generic advice.
-6. If multiple sources cite different loss figures, pick the most-corroborated one for `estimatedLossUsd` and explain the variation in `lossDescription`.
-7. The `category` and `severity` values must be EXACTLY one of the enumerated values from the schema description.
-
-If after reading the articles you conclude this is NOT actually a Solana security incident (e.g. the articles are about a Sui or Ethereum protocol, or are general security commentary, or describe an incident that's already in the existing database), output exactly: {{"skip": true, "reason": "<brief reason>"}}
-
-Output ONLY the JSON object. No prose, no markdown fences, no explanation."""
+        user_content = f"Source articles for the new incident you should extract:\n{joined_articles}"
 
         try:
-            resp = client.messages.create(
-                model=MODEL,
+            resp = _create_message(
+                client,
                 max_tokens=3000,
-                messages=[{"role": "user", "content": prompt}],
+                system=extraction_system,
+                user_content=user_content,
+                stage="extraction",
             )
             text = resp.content[0].text.strip()
             if text.startswith("```"):
@@ -347,17 +426,28 @@ Output ONLY the JSON object. No prose, no markdown fences, no explanation."""
                 text = text.strip()
             record = json.loads(text)
             if record.get("skip"):
-                log.info("Extraction declined: %s", record.get("reason"))
+                reason = record.get("reason", "")
+                if report:
+                    report.record_extraction(cluster, "declined", reason=reason)
+                log.info("Extraction declined (%s): %s", cluster[0]["url"], reason)
                 continue
             # Stash the candidate URLs for the seen-urls cache regardless of outcome
             record["_source_urls"] = [c["url"] for c in cluster]
             incidents_out.append(record)
-            log.info("Extracted: %s ($%s)",
-                     record.get("title") or record.get("id"),
-                     record.get("estimatedLossUsd"))
+            inc_id = record.get("id", "")
+            title = record.get("title") or inc_id
+            if report:
+                report.record_extraction(
+                    cluster, "extracted",
+                    incident_id=inc_id, title=title,
+                )
+            log.info("Extracted: %s — %s ($%s)",
+                     inc_id, title, record.get("estimatedLossUsd"))
         except Exception as e:
             log.error("Extraction failed for cluster (first url: %s): %s",
                       cluster[0]["url"], e)
+            if report:
+                report.record_extraction(cluster, "error", error=str(e))
             continue
 
         time.sleep(0.5)
@@ -382,22 +472,15 @@ def _cluster_survivors(
         for i, c in enumerate(survivors)
     )
 
-    prompt = f"""These articles all describe Solana ecosystem security incidents. Group them by which articles describe the SAME underlying incident.
-
-Articles:
-{items_text}
-
-Output ONLY a JSON array of arrays, where each inner array contains the indices of articles describing the same incident.
-Example: [[0, 2], [1], [3, 4, 5]]
-This means article 0 and 2 are about one incident, article 1 is its own incident, and 3/4/5 are all about a third incident.
-
-Output only the JSON array, nothing else."""
+    user_content = f"Articles:\n{items_text}"
 
     try:
-        resp = client.messages.create(
-            model=MODEL,
+        resp = _create_message(
+            client,
             max_tokens=500,
-            messages=[{"role": "user", "content": prompt}],
+            system=CLUSTER_SYSTEM,
+            user_content=user_content,
+            stage="cluster",
         )
         text = resp.content[0].text.strip()
         if text.startswith("```"):

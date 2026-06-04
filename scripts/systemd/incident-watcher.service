@@ -1,0 +1,13 @@
+[Unit]
+Description=Solana security incident watcher (one-shot)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO_ROOT@
+ExecStart=@REPO_ROOT@/scripts/run-local.sh
+# Journal: journalctl --user -u incident-watcher.service
+
+[Install]
+WantedBy=default.target

@@ -22,6 +22,7 @@ import anthropic
 
 from fetcher import fetch_all
 from extractor import triage_candidates, extract_incidents
+from report import RunReport
 
 # Resolve repo root from this script's location: scripts/watch.py → repo/
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -93,6 +94,7 @@ def save_seen_urls(seen: Set[str]) -> None:
 def merge_incident(
     new_record: Dict[str, Any],
     existing: List[Dict[str, Any]],
+    report: RunReport | None = None,
 ) -> bool:
     """Add new_record to existing if not a duplicate.
 
@@ -112,9 +114,12 @@ def merge_incident(
     # exploit" and "Drift Protocol exploit" would both share the prefix.
     new_title_key = " ".join(new_title.split()[:4])
 
+    title = new_record.get("title") or new_id or "(untitled)"
     for inc in existing:
         if new_id and inc.get("id") == new_id:
             logging.info("Duplicate by id (%s); skipping", new_id)
+            if report:
+                report.record_merge(new_id, title, "duplicate", "same id")
             return False
         existing_title = (inc.get("title") or "").lower().strip()
         existing_title_key = " ".join(existing_title.split()[:4])
@@ -127,81 +132,108 @@ def merge_incident(
                 "Duplicate by (title prefix, date) (%s, %s); skipping",
                 new_title_key, new_date,
             )
+            if report:
+                report.record_merge(
+                    new_id or "?", title, "duplicate",
+                    f"title prefix + date ({new_title_key}, {new_date})",
+                )
             return False
 
     # Strip internal fields (those starting with _) before persisting
     clean = {k: v for k, v in new_record.items() if not k.startswith("_")}
     existing.append(clean)
+    if report and new_id:
+        report.record_merge(new_id, title, "added")
     return True
 
 
 def main() -> int:
     setup_logging()
     OUTPUT_DIR.mkdir(exist_ok=True)
+    report = RunReport()
+    added = 0
+    incidents_before = (
+        INCIDENTS_PATH.read_text() if INCIDENTS_PATH.exists() else ""
+    )
 
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        logging.error("ANTHROPIC_API_KEY not set")
-        return 1
+    try:
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            logging.error("ANTHROPIC_API_KEY not set")
+            return 1
 
-    client = anthropic.Anthropic(api_key=api_key)
+        client = anthropic.Anthropic(api_key=api_key)
 
-    # Load state
-    existing = load_incidents()
-    # Detect whether incidents.json wraps the array in an object
-    raw = json.loads(INCIDENTS_PATH.read_text()) if INCIDENTS_PATH.exists() else []
-    original_was_wrapped = isinstance(raw, dict) and "incidents" in raw
-    seen_urls = load_seen_urls()
-    logging.info("Loaded %d existing incidents and %d seen URLs",
-                 len(existing), len(seen_urls))
+        # Load state
+        existing = load_incidents()
+        # Detect whether incidents.json wraps the array in an object
+        raw = json.loads(INCIDENTS_PATH.read_text()) if INCIDENTS_PATH.exists() else []
+        original_was_wrapped = isinstance(raw, dict) and "incidents" in raw
+        seen_urls = load_seen_urls()
+        logging.info("Loaded %d existing incidents and %d seen URLs",
+                     len(existing), len(seen_urls))
 
-    # Stage 1: fetch
-    candidates = fetch_all()
-    if not candidates:
-        logging.info("No candidates fetched; nothing to do")
-        save_seen_urls(seen_urls)  # touch to update timestamp
-        return 0
+        # Stage 1: fetch
+        candidates = fetch_all()
+        report.set_fetch(candidates)
+        if not candidates:
+            logging.info("No candidates fetched; nothing to do")
+            save_seen_urls(seen_urls)  # touch to update timestamp
+            return 0
 
-    # Save raw candidates for debugging in artifacts
-    with (OUTPUT_DIR / "candidates.json").open("w") as f:
-        json.dump(candidates, f, indent=2, default=str)
+        # Save raw candidates for debugging
+        with (OUTPUT_DIR / "candidates.json").open("w") as f:
+            json.dump(candidates, f, indent=2, default=str)
 
-    # Stage 2: triage
-    survivors = triage_candidates(client, candidates, existing, seen_urls)
+        # Stage 2: triage
+        survivors = triage_candidates(
+            client, candidates, existing, seen_urls, report=report,
+        )
 
-    # Mark all candidates as seen so we don't re-triage them tomorrow
-    for c in candidates:
-        if c.get("url"):
-            seen_urls.add(c["url"])
+        # Mark all candidates as seen so we don't re-triage them tomorrow
+        for c in candidates:
+            if c.get("url"):
+                seen_urls.add(c["url"])
 
-    if not survivors:
-        logging.info("No survivors after triage")
+        if not survivors:
+            logging.info("No survivors after triage")
+            save_seen_urls(seen_urls)
+            return 0
+
+        with (OUTPUT_DIR / "triage_survivors.json").open("w") as f:
+            json.dump(survivors, f, indent=2, default=str)
+
+        # Stage 3: extract
+        new_incidents = extract_incidents(
+            client, survivors, existing, report=report,
+        )
+
+        with (OUTPUT_DIR / "extracted_incidents.json").open("w") as f:
+            json.dump(new_incidents, f, indent=2, default=str)
+
+        # Stage 4: merge & write
+        for rec in new_incidents:
+            if merge_incident(rec, existing, report=report):
+                added += 1
+
+        if added > 0:
+            save_incidents(existing, original_was_wrapped)
+            logging.info("Added %d new incidents", added)
+        else:
+            logging.info("No new incidents to add (all were duplicates)")
+
         save_seen_urls(seen_urls)
         return 0
-
-    with (OUTPUT_DIR / "triage_survivors.json").open("w") as f:
-        json.dump(survivors, f, indent=2, default=str)
-
-    # Stage 3: extract
-    new_incidents = extract_incidents(client, survivors, existing)
-
-    with (OUTPUT_DIR / "extracted_incidents.json").open("w") as f:
-        json.dump(new_incidents, f, indent=2, default=str)
-
-    # Stage 4: merge & write
-    added = 0
-    for rec in new_incidents:
-        if merge_incident(rec, existing):
-            added += 1
-
-    if added > 0:
-        save_incidents(existing, original_was_wrapped)
-        logging.info("Added %d new incidents", added)
-    else:
-        logging.info("No new incidents to add (all were duplicates)")
-
-    save_seen_urls(seen_urls)
-    return 0
+    finally:
+        incidents_after = (
+            INCIDENTS_PATH.read_text() if INCIDENTS_PATH.exists() else ""
+        )
+        report.finalize(
+            incidents_added=added,
+            incidents_json_changed=incidents_before != incidents_after,
+        )
+        report_path = report.write(OUTPUT_DIR)
+        logging.info("Run report: %s (JSON: %s)", report_path, OUTPUT_DIR / "run_report.json")
 
 
 if __name__ == "__main__":

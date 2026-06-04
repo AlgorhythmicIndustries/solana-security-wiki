@@ -17,7 +17,8 @@ TIER_1_SOURCES = [
     {
         "name": "Halborn Blog",
         "type": "rss",
-        "url": "https://www.halborn.com/blog/rss.xml",
+        # rss.xml returns the blog HTML shell; feed.xml is the actual RSS.
+        "url": "https://www.halborn.com/blog/feed.xml",
     },
     {
         "name": "Elliptic Connect",

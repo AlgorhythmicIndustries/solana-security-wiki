@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Incident watcher (local home-server runs)
+scripts/.env
+scripts/.venv/
+scripts/logs/
+scripts/output/
+scripts/seen_urls.json

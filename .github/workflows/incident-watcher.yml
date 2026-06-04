@@ -1,12 +1,8 @@
 name: Incident Watcher
 
+# Scheduled runs live on the home Linux box (systemd user timer). See scripts/install-systemd-timer.sh
 on:
-  schedule:
-    # Daily at 14:00 UTC (~10:00 ET, after most US/EU news cycles)
-    # - cron: '0 14 * * *'
-    # Run on Monday at 00:00 UTC (Monday 08:00 ET)
-    - cron: '0 0 * * 1'
-  workflow_dispatch:  # Allow manual triggering for testing
+  workflow_dispatch:  # Optional manual run in GitHub (needs repo secrets)
 
 permissions:
   contents: write
