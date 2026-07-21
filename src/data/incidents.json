@@ -1,666 +1,1391 @@
 [
   {
-    "id": "solana-turbine-bug-dec-2020",
-    "title": "Turbine block propagation bug (network partition)",
-    "date": "2020-12-08",
-    "category": "core-protocol",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "summary": "A Turbine propagation flaw let conflicting blocks for the same slot split the network; consensus stalled for roughly six hours until validators coordinated a restart.",
-    "details": "Validators broadcast incompatible blocks for one slot; fork-choice and gossip handling could not repair the partition quickly. Fixes improved block identification and fault propagation.",
-    "mitigated": true,
-    "tags": [
-      "outage",
-      "consensus",
-      "turbine"
-    ],
-    "sources": [
-      {
-        "label": "Helius — Solana outages history",
-        "url": "https://www.helius.dev/blog/solana-outages-complete-history"
-      }
-    ],
-    "lesson": "Block-propagation paths are part of consensus; treating distinct blocks for the same slot as identical was the root failure. Network resilience needs structured fault propagation, not just retries.",
-    "mitigations": [
-      "Identify blocks by hash, not by slot number alone, throughout block-propagation logic.",
-      "Propagate fault-detection events over gossip so all validators learn about partitions quickly.",
-      "Run client-diversity testing against synthetic forks before shipping consensus changes.",
-      "Maintain documented validator-coordination playbooks (snapshot, restart slot, contacts) reachable out-of-band."
-    ]
-  },
-  {
-    "id": "solend-auth-bypass-aug-2021",
-    "title": "Solend UpdateReserveConfig authentication bypass attempt",
-    "date": "2021-08-19",
+    "id": "allbridge-core-flash-loan-jul-2026",
+    "title": "Allbridge Core stablecoin pool flash-loan manipulation",
+    "date": "2026-07-19",
     "category": "application",
-    "severity": "high",
-    "estimatedLossUsd": 16000,
-    "lossDescription": "~$2M at risk; five wrongful liquidations refunded (~$16k + bonus).",
-    "summary": "An attacker created their own lending market to pass authorization checks and maliciously tuned risk parameters; the team detected and patched within hours.",
-    "rootCause": "Missing check that the config authority signed; arbitrary lending market could be supplied to admin instructions.",
-    "response": "Borrow paused, wrongfully liquidated users reimbursed from liquidator earnings; authentication fix deployed.",
-    "lesson": "Privileged Solana instructions must enforce both account ownership and signer constraints; trusting a passed-in 'authority' account is the canonical Solana account-confusion bug.",
+    "severity": "medium",
+    "estimatedLossUsd": 1650000,
+    "lossDescription": "Loss borne by liquidity providers in Allbridge Core's Solana USDC/USDT pools; figures range from ~$1.1M (Onchain Lens) to $1.65M (PeckShield, confirmed by Allbridge). Funds were bridged to Ethereum, swapped to ETH, and partly routed through privacy protocols. Allbridge appealed to arbitrageurs to voluntarily return profits toward LP compensation.",
+    "summary": "An attacker borrowed a $1.12M USDC flash loan from Kamino and executed rapid USDC/USDT swaps through Allbridge Core's Solana stablecoin pools, distorting the internal ratio used to price liquidity withdrawals. They then withdrew liquidity at the skewed rate, repaid the loan within the same transaction, and extracted roughly $1.65M, bridging the proceeds to Ethereum and converting to ETH. Allbridge paused Core and urged LPs to withdraw while preparing a post-mortem.",
+    "details": "The attack was liquidity manipulation rather than a direct bridge drain or wrapped-token mint; Allbridge Core holds native stablecoin liquidity on each chain and prices withdrawals off pool reserves that a single large swap can move. It is Allbridge's second flash-loan pool-manipulation exploit after an April 2023 incident on its BNB Chain pools (~$570K, ~$465K recovered), despite post-2023 safeguards including a Rebalancer Authority.",
     "tags": [
-      "lending",
-      "access-control",
-      "solend"
+      "allbridge",
+      "flash-loan",
+      "kamino",
+      "stablecoin-pool",
+      "price-manipulation",
+      "cross-chain-bridge"
+    ],
+    "relatedIds": [
+      "crema-flash-loan-jul-2022",
+      "nirvana-flash-loan-jul-2022",
+      "stake-nova-flash-loan-feb-2026"
     ],
     "sources": [
       {
-        "label": "Solend / Save on X",
-        "url": "https://x.com/save_finance/status/1428611597941891082"
+        "label": "Decrypt",
+        "url": "https://decrypt.co/373831/allbridge-pauses-cross-chain-protocol-after-1-65m-flash-loan-attack"
       },
       {
-        "label": "HackMD — Solend incident notes",
-        "url": "https://hackmd.io/@prastut/r1wMdtcf3"
+        "label": "The Cryptonomist",
+        "url": "https://en.cryptonomist.ch/2026/07/20/allbridge-solana-exploit-flash-loan/"
       },
       {
-        "label": "Solend auditor report (Google Doc)",
-        "url": "https://docs.google.com/document/d/1-WoQwT1QrPEX-r4N-fDamRQ50LM8DsdsOyq1iTabS3Q/edit"
+        "label": "CoinGabbar",
+        "url": "https://www.coingabbar.com/en/crypto-currency-news/allbridge-core-exploit-today-1-65m-solana-crypto-hack"
       },
       {
-        "label": "Nitin132 — survey w/ patch link",
-        "url": "https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6"
-      },
-      {
-        "label": "CollinsDeFiPen — Solana security incidents",
-        "url": "https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375"
+        "label": "The Crypto Times",
+        "url": "https://www.cryptotimes.io/2026/07/20/allbridge-core-hit-by-1-65m-solana-flash-loan-exploit-its-second-since-2023/"
       }
     ],
+    "lesson": "Native-stablecoin liquidity pools that price withdrawals off spot reserves are vulnerable to flash-loan skewing; pools must charge for imbalance so that manipulating the ratio costs more than it returns, and protocols that have already suffered one flash-loan attack must verify their fixes hold under adversarial conditions.",
     "mitigations": [
-      "Require that the config authority be a signer and match the canonical PDA/multisig for the market.",
-      "Scope each admin instruction to the smallest possible account set and assert program ownership of every account it reads or writes.",
-      "Add real-time monitoring for parameter changes (LTV, liquidation bonus) with alerts to a security on-call rotation.",
-      "Implement governance time-locks and circuit breakers (e.g., a Brick-style emergency pause) for any reserve-config change.",
-      "Run negative-path fuzzing against admin instructions in CI so attacker-crafted accounts are part of regression tests."
+      "Price pool swaps and withdrawals off a single invariant with an imbalance fee so that large ratio-skewing swaps become increasingly costly and cannot be arbitraged for profit within one transaction.",
+      "Never derive withdrawal pricing directly from instantaneous reserve balances that a single flash-loaned swap can move; use time-weighted or oracle-anchored references.",
+      "Add per-transaction and per-block swap/withdrawal size and slippage caps to bound the value a single flash-loan-funded actor can extract.",
+      "Enforce a same-block guard preventing an address from swapping to skew a pool and then withdrawing liquidity from the same pool within the same transaction.",
+      "Re-test all post-incident safeguards (e.g. Rebalancer Authority) against the exact prior attack pattern before relaunch, and commission a targeted audit of pool pricing math under flash-loan conditions.",
+      "Deploy real-time monitoring for large inbound flash loans (e.g. from Kamino) followed by rapid stablecoin swaps and abnormal LP withdrawals, with automatic circuit-breaker pausing.",
+      "Maintain a pre-arranged white-hat bounty and negotiation playbook plus published collection address so recovery outreach and cross-exchange freeze requests can begin within the short post-exploit window."
     ]
   },
   {
-    "id": "grape-protocol-ido-sep-2021",
-    "title": "Grape Protocol IDO / Raydium bot overload outage",
-    "date": "2021-09-14",
-    "endDate": "2021-09-15",
-    "category": "network",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "summary": "Bot traffic during an IDO overwhelmed validators; the network halted for about 17 hours before a coordinated restart.",
-    "tags": [
-      "ddos",
-      "outage",
-      "ido"
-    ],
-    "sources": [
-      {
-        "label": "Solana Foundation — initial outage overview",
-        "url": "https://solana.com/news/9-14-network-outage-initial-overview"
-      },
-      {
-        "label": "Jump Crypto — reflections on Sept 14 outage",
-        "url": "https://jumpcrypto.com/writing/reflections-on-the-sept-14-solana-outage/"
-      },
-      {
-        "label": "CoinDesk — Solana restarts after outage",
-        "url": "https://www.coindesk.com/business/2021/09/23/grape-network-the-startup-that-broke-solana-raises-18m"
-      },
-      {
-        "label": "Helius — incident catalog",
-        "url": "https://www.helius.dev/blog/solana-hacks"
-      }
-    ],
-    "lesson": "Performance-first L1s need explicit congestion controls and graceful-degradation paths for legitimate-but-extreme load, not just spam protection.",
-    "mitigations": [
-      "Apply runtime per-account write-lock and compute-unit limits to bound damage from hot accounts.",
-      "Use stake-weighted QoS and priority/local fee markets to ensure vote and critical-protocol traffic gets through.",
-      "Switch transaction ingress from raw UDP to QUIC with admission control.",
-      "Have an automated, signed snapshot/restart pipeline for validators rather than ad-hoc Discord coordination.",
-      "Application teams should treat network-stall risk as a first-class scenario in liquidations, oracle freshness checks, and refund logic."
-    ]
-  },
-  {
-    "id": "spl-token-lending-rounding-2021",
-    "title": "SPL token-lending rounding vulnerability (coordinated disclosure)",
-    "date": "2021-12-02",
-    "category": "core-protocol",
-    "severity": "critical",
-    "estimatedLossUsd": null,
-    "lossDescription": "Billions in TVL theoretically at risk; no malicious exploitation reported.",
-    "summary": "Neodyme found a rounding issue in SPL lending logic that could drain pools via repeated deposit/withdraw; forks used by major Solana lenders were patched privately.",
-    "rootCause": "Integer rounding allowed slight over-crediting of collateral tokens when combined with batched instructions.",
-    "lesson": "Shared library code needs the same scrutiny as bespoke programs, and 'small' rounding bugs become economically large under Solana's high transaction throughput and instruction batching.",
-    "tags": [
-      "spl",
-      "lending",
-      "rounding",
-      "whitehat"
-    ],
-    "sources": [
-      {
-        "label": "Neodyme disclosure",
-        "url": "https://neodyme.io/en/blog/lending_disclosure/"
-      },
-      {
-        "label": "CollinsDeFiPen — deep dive",
-        "url": "https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375"
-      }
-    ],
-    "mitigations": [
-      "Use floor (not round) consistently for outflows; assert no transaction can withdraw more value than it deposited at the same exchange rate.",
-      "Add property-based / invariant tests that randomize batch sizes and exchange rates to detect drift.",
-      "Run formal-style invariant checks (e.g., SeaHorse, MoveProver-style, or hand-written invariants) against deposit/redeem pairs.",
-      "Coordinate disclosure across forks early; maintain an SPL-fork registry so patches can be propagated quickly.",
-      "Track a 'shadow accounting' offline reconciliation job that flags discrepancies between expected and on-chain balances."
-    ]
-  },
-  {
-    "id": "jet-protocol-c-ratio-dec-2021",
-    "title": "Jet Protocol collateral-ratio bug (disclosed, patched pre-exploit)",
-    "date": "2021-12-21",
+    "id": "across-protocol-solana-relayer-jul-2026",
+    "title": "Across Protocol Solana relayer exploit",
+    "date": "2026-07-17",
     "category": "application",
     "severity": "medium",
     "estimatedLossUsd": null,
-    "lossDescription": "Jet cited ~$25M at risk; no malicious exploitation reported.",
-    "mitigated": true,
-    "summary": "A code review found flawed collateral-ratio logic that could have enabled unsafe borrows; the team patched on mainnet and published a technical disclosure afterward.",
+    "lossDescription": "Loss was contained to the relayer operated by Risk Labs (the foundation supporting Across); no user funds were affected and all in-flight bridge transactions settled normally. No dollar figure had been published at the time of reporting.",
+    "summary": "At ~05:30 UTC on July 17, 2026, Across Protocol's Solana deployment was attacked, with losses limited to the Risk Labs relayer that fronts capital in the protocol's intent-based model. Because Across relayers front their own capital on the destination chain and are repaid via settlement on Ethereum verified by UMA's optimistic oracle, users never had pooled custody at risk and no user funds were lost. The exact vector was undisclosed pending a post-mortem, but suspicion centered on the Solana/SVM spoke pool and relayer event-handling layer.",
+    "details": "The incident fits the profile of relayer-side risk rather than a spoke pool drain, since user-facing bridge contracts continued settling throughout. In April 2026 Asymmetric Research had disclosed a vulnerability in the same Anchor-based SVM spoke pool where, because Solana lacks a canonical event system and events are reconstructed from transaction traces (including failed transactions), attackers could potentially spoof deposit events and trick relayers into filling orders with no real deposit; that issue was patched with no funds lost.",
     "tags": [
-      "lending",
-      "jet",
-      "disclosure"
-    ],
-    "sources": [
-      {
-        "label": "Jet Protocol — patch disclosure",
-        "url": "https://medium.com/jetprotocol/jet-protocol-upgrade-bug-patch-disclosure-6eb74cf7149"
-      },
-      {
-        "label": "Nitin132 — incident survey (hackathon)",
-        "url": "https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6"
-      }
-    ],
-    "lesson": "Whitehat-discoverable bugs in collateral math demonstrate the value of pre-mainnet adversarial review, internal red-teaming, and a tight responsible-disclosure pipeline.",
-    "mitigations": [
-      "Maintain a funded bug bounty (Immunefi or equivalent) with clear scope before TVL grows.",
-      "Require multi-party code review for any PR touching collateral, interest, or oracle math.",
-      "Add invariant tests that assert C-ratio computations cannot understate liabilities or overstate collateral under any input.",
-      "Provide a private security channel and PGP key for disclosures, with a 24-hour acknowledgement SLA."
-    ]
-  },
-  {
-    "id": "wormhole-bridge-feb-2022",
-    "title": "Wormhole bridge signature verification exploit",
-    "date": "2022-02-02",
-    "category": "application",
-    "severity": "critical",
-    "estimatedLossUsd": 326000000,
-    "lossDescription": "Jump Crypto replenished backing; users made whole.",
-    "mitigated": true,
-    "summary": "An attacker spoofed the instructions sysvar used in guardian signature verification and minted 120k wETH on Solana without backing.",
-    "rootCause": "Failure to verify the real Sysvar:Instructions account; deprecated helper trusted attacker-supplied accounts.",
-    "response": "Bridge paused, patched within hours; Jump Crypto replaced ETH backing.",
-    "lesson": "Solana sysvars and program IDs must be verified by address, not by structural shape. Patch-gap risk on public repos means deployment must follow disclosure within hours, not days.",
-    "details": "Multiple independent write-ups emphasize patch-gap risk: a fix was visible in public version control before it was live on mainnet, which may have helped attackers time the exploit.",
-    "tags": [
+      "across-protocol",
       "bridge",
-      "wormhole",
-      "sysvar",
+      "relayer",
+      "intent-based",
+      "svm-spoke-pool",
+      "event-spoofing",
       "cross-chain"
     ],
+    "relatedIds": [
+      "drift-protocol-apr-2026"
+    ],
     "sources": [
       {
-        "label": "Wormhole incident report",
-        "url": "https://wormholecrypto.medium.com/wormhole-incident-report-02-02-22-ad9b8f21eec6"
-      },
-      {
-        "label": "CertiK analysis",
-        "url": "https://www.certik.com/resources/blog/1kDYgyBcisoD2EqiBpHE5l-wormhole-bridge-exploit-incident-analysis"
-      },
-      {
-        "label": "Chainalysis — Wormhole hack",
-        "url": "https://www.chainalysis.com/blog/wormhole-hack-february-2022/"
-      },
-      {
-        "label": "The Verge — GitHub / timing",
-        "url": "https://www.theverge.com/2022/2/3/22916111/wormhole-hack-github-error-325-million-theft-ethereum-solana"
+        "label": "Crypto Times",
+        "url": "https://www.cryptotimes.io/2026/07/17/across-protocol-reports-first-attack-on-solana-after-34b-in-bridge-volume/"
       }
     ],
+    "lesson": "In intent-based bridge designs the trust boundary between on-chain state and off-chain relayer software is the most fragile seam; solver/relayer infrastructure carries real at-risk capital even when user funds are architecturally protected, so it must be hardened as rigorously as the on-chain contracts.",
     "mitigations": [
-      "Validate every sysvar account by hardcoded address (e.g. the canonical Instructions sysvar pubkey), not by passed-in input.",
-      "Replace deprecated helpers (`load_instruction_at`) with verified, well-typed equivalents and lint deprecated APIs in CI.",
-      "Treat any commit touching guardian/signature logic as security-sensitive; coordinate the merge, audit, and on-chain upgrade in a single window.",
-      "Set up out-of-band monitoring for unexpected mints on bridge wrap mints and trip a circuit breaker on threshold breaches.",
-      "Limit the per-message and per-window mint ceilings (a 'governor') so a single forged VAA cannot mint hundreds of millions in one transaction."
+      "Verify deposit events against authoritative on-chain state rather than reconstructing them from transaction traces, and explicitly ignore data emitted by failed transactions on Solana.",
+      "Require relayers to independently confirm that a real, finalized deposit backs each fill before fronting capital on the destination chain.",
+      "Implement per-fill and per-chain rate limits and anomaly detection on relayer bots to cap losses from spoofed or malformed orders.",
+      "Add a circuit-breaker that automatically disables deposits on a spoke pool when fill/settlement mismatches exceed a threshold, as was done manually here for Solana.",
+      "Subject any new chain integration (e.g. the 2025 SVM spoke pool) to a dedicated audit of the event-reconstruction and relayer-refund logic before enabling mainnet fills.",
+      "Maintain published attacker-address tracking and pre-arranged SEAL 911 coordination so cross-chain laundering can be traced immediately during a live incident.",
+      "Segregate and cap the foundation-operated relayer's exposure so a single relayer compromise cannot absorb outsized losses on behalf of the network."
     ]
   },
   {
-    "id": "cashio-infinite-mint-mar-2022",
-    "title": "Cashio infinite mint / fake collateral",
-    "date": "2022-03-23",
+    "id": "defituna-lending-jul-2026",
+    "title": "DeFiTuna lending pool exploit (USDC deficit)",
+    "date": "2026-07-16",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 580000,
+    "lossDescription": "Attacker extracted $580K from DeFiTuna's lending pools, leaving the USDC lending pool at a $580K deficit borne by depositors; recovery and reimbursement plans were undecided at time of reporting.",
+    "summary": "DeFiTuna, a Solana-native protocol combining concentrated-liquidity AMM, on-chain lending, and up to 5x leveraged positions, disclosed on July 16, 2026 that an attacker had exploited its lending pools roughly seven hours earlier, extracting $580,000 and leaving the USDC lending pool short by the same amount. The team said it had identified and mitigated the attack vector and was investigating and attempting to recover funds. No specific vector, post-mortem, or attacker attribution had been published at the time of reporting.",
+    "details": "The loss manifested as a lending-pool deficit (liabilities exceeding assets) rather than a treasury loss, creating a potential bank-run dynamic for USDC depositors. The protocol's bundling of concentrated-liquidity accounting, lending utilisation, and leverage/liquidation logic widens the attack surface at the seams where those components disagree on a position's value.",
+    "tags": [
+      "defituna",
+      "lending",
+      "concentrated-liquidity",
+      "bad-debt",
+      "usdc",
+      "leverage"
+    ],
+    "relatedIds": [
+      "loopscale-oracle-apr-2025",
+      "texture-lending-jul-2025"
+    ],
+    "sources": [
+      {
+        "label": "Crypto Times",
+        "url": "https://www.cryptotimes.io/2026/07/17/solana-protocol-defituna-hit-by-580k-exploit-usdc-pool-left-short/"
+      }
+    ],
+    "lesson": "Protocols that fuse AMM, lending, and leverage into one system multiply the seams where components can disagree on a position's value; each interface must be audited as an attack surface, and teams should pre-commit to how bad debt is absorbed rather than leaving it to socialize onto depositors.",
+    "mitigations": [
+      "Audit the interfaces between concentrated-liquidity accounting, lending utilisation, and leverage/liquidation modules specifically for valuation disagreements, not just each component in isolation.",
+      "Enforce conservative per-pool borrow caps and utilisation limits so a single exploit cannot drain the full USDC pool balance.",
+      "Implement circuit breakers that halt borrowing and withdrawals when pool solvency invariants (assets >= liabilities) are violated intra-block.",
+      "Maintain a pre-funded insurance or backstop reserve and publish a written policy for who absorbs bad debt before an incident occurs.",
+      "Add invariant checks that a leveraged position's collateral value derived from AMM state matches the value used by the lending market before allowing borrows.",
+      "Publish a full post-mortem naming the exploited vector and provide a concrete depositor reimbursement plan to preserve pool trust."
+    ]
+  },
+  {
+    "id": "solana-foundation-stride-sirn-apr-2026",
+    "title": "Solana Foundation: Stride + SIRN security programs",
+    "date": "2026-04-07",
+    "category": "network",
+    "severity": "informational",
+    "estimatedLossUsd": null,
+    "mitigated": true,
+    "summary": "Post-Drift announcements: Stride (public DeFi security assessments) and SIRN (incident-response network with vendor tooling). Foundation noted such programs would not have stopped pure social-engineering multisig abuse.",
+    "relatedIds": [
+      "drift-protocol-apr-2026"
+    ],
+    "tags": [
+      "foundation",
+      "initiative",
+      "sirn",
+      "stride"
+    ],
+    "sources": [
+      {
+        "label": "CoinDesk",
+        "url": "https://www.coindesk.com/tech/2026/04/07/solana-foundation-unveils-security-overhaul-days-after-usd270-million-drift-exploit"
+      },
+      {
+        "label": "Cryptopolitan",
+        "url": "https://www.cryptopolitan.com/solana-unveils-crisis-mode-defi-threats/"
+      }
+    ]
+  },
+  {
+    "id": "drift-protocol-apr-2026",
+    "title": "Drift Protocol multisig / durable nonce exploit",
+    "date": "2026-04-01",
     "category": "application",
     "severity": "critical",
-    "estimatedLossUsd": 52800000,
-    "lossDescription": "Partial returns to smaller holders; large net user losses reported.",
-    "summary": "Missing validation let an attacker mint ~2B CASH against worthless fake LP collateral, then swap out real stable liquidity.",
-    "details": "Post-mortems note rapid drainage through Saber and off-ramps (including CEX routes). Some secondary summaries claimed large sums briefly frozen on exchanges; treat venue-specific recovery as contested and check primary reporting.",
+    "estimatedLossUsd": 285000000,
+    "lossDescription": "Largest Solana DeFi loss of 2026 in public reporting; laundering via swaps, bridges, mixers.",
+    "summary": "Long-running social engineering against contributors led to device/repo compromise, abuse of pre-signed durable-nonce txs and a zero-timelock council migration, then whitelisting of fake collateral (CVT) to borrow real assets. Widely attributed to DPRK-linked groups in industry reporting.",
+    "details": "Post-mortems emphasize operational security and multisig ceremony design rather than a single on-chain logic bug.",
     "tags": [
-      "stablecoin",
-      "mint",
-      "saber"
+      "drift",
+      "durable-nonce",
+      "multisig",
+      "social-engineering",
+      "perps"
+    ],
+    "relatedIds": [
+      "solana-foundation-stride-sirn-apr-2026"
     ],
     "sources": [
       {
-        "label": "CertiK — Cashio",
-        "url": "https://www.certik.com/resources/blog/3bHgCDnWaqUeQJn6695bea-cashio-app-incident-analysis"
+        "label": "Drift Protocol (X)",
+        "url": "https://x.com/DriftProtocol"
       },
       {
-        "label": "Halborn — Cashio explained",
-        "url": "https://www.halborn.com/blog/post/explained-the-cashio-hack-march-2022"
+        "label": "TRM Labs",
+        "url": "https://www.trmlabs.com/resources/blog/north-korean-hackers-attack-drift-protocol-in-285-million-heist"
       },
       {
-        "label": "Helius catalog",
-        "url": "https://www.helius.dev/blog/solana-hacks"
+        "label": "Elliptic",
+        "url": "https://www.elliptic.co/blog/drift-protocol-exploited-for-286-million-in-suspected-dprk-linked-attack"
       },
       {
-        "label": "Pine Analytics — narrative timeline",
-        "url": "https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents"
+        "label": "Chainalysis — lessons",
+        "url": "https://www.chainalysis.com/blog/lessons-from-the-drift-hack/"
+      },
+      {
+        "label": "The Hacker News",
+        "url": "https://thehackernews.com/2026/04/285-million-drift-hack-traced-to-six.html"
+      },
+      {
+        "label": "CoinDesk — suspicious activity",
+        "url": "https://www.coindesk.com/tech/2026/04/01/solana-defi-platform-drift-investigates-suspicious-activity-tells-users-to-halt-deposits"
+      },
+      {
+        "label": "CoinDesk — durable nonce",
+        "url": "https://www.coindesk.com/tech/2026/04/02/how-a-solana-feature-designed-for-convenience-let-an-attacker-drain-usd270-million-from-drift"
+      },
+      {
+        "label": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-04-01/solana-based-defi-project-drift-hit-by-285-million-exploit"
+      },
+      {
+        "label": "BitPinas timeline",
+        "url": "https://bitpinas.com/cryptocurrency/drift-protocol-exploit/"
+      },
+      {
+        "label": "Pool Party Nodes — mechanics",
+        "url": "https://poolpartynodes.com/learn/crypto-news/solana-drift-protocol-exploit-2026/"
+      },
+      {
+        "label": "MEXC Learn",
+        "url": "https://www.mexc.com/learn/article/drift-protocol-hacked-for-285m-the-second-largest-exploit-in-solana-history/1"
       }
     ],
-    "lesson": "Collateral programs must verify both the token mint and the program that owns the deposited LP, and stablecoin issuers should bound how fast supply can grow regardless of inputs.",
+    "lesson": "Sophisticated DPRK-style social engineering against contributors and multisig signers is now the largest loss vector in DeFi; controls must include human-process security, signer hygiene, and durable-nonce awareness alongside smart-contract audits.",
     "mitigations": [
-      "Whitelist exact mint addresses for accepted collateral and verify the LP token's program owner on every deposit.",
-      "Cap mint throughput per block, per hour, and per day to bound infinite-mint blast radius.",
-      "Independently audit any new collateral type before listing; require a separate review of the verification path, not only happy-path tests.",
-      "Continuously reconcile total CASH supply against expected backing; alert and halt mint on any drift.",
-      "Provide a backstop / insurance fund sized for plausible exploit scenarios and a documented refund mechanic."
+      "Treat any pre-signed transaction (including durable nonces) as a long-lived signed authorization; track which nonces are outstanding and restrict their reuse.",
+      "Require human-readable decoding of every multisig payload and out-of-band confirmation between independent signers before approval.",
+      "Mandatory minimum timelock on Security Council changes (no zero-timelock migrations) and on collateral whitelist changes.",
+      "Strict allow-list for new collateral assets with multi-day cooling period and on-chain governance vote.",
+      "Air-gap signing from internet-connected workstations; never click links or open attachments on a signing device.",
+      "Endpoint-detection (EDR) and minimum-trust IDE/extension policies for all team members; treat repository clones from external counterparties as untrusted code.",
+      "Run a 'devil's advocate' security ceremony for every multisig signing: at least one signer's job is to look for malicious encodings.",
+      "Maintain a vetted intermediary verification process for any business development engagement that requires onboarding new vault assets or signing test transactions."
     ]
   },
   {
-    "id": "crema-flash-loan-jul-2022",
-    "title": "Crema Finance fake tick account + flash loan",
-    "date": "2022-07-02",
+    "id": "bonkfun-dns-mar-2026",
+    "title": "BONKfun DNS hijack",
+    "date": "2026-03-11",
+    "category": "supply-chain",
+    "severity": "medium",
+    "estimatedLossUsd": 30000,
+    "mitigated": true,
+    "summary": "Registrar social engineering moved the domain; malicious site caused ~$30k user losses. Team pledged 110% compensation; control restored ~March 18–19.",
+    "tags": [
+      "dns",
+      "phishing",
+      "bonkfun"
+    ],
+    "sources": [
+      {
+        "label": "Solport Tom (X)",
+        "url": "https://x.com/SolportTom/status/2031930573342519702"
+      }
+    ],
+    "lesson": "Domain registrars themselves can be socially engineered out of customer accounts; protocol teams must defend not just at the registrar account level but at the registrar selection level.",
+    "mitigations": [
+      "Use registrars with hardware-2FA, registrar-lock, and human-confirmed transfer policies.",
+      "Enable DNSSEC and CAA records.",
+      "Pre-publish a recovery process and out-of-band channels (Discord, X, on-chain) so users have a verifiable secondary source if the domain is hijacked.",
+      "Monitor certificate transparency logs and DNS records continuously; alert on unauthorized changes.",
+      "Maintain an IPFS / Arweave-pinned mirror for the production frontend."
+    ]
+  },
+  {
+    "id": "stake-nova-flash-loan-feb-2026",
+    "title": "Stake Nova RedeemNovaSol flash-loan exploit",
+    "date": "2026-02-27",
     "category": "application",
     "severity": "high",
-    "estimatedLossUsd": 1600000,
-    "lossDescription": "~$8.8M taken; ~$7.2M returned; ~$1.6M kept as bounty.",
-    "mitigated": true,
-    "summary": "Concentrated liquidity tick accounts were not authenticated; a flash loan amplified fraudulent fee withdrawals.",
+    "estimatedLossUsd": 137014,
+    "lossDescription": "~95% of user deposits reported lost.",
+    "summary": "Business-logic / validation flaw in liquid staking redeem path; exploited via flash loan. Protocol patched and dApp taken offline; bounty offered.",
     "tags": [
-      "amm",
+      "liquid-staking",
       "flash-loan",
+      "stake-nova"
+    ],
+    "sources": [
+      {
+        "label": "Chris Dior (X)",
+        "url": "https://x.com/chrisdior777/status/2027080169983295538"
+      }
+    ],
+    "lesson": "Liquid-staking redeem paths involve multiple accounting checks; a single missed validation under flash-loan conditions can drain user deposits in one transaction.",
+    "mitigations": [
+      "Property-based testing of redeem paths under adversarial inputs and flash-loan composition.",
+      "Independent audit before launch; every external integration adds attack surface.",
+      "Per-block redeem rate limits to bound flash-loan damage.",
+      "Real-time monitoring on TVL and pool ratios with auto-pause on anomalies.",
+      "Maintain a public bounty floor large enough to incentivize disclosure rather than exploitation."
+    ]
+  },
+  {
+    "id": "step-finance-treasury-jan-2026",
+    "title": "Step Finance treasury drain (exec device compromise)",
+    "date": "2026-01-31",
+    "category": "supply-chain",
+    "severity": "critical",
+    "estimatedLossUsd": 29000000,
+    "lossDescription": "Estimates $27–40M (~262k SOL); variance from price/mark timing.",
+    "summary": "Stake authority moved to attacker-controlled accounts after operational compromise of executive devices; not a public smart-contract bug. STEP crashed; Step, SolanaFloor, and Remora later wound down with partial recovery reported.",
+    "tags": [
+      "step-finance",
+      "treasury",
+      "opsec"
+    ],
+    "sources": [
+      {
+        "label": "Step Finance (X)",
+        "url": "https://x.com/StepFinance_/status/2018379876642804213"
+      },
+      {
+        "label": "Decrypt — wind-down",
+        "url": "https://decrypt.co/358970/solana-defi-project-step-finance-to-wind-down-weeks-after-29m-hack"
+      },
+      {
+        "label": "Coin Insider",
+        "url": "https://www.coininsider.com/news/2026/02/solana-shake-up-3-platforms-shut-after-27m-hack"
+      },
+      {
+        "label": "SlowMist hacked DB (Solana)",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      }
+    ],
+    "lesson": "Endpoint compromise on executive devices is the most common path to large losses today; assume any device can be compromised and design custody so a single device cannot move funds.",
+    "mitigations": [
+      "Use hardware wallets in air-gapped or transaction-approval-only setups; never sign from a general-purpose laptop.",
+      "Require multisig threshold > 1 for any treasury action; isolate signers across distinct environments.",
+      "Deploy EDR / managed-detection on all executive endpoints; restrict admin software install.",
+      "Regular phishing and malware-defense training for all team members with privileged access.",
+      "Off-chain monitoring for unexpected stake-authority changes with a circuit breaker that requires multi-party reauthorization."
+    ]
+  },
+  {
+    "id": "solar-solana-zh-x-jan-2026",
+    "title": "Solar / Solana Mandarin community X compromise",
+    "date": "2026-01-27",
+    "category": "supply-chain",
+    "severity": "low",
+    "estimatedLossUsd": null,
+    "summary": "Community X account takeover (SlowMist listing).",
+    "tags": [
+      "twitter",
+      "social"
+    ],
+    "sources": [
+      {
+        "label": "SlowMist hacked DB (Solana)",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      }
+    ],
+    "lesson": "Community-language X accounts are high-trust targets; their compromise affects regional user bases that may not have the same English-speaking signals.",
+    "mitigations": [
+      "Apply the same hardware-2FA / password-manager / restricted-access policies to localized social accounts as to the main account.",
+      "Cross-post critical announcements between the global and local accounts so users have a verifiable second source.",
+      "Maintain a doxxed point of contact for each localized account to support recovery."
+    ]
+  },
+  {
+    "id": "upbit-sol-hot-wallet-nov-2025",
+    "title": "Upbit Solana hot wallet compromise",
+    "date": "2025-11-27",
+    "category": "application",
+    "severity": "critical",
+    "estimatedLossUsd": 37000000,
+    "lossDescription": "Reports cite ~$36–38M in SPL assets; exchange committed to full reimbursement.",
+    "mitigated": true,
+    "summary": "Unauthorized withdrawals from Upbit’s Solana hot wallet; diverse SPL tokens affected. Deposits/withdrawals paused and assets moved toward cold storage.",
+    "tags": [
+      "exchange",
+      "custody",
+      "upbit",
+      "hot-wallet"
+    ],
+    "sources": [
+      {
+        "label": "CCN — timeline",
+        "url": "https://www.ccn.com/education/crypto/upbit-2025-hack-36-million-solana-assets-stolen/"
+      }
+    ],
+    "lesson": "Exchange hot wallets are perpetual attack targets; defense-in-depth includes withdrawal velocity controls and rapid pause infrastructure across every supported chain, including Solana.",
+    "mitigations": [
+      "Strict hot-cold split with daily refill ceilings sized to expected daily flow only.",
+      "Per-chain monitoring for unusual outflow patterns; auto-pause withdrawals on threshold breach.",
+      "MPC custody for hot-wallet signing rather than raw private keys on a single host.",
+      "Separate signing key pools per blockchain so a compromise on one chain cannot drain others.",
+      "Practice annual incident-response drills covering Solana-specific quirks (e.g., SPL token handling, durable nonces)."
+    ]
+  },
+  {
+    "id": "dmt-dexmaxai-airdrop-phishing-nov-2025",
+    "title": "DMT airdrop / dexmaxai approval phishing",
+    "date": "2025-11-20",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 130000,
+    "summary": "Claim flow tricked users into harmful token approvals; 1,000+ wallets affected; funds bridged out (e.g. HitBTC deposits reported).",
+    "tags": [
+      "phishing",
+      "airdrop",
+      "approvals"
+    ],
+    "sources": [
+      {
+        "label": "GoPlus (X)",
+        "url": "https://x.com/GoPlusZH/status/1991436599461319047"
+      }
+    ],
+    "lesson": "Airdrop claim flows are now standard phishing bait; users are conditioned to sign messages and approve token interactions during claims.",
+    "mitigations": [
+      "Wallets should highlight token-approval transactions as high-risk and require an additional confirmation.",
+      "Users should claim only from explicitly verified URLs and bookmark them in advance.",
+      "Token-approval transactions should default to bounded amounts, not unlimited.",
+      "Browser-extension defenses (Scam Sniffer, GoPlus Wallet Guard) should be installed as a second line of defense.",
+      "Project teams running airdrops should publish exact transaction shapes users will be asked to sign so that wallets and educators can verify."
+    ]
+  },
+  {
+    "id": "doodipals-key-leak-oct-2025",
+    "title": "DoodiPals private key leak",
+    "date": "2025-10-21",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 171000,
+    "lossDescription": "~917 SOL reported.",
+    "summary": "Leaked keys allowed sales from many project wallets; attacker swapped into SOL.",
+    "tags": [
+      "keys",
+      "nft",
+      "doodipals"
+    ],
+    "sources": [
+      {
+        "label": "evilcos (X)",
+        "url": "https://x.com/evilcos/status/1980443998461608427"
+      }
+    ],
+    "lesson": "NFT projects accumulate substantial treasury without commensurate operational security; private keys must be hardware-backed regardless of project size.",
+    "mitigations": [
+      "Hardware wallets (Ledger / Trezor) for all project signing keys; never store keys on workstations or cloud services.",
+      "Multisig (Squads) for treasury and mint authorities.",
+      "Off-chain reconciliation: treat the treasury like a small bank, with regular balance attestation.",
+      "Avoid mixing project signing keys with personal wallets, ever."
+    ]
+  },
+  {
+    "id": "watt-protocol-x-oct-2025",
+    "title": "Watt Protocol X account compromise",
+    "date": "2025-10-09",
+    "category": "supply-chain",
+    "severity": "low",
+    "estimatedLossUsd": null,
+    "summary": "Official account used to post phishing links; flagged by Scam Sniffer.",
+    "tags": [
+      "phishing",
+      "twitter",
+      "social"
+    ],
+    "sources": [
+      {
+        "label": "Scam Sniffer (X)",
+        "url": "https://x.com/realScamSniffer/status/1976284421448925574"
+      }
+    ],
+    "lesson": "Project X accounts are a primary phishing distribution channel; their compromise turns a real audience into victims within minutes.",
+    "mitigations": [
+      "Hardware-2FA, password-manager-stored unique passwords, and verified-credentials backup codes.",
+      "Restrict X access to a small group; separate posting accounts from admin accounts.",
+      "Use approved-app monitoring; revoke unused integrations.",
+      "Pre-establish secondary verified channels (Discord announcement channel, on-chain message) for users to cross-reference."
+    ]
+  },
+  {
+    "id": "solana-owner-field-phishing-late-2025",
+    "title": "Phishing wave: malicious reassignment of account Owner field",
+    "date": "2025-10-01",
+    "endDate": "2025-12-31",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "lossDescription": "Aggregate losses unclear; single-victim cases over $3M cited in analyses.",
+    "summary": "Attackers used txs that looked benign in simulation but reassigned SPL/token account owners, a Solana-specific vector vs typical EVM token transfers.",
+    "tags": [
+      "phishing",
+      "wallet",
+      "owner-field",
+      "pattern"
+    ],
+    "sources": [
+      {
+        "label": "CyberPress — SlowMist-cited analysis",
+        "url": "https://cyberpress.org/solana-phishing-attacks/"
+      }
+    ],
+    "lesson": "Solana's account model lets transaction-simulation present harmless previews while reassigning account ownership; wallets and users need new mental models for what to verify.",
+    "mitigations": [
+      "Wallets should explicitly decode and warn on `SystemProgram::Assign`, `Token::SetAuthority`, and any instruction that changes program ownership of a user account.",
+      "Show a security-focused diff in transaction previews (account owner changes, new authority pubkey) regardless of asset transfer.",
+      "Educate users that 'no token movement in simulation' is not 'safe transaction'.",
+      "dApp developers should never request signatures for instructions that reassign ownership unless absolutely required, and should explain why.",
+      "Browser security extensions should ship explicit detection for these patterns."
+    ]
+  },
+  {
+    "id": "swissborg-kiln-sol-staking-sep-2025",
+    "title": "SwissBorg SOL Earn / Kiln API compromise",
+    "date": "2025-09-08",
+    "category": "supply-chain",
+    "severity": "critical",
+    "estimatedLossUsd": 41500000,
+    "lossDescription": "~192.6k SOL; SwissBorg reported full user reimbursement from treasury.",
+    "mitigated": true,
+    "summary": "Attacker abused compromised Kiln Connect API credentials to bury malicious stake instructions in transactions presented as routine unstaking, moving stake authority for SwissBorg program accounts.",
+    "tags": [
+      "staking",
+      "api",
+      "kiln",
+      "swissborg",
+      "solana-stake"
+    ],
+    "sources": [
+      {
+        "label": "SwissBorg — security update",
+        "url": "https://swissborg.com/blog/swissborg-security-update-kiln-breach"
+      },
+      {
+        "label": "SwissBorg & Kiln — joint statement",
+        "url": "https://swissborg.com/blog/joint-statement-kiln-x-swissborg-regarding-sol-incident"
+      },
+      {
+        "label": "Halborn explainer",
+        "url": "https://www.halborn.com/blog/post/explained-the-swissborg-hack-september-2025"
+      },
+      {
+        "label": "QuillAudits — technical breakdown",
+        "url": "https://www.quillaudits.com/blog/hack-analysis/swissborg-exploit"
+      },
+      {
+        "label": "Unchained",
+        "url": "https://unchainedcrypto.com/hackers-drain-41-million-from-swissborgs-solana-earn/"
+      }
+    ],
+    "lesson": "Staking-as-a-service APIs are a giant trust boundary; a stolen integration token can rewrite stake-account authority across many institutional clients at once.",
+    "mitigations": [
+      "Decode and human-verify every instruction in any inbound transaction touching stake authority before signing.",
+      "Reject any unstake transaction containing more than the expected number of instructions.",
+      "Keep stake-account authority on a multisig with a different trust domain than the staking-API integration token.",
+      "Use scoped, short-lived API credentials (with mTLS) and rotate on any incident at the provider.",
+      "Continuously reconcile expected stake authorities against on-chain state and alert on drift."
+    ]
+  },
+  {
+    "id": "aqua-rug-sep-2025",
+    "title": "Aqua (reported rug pull)",
+    "date": "2025-09-08",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": 4650000,
+    "summary": "On-chain analysts traced ~21.8k SOL outflows from the project; funds split and sent through instant exchanges. Promotional ties to several Solana ecosystem names drew attention.",
+    "tags": [
+      "rug",
+      "aqua"
+    ],
+    "sources": [
+      {
+        "label": "Odaily — ZachXBT report (Chinese)",
+        "url": "https://www.odaily.news/zh-CN/newsflash/447163"
+      },
+      {
+        "label": "SlowMist hacked DB (Solana)",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      }
+    ],
+    "lesson": "Promotion by reputable infra teams is not a security signal; due diligence on tokenomics and key custody is independent of who tweets a project.",
+    "mitigations": [
+      "Investors and platforms should require a published key-custody and upgrade-authority disclosure before integration.",
+      "Look for time-locked vesting and on-chain proof of the reported tokenomics.",
+      "Verify multisig configuration on-chain (signers, threshold) before listing or partnering.",
+      "Maintain a public 'safety review' framework similar to Solana Foundation Stride for new projects."
+    ]
+  },
+  {
+    "id": "credix-rug-aug-2025",
+    "title": "Credix (alleged rug / admin drain)",
+    "date": "2025-08-04",
+    "category": "application",
+    "severity": "critical",
+    "estimatedLossUsd": 4500000,
+    "lossDescription": "Framed as exploit; community reporting describes team disappearance and unpaid settlements.",
+    "summary": "Lending protocol reported an admin-wallet compromise and pool drain; subsequent behavior widely characterized as a rug pull.",
+    "tags": [
+      "lending",
+      "rug",
+      "credix"
+    ],
+    "sources": [
+      {
+        "label": "Web3 Is Going Great",
+        "url": "https://www.web3isgoinggreat.com/?id=credix-exploit"
+      },
+      {
+        "label": "SlowMist hacked DB (Solana)",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      }
+    ],
+    "lesson": "Single admin keys with mint and pool-drain authority are indistinguishable from rug-pull infrastructure regardless of the team's intent.",
+    "mitigations": [
+      "Move every privileged authority to multisig with independent, doxxed signers from launch.",
+      "Time-locked governance for any change to core program addresses or token mint authorities.",
+      "Publish on-chain proof of treasury composition and any movements.",
+      "Independent third-party audits made public before TVL grows.",
+      "Provide explicit user-protection mechanisms (insurance fund, withdrawal queue, emergency pause)."
+    ]
+  },
+  {
+    "id": "kodane-patch-manager-npm-jul-2025",
+    "title": "@kodane/patch-manager malicious npm (wallet drainer)",
+    "date": "2025-07-28",
+    "category": "supply-chain",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "summary": "Malicious npm package with Solana wallet-draining behavior; ~1,500 downloads before removal. Reporting tied it to AI-assisted packaging.",
+    "tags": [
+      "npm",
+      "supply-chain",
+      "wallet"
+    ],
+    "sources": [
+      {
+        "label": "The Hacker News",
+        "url": "https://thehackernews.com/2025/08/ai-generated-malicious-npm-package.html"
+      }
+    ],
+    "lesson": "AI-assisted package generation lowers the cost of creating convincing malicious packages; supply-chain controls are now more important, not less.",
+    "mitigations": [
+      "Pin dependency versions and review every new package added to the manifest.",
+      "Use automated SCA / typosquatting detection in CI.",
+      "Restrict which workstations can install dependencies for production builds.",
+      "Avoid handling raw keys in any process that loads npm packages; route signing through a separate, hardened service."
+    ]
+  },
+  {
+    "id": "swarms-discord-jul-2025",
+    "title": "Swarms Discord compromise (phishing)",
+    "date": "2025-07-21",
+    "category": "supply-chain",
+    "severity": "low",
+    "estimatedLossUsd": null,
+    "summary": "Team member phished via DM; Discord channels disrupted and members removed. No direct on-chain loss reported.",
+    "tags": [
+      "discord",
+      "phishing",
+      "social"
+    ],
+    "sources": [
+      {
+        "label": "Swarms (X)",
+        "url": "https://x.com/swarms_corp/status/1947156712227824027"
+      }
+    ],
+    "lesson": "Discord and other community platforms are part of the security perimeter; one phished moderator can disrupt thousands of users.",
+    "mitigations": [
+      "Hardware-2FA mandatory for every moderator and admin role.",
+      "Use role-scoped permissions; only a few accounts should have channel-deletion or member-removal powers.",
+      "Train team members to expect DM-based phishing and verify any 'support' DM out-of-band.",
+      "Configure audit-log alerting (e.g., Wick bot) for destructive admin actions."
+    ]
+  },
+  {
+    "id": "texture-lending-jul-2025",
+    "title": "Texture lending vault exploit",
+    "date": "2025-07-09",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 220000,
+    "lossDescription": "~$2.2M drained; ~$1.98M returned; attacker kept ~$220k bounty.",
+    "mitigated": true,
+    "summary": "Solana lending protocol Texture lost funds from a vault via a smart-contract bug; team negotiated partial return with a 10% bounty offer.",
+    "tags": [
+      "lending",
+      "texture"
+    ],
+    "sources": [
+      {
+        "label": "Texture (X)",
+        "url": "https://x.com/texture_fi/status/1942972150631002245"
+      },
+      {
+        "label": "SlowMist hacked DB (Solana)",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      }
+    ],
+    "lesson": "Vault validation paths are the highest-leverage code in a lending protocol; they deserve invariants and adversarial testing, not just unit tests.",
+    "mitigations": [
+      "Property-based testing of vault deposit/withdraw/redeem under adversarial inputs.",
+      "Independent audit covering edge-case validation, not only happy paths.",
+      "Real-time monitoring on vault TVL with automated pause on sudden large outflows.",
+      "Public bug bounty with payout floor that incentivizes whitehat reports over exploitation."
+    ]
+  },
+  {
+    "id": "cetus-sui-exploit-may-2025-see-also",
+    "title": "Cetus Protocol exploit (Sui/Aptos) — cross-chain note",
+    "date": "2025-05-22",
+    "category": "application",
+    "severity": "informational",
+    "estimatedLossUsd": null,
+    "lossDescription": "~$223M on Sui/Aptos (not Solana); Crema team lineage — omit from Solana loss rollups.",
+    "summary": "Major CLMM-style exploit on Sui; often discussed beside Solana incidents for team lineage and overflow/oracle patterns. Exclude from Solana-only loss totals when aggregating.",
+    "tags": [
+      "sui",
+      "see-also",
+      "crema-related",
       "clmm"
     ],
     "sources": [
       {
-        "label": "Halborn — Crema",
-        "url": "https://www.halborn.com/blog/post/explained-the-crema-finance-hack-july-2022"
+        "label": "The Block — Cetus restarts",
+        "url": "https://www.theblock.co/post/357386/sui-dex-cetus-protocol-restarts-platform-after-recovering-from-223-million-exploit"
       },
       {
-        "label": "CoinDesk",
-        "url": "https://www.coindesk.com/tech/2022/07/04/solana-defi-protocol-crema-loses-88m-in-exploit"
+        "label": "threesigma (X)",
+        "url": "https://x.com/threesigmaxyz/status/1926971295708627337"
       }
-    ],
-    "lesson": "Concentrated-liquidity AMMs have many program-derived data accounts whose authenticity must be verified; a single missed check becomes a flash-loan-amplified drain.",
-    "mitigations": [
-      "Derive tick accounts from canonical PDAs and assert PDA derivation on every read.",
-      "Reject any tick or position account whose program owner is not the AMM program itself.",
-      "Add invariant tests that 'no swap can produce fees larger than swap input' and run them with adversarial inputs.",
-      "Rate-limit fee withdrawals from any single account in a single transaction.",
-      "Subscribe pools to onchain monitoring (Hypernative, Range, Forta-style) for sudden fee-claim spikes."
     ]
   },
   {
-    "id": "audius-governance-jul-2022",
-    "title": "Audius governance proposal exploit",
-    "date": "2022-07-23",
+    "id": "loopscale-oracle-apr-2025",
+    "title": "Loopscale RateX PT oracle manipulation",
+    "date": "2025-04-26",
     "category": "application",
     "severity": "high",
-    "estimatedLossUsd": 6100000,
-    "summary": "A governance program flaw allowed a malicious proposal to pass and move ~18.5M AUDIO from the treasury.",
+    "estimatedLossUsd": null,
+    "lossDescription": "~$5.8M drained then fully returned via negotiation.",
+    "mitigated": true,
+    "summary": "Attacker inflated collateral marks for RateX principal tokens, borrowed against vaults, then returned funds after bounty talks.",
+    "tags": [
+      "lending",
+      "oracle",
+      "loopscale"
+    ],
+    "sources": [
+      {
+        "label": "Loopscale Labs (X) — recovery",
+        "url": "https://x.com/LoopscaleLabs/status/1916230435291713786"
+      },
+      {
+        "label": "Halborn — Loopscale",
+        "url": "https://www.halborn.com/blog/post/explained-the-loopscale-hack-april-2025"
+      },
+      {
+        "label": "The Block",
+        "url": "https://www.theblock.co/post/352083/solana-defi-protocol-loopscale-hit-with-5-8-million-exploit-two-weeks-after-launch"
+      },
+      {
+        "label": "SlowMist hacked DB (Solana)",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      }
+    ],
+    "lesson": "Novel collateral types (principal tokens, LSTs, RWA wrappers) need oracle and risk-parameter design from scratch; copy-pasting LTVs from blue-chip assets is dangerous.",
+    "mitigations": [
+      "Run a separate oracle architecture for novel collateral types; use TWAPs and external feeds, not internal AMM marks.",
+      "Conservative initial caps and LTVs for any new collateral; raise only after stress-test and live observation.",
+      "Stress-test the entire collateral stack against flash-loan and liquidity-shock scenarios pre-launch.",
+      "Publish a public risk dashboard and bounty program with clear scope.",
+      "Maintain a quick-pause mechanism callable by a multisig within minutes."
+    ]
+  },
+  {
+    "id": "timefun-backend-signing-mar-2025",
+    "title": "Time.fun backend co-signer validation flaw (disclosed)",
+    "date": "2025-03-01",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "mitigated": true,
+    "summary": "Researchers showed a shared co-signer could be tricked into approving metadata/fees theft; fixed before malicious use.",
+    "tags": [
+      "backend",
+      "signing",
+      "disclosure"
+    ],
+    "sources": [
+      {
+        "label": "CollinsDeFiPen — Time.fun",
+        "url": "https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375"
+      }
+    ],
+    "lesson": "Shared backend co-signers are escalation-of-privilege bugs waiting to happen if they sign anything other than narrowly validated transactions.",
+    "mitigations": [
+      "Architect signing services to validate the exact instruction shape and account set before signing.",
+      "Separate the wallet that pays gas from the wallet that owns valuable assets.",
+      "Require transaction simulation against a strict allow-list policy before any backend signature.",
+      "Treat 'sign arbitrary user transaction' as a privileged operation; require multi-party approval.",
+      "Publish formal documentation of what the co-signer is and is not allowed to sign."
+    ]
+  },
+  {
+    "id": "npm-malware-jan-2025",
+    "title": "Solana-related npm malware wave (reported)",
+    "date": "2025-01-15",
+    "category": "supply-chain",
+    "severity": "medium",
+    "estimatedLossUsd": null,
+    "summary": "Collins’ survey documents additional typosquatting/malicious package incidents targeting Solana developers in early 2025; verify package names and publishers.",
+    "tags": [
+      "npm",
+      "malware"
+    ],
+    "sources": [
+      {
+        "label": "CollinsDeFiPen — supply chain section",
+        "url": "https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375"
+      }
+    ],
+    "lesson": "Typosquatting and malicious packages targeting Solana developers are a continuous, low-effort attack vector; defense relies on standard supply-chain hygiene applied consistently.",
+    "mitigations": [
+      "Lock dependency versions and forbid wildcard ranges in production builds.",
+      "Use organization-scoped packages and verify publisher identity.",
+      "Run a software composition analysis (SCA) tool in CI on every PR.",
+      "Sandbox developer machines; never sign mainnet transactions from a workstation that pulls arbitrary npm packages without review."
+    ]
+  },
+  {
+    "id": "noones-bridge-jan-2025",
+    "title": "NoOnes Solana bridge / hot wallet exploit",
+    "date": "2025-01-01",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": 8000000,
+    "summary": "Bridge and hot-wallet logic reportedly allowed many small withdrawals across chains; mixed via Tornado.",
+    "tags": [
+      "bridge",
+      "cross-chain"
+    ],
+    "sources": [
+      {
+        "label": "CryptoSlate",
+        "url": "https://cryptoslate.com/noones-acknowledges-8-million-exploit-after-zachxbt-raises-concerns/"
+      }
+    ],
+    "lesson": "Hot-wallet driven bridges combined with permissive small-transfer flows create thousands of low-friction exits an attacker can chain together.",
+    "mitigations": [
+      "Apply per-window aggregate limits across the entire hot wallet, not just per-transaction.",
+      "Velocity-based anomaly detection that triggers automated pause on unusual cross-chain outflow rates.",
+      "Hot/cold split with strict refill discipline and human approval above thresholds.",
+      "Separate signing infrastructure per chain and require step-up auth for cross-chain transfers."
+    ]
+  },
+  {
+    "id": "solana-web3js-supply-chain-dec-2024",
+    "title": "@solana/web3.js npm compromise",
+    "date": "2024-12-03",
+    "category": "supply-chain",
+    "severity": "critical",
+    "estimatedLossUsd": 160000,
+    "lossDescription": "Some sources cite higher at-risk notional during window; confirmed theft often cited ~$130–160k.",
+    "summary": "Publish token phishing led to malicious 1.95.6/1.95.7 builds exfiltrating key material from affected dApps.",
+    "tags": [
+      "npm",
+      "sdk",
+      "supply-chain"
+    ],
+    "sources": [
+      {
+        "label": "SecurityWeek",
+        "url": "https://www.securityweek.com/solana-web3-js-library-backdoored-in-supply-chain-attack/"
+      },
+      {
+        "label": "SC Media — supply-chain summary",
+        "url": "https://www.scworld.com/brief/supply-chain-attack-compromises-solana-web3-js-library"
+      },
+      {
+        "label": "Decrypt",
+        "url": "https://decrypt.co/294742/solana-web3-js-library-compromised-in-targeted-supply-chain-attack"
+      },
+      {
+        "label": "Mend.io — npm incident analysis",
+        "url": "https://www.mend.io/blog/the-solana-web3-js-incident-another-wake-up-call-for-supply-chain-security/"
+      }
+    ],
+    "lesson": "JavaScript dependency trees are a critical link in Solana dApp security; a single phished publish token can backdoor thousands of downstream apps.",
+    "mitigations": [
+      "Pin npm dependency versions and use lockfiles; require explicit upgrades with review.",
+      "Enable npm 2FA + provenance / sigstore signing for all maintainers.",
+      "Use `npm audit signatures` and a CI step that fails on signature mismatch.",
+      "Run dependency-monitoring tools (Socket.dev, Snyk, GitHub Dependabot) and respond to advisories within 24 hours.",
+      "Avoid handling raw private keys in dApp frontends; use wallet adapters / signTransaction patterns so a backdoored library cannot exfiltrate keys."
+    ]
+  },
+  {
+    "id": "dexx-key-leak-nov-2024",
+    "title": "DEXX custodial key handling breach",
+    "date": "2024-11-16",
+    "category": "application",
+    "severity": "critical",
+    "estimatedLossUsd": 30000000,
+    "summary": "Centralized key material mishandling led to mass wallet drains across Solana (and reported cross-chain activity).",
+    "tags": [
+      "wallet",
+      "custody"
+    ],
+    "sources": [
+      {
+        "label": "Cointelegraph — DEXX",
+        "url": "https://cointelegraph.com/news/solana-dexx-hack-november-2024-suspicious-wallets"
+      }
+    ],
+    "lesson": "Centralized custody of user private keys is a regulated activity in everything but name; mishandling keys at any layer becomes a chain-of-custody failure.",
+    "mitigations": [
+      "Avoid custodial private-key models in favor of MPC or non-custodial signing.",
+      "If custody is required, store keys in HSM/KMS with per-user envelopes and never display in plaintext to operators.",
+      "Encrypt every export endpoint output; require step-up auth and rate-limit exports.",
+      "Continuous outbound monitoring for mass-withdrawal patterns; circuit-break at thresholds.",
+      "Publish reserve attestations and SOC 2 / equivalent third-party reviews."
+    ]
+  },
+  {
+    "id": "banana-gun-sep-2024",
+    "title": "Banana Gun Telegram oracle / transfer exploit",
+    "date": "2024-09-19",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 1400000,
+    "mitigated": true,
+    "summary": "Message routing flaw let attacker trigger treasury drains; bots paused and users refunded.",
+    "tags": [
+      "telegram",
+      "bot"
+    ],
+    "sources": [
+      {
+        "label": "Cointelegraph",
+        "url": "https://cointelegraph.com/news/banana-gun-crypto-bot-refunds-3m"
+      }
+    ],
+    "lesson": "Trading bots that broker between Telegram messages and on-chain transactions are signing oracles; the message channel is part of the auth surface.",
+    "mitigations": [
+      "Authenticate Telegram message provenance; reject messages with mismatched session or origin.",
+      "Add a transfer cool-down period for outbound user transfers and second-channel confirmation for large amounts.",
+      "Mandatory 2FA for any non-trading withdrawal action.",
+      "Continuous monitoring for mass simultaneous transfers and auto-pause on anomaly.",
+      "Independent third-party audit covering the message-handling path, not only the on-chain program."
+    ]
+  },
+  {
+    "id": "parcl-dns-aug-2024",
+    "title": "Parcl front-end DNS / phishing compromise",
+    "date": "2024-08-20",
+    "category": "supply-chain",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "lossDescription": "User losses not uniformly disclosed.",
+    "summary": "Domain/DNS compromise steered users to a malicious UI draining approvals.",
+    "tags": [
+      "dns",
+      "defi",
+      "frontend"
+    ],
+    "sources": [
+      {
+        "label": "Helius catalog",
+        "url": "https://www.helius.dev/blog/solana-hacks"
+      }
+    ],
+    "lesson": "Frontend takeover is increasingly common; DeFi sites need the same registrar/DNS hygiene as banks.",
+    "mitigations": [
+      "Registrar-lock the domain and enable DNSSEC.",
+      "Hardware-2FA on all registrar / DNS / hosting accounts; restrict access to a small trained group.",
+      "Use a CAA DNS record to whitelist certificate authorities.",
+      "Subscribe to certificate-transparency monitoring to alert on new cert issuance.",
+      "Provide an IPFS-pinned mirror and document it in the project's official channels for fallback verification."
+    ]
+  },
+  {
+    "id": "solana-elf-alignment-aug-2024",
+    "title": "ELF loader alignment vulnerability (coordinated patch)",
+    "date": "2024-08-08",
+    "category": "core-protocol",
+    "severity": "critical",
+    "estimatedLossUsd": null,
+    "mitigated": true,
+    "summary": "Critical runtime issue patched privately across validators before public disclosure; no confirmed in-the-wild exploit.",
+    "tags": [
+      "coordinated-disclosure",
+      "runtime"
+    ],
+    "sources": [
+      {
+        "label": "Crypto Briefing",
+        "url": "https://cryptobriefing.com/solana-critical-vulnerability-patch/"
+      }
+    ],
+    "lesson": "Coordinated, private patching for runtime vulnerabilities is a maturity milestone; the playbook must already exist before it's needed.",
+    "mitigations": [
+      "Maintain a private security disclosure pipeline with the Foundation, Anza, Firedancer, and major staking operators.",
+      "Pre-stage validator-side hotfix distribution channels with key-pinned signed releases.",
+      "Encourage diverse validator clients so a runtime issue can be partly mitigated by alternative implementations.",
+      "Test critical patches on devnet/testnet validators before mainnet rollout."
+    ]
+  },
+  {
+    "id": "pumpfun-insider-may-2024",
+    "title": "Pump.fun insider bonding-curve exploit",
+    "date": "2024-05-16",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 1900000,
+    "mitigated": true,
+    "summary": "Privileged employee abused withdrawal authority with flash-loan assisted manipulation; team replenished pools.",
+    "tags": [
+      "insider",
+      "memecoin",
+      "bonding-curve"
+    ],
+    "sources": [
+      {
+        "label": "NewsBTC post-mortem",
+        "url": "https://www.newsbtc.com/news/crypto-post-mortem-heres-how-pump-fun-was-exploited-for-2-million/"
+      }
+    ],
+    "lesson": "Insider threats demand the same controls as external attackers; privileged employee access combined with a flash-loan-borrowable bonding curve was a single-employee draining scenario.",
+    "mitigations": [
+      "Eliminate any single-signer privileged authority; route every privileged action through multisig with independent reviewers.",
+      "Implement separation of duties between code authorship and deployment.",
+      "Audit log every privileged action with immutable storage and out-of-team review.",
+      "Add invariant checks that bonding-curve liquidity cannot be withdrawn without explicit user-initiated trigger.",
+      "Run periodic insider-threat tabletop exercises."
+    ]
+  },
+  {
+    "id": "ionet-gpu-spoofing-apr-2024",
+    "title": "io.net worker metadata spoofing",
+    "date": "2024-04-18",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": null,
+    "summary": "Attackers faked GPU worker registrations; integrity of compute network degraded during beta.",
+    "tags": [
+      "depin",
+      "spam"
+    ],
+    "sources": [
+      {
+        "label": "io.net incident report",
+        "url": "https://ionet.medium.com/25th-april-incident-report-176e5fb5c576"
+      }
+    ],
+    "lesson": "Decentralized infrastructure registrations are an attack surface; without verifiable proof-of-resource, spoofing inflates network metrics and degrades quality.",
+    "mitigations": [
+      "Require cryptographic proof-of-work or proof-of-resource attestations from each worker.",
+      "Use TEEs / signed hardware attestations (e.g., NVIDIA confidential compute, SEV-SNP) where possible.",
+      "Monitor for duplicate hardware fingerprints and unrealistic registration spikes.",
+      "Apply staking/slashing for misreporting workers."
+    ]
+  },
+  {
+    "id": "solareum-telegram-mar-2024",
+    "title": "Solareum Telegram bot key compromise",
+    "date": "2024-03-29",
+    "category": "supply-chain",
+    "severity": "high",
+    "estimatedLossUsd": 1000000,
+    "lossDescription": "Reports range ~$520k–$1.4M.",
+    "summary": "Bot architecture reportedly leaked or mishandled imported keys; hundreds of wallets drained.",
+    "tags": [
+      "telegram",
+      "bot",
+      "keys"
+    ],
+    "sources": [
+      {
+        "label": "Decrypt — Solareum",
+        "url": "https://decrypt.co/224371/solana-telegram-trading-bot-shut-down-users-drained-523k"
+      }
+    ],
+    "lesson": "Telegram trading bots that hold or import user keys are full custodians; they need bank-grade key custody and developer vetting, which most do not have.",
+    "mitigations": [
+      "Avoid custodial key models entirely; use session keys with strict scoped authority instead of full private keys.",
+      "If keys must be held, store in HSMs/KMS with per-user encryption envelopes.",
+      "Background-check developers and limit production access; rotate credentials on every offboard.",
+      "Continuous monitoring for unusual mass-withdrawal patterns; auto-pause on anomaly.",
+      "Publish a third-party security audit before accepting user funds."
+    ]
+  },
+  {
+    "id": "solana-jit-cache-outage-feb-2024",
+    "title": "JIT bytecode cache infinite recompile outage",
+    "date": "2024-02-06",
+    "category": "core-protocol",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "summary": "LoadedPrograms cache bug stalled validators; network restarted with legacy loader mitigation.",
+    "tags": [
+      "agave",
+      "outage",
+      "jit"
+    ],
+    "sources": [
+      {
+        "label": "Solana outage report",
+        "url": "https://solana.com/news/02-06-24-solana-mainnet-beta-outage-report"
+      }
+    ],
+    "lesson": "Backwards-compatibility code paths (legacy loaders) need test coverage equal to the modern ones; cache invariants should be exercised under fork conditions.",
+    "mitigations": [
+      "Add deterministic JIT-cache fork tests in CI and devnet.",
+      "Treat legacy loader code as security-sensitive surface; minimize and eventually deprecate it.",
+      "Maintain multiple validator client implementations so a single client bug cannot stall the cluster.",
+      "Pre-distribute hotfix release pipelines so patched validators can roll out within minutes."
+    ]
+  },
+  {
+    "id": "phantom-ddos-feb-2024",
+    "title": "Phantom wallet infrastructure DDoS",
+    "date": "2024-02-01",
+    "category": "network",
+    "severity": "low",
+    "estimatedLossUsd": null,
+    "summary": "RPC/API layer overwhelmed around Jupiter airdrop hype; funds remained on-chain.",
+    "tags": [
+      "wallet",
+      "ddos"
+    ],
+    "sources": [
+      {
+        "label": "Phantom on X",
+        "url": "https://x.com/phantom/status/1753100432145318116"
+      }
+    ],
+    "lesson": "Wallet RPC infrastructure is a critical dependency for the entire ecosystem; airdrop and launch days predictably amplify load.",
+    "mitigations": [
+      "Use multi-region, autoscaling RPC infrastructure with rate-limit shaping per IP.",
+      "Decouple the wallet UI from a single RPC provider; allow user-configurable endpoints.",
+      "Pre-stage capacity and run game-day load tests ahead of known events.",
+      "Provide degraded read-only modes when signing infrastructure is throttled."
+    ]
+  },
+  {
+    "id": "saga-dao-multisig-jan-2024",
+    "title": "Saga DAO treasury multisig drain",
+    "date": "2024-01-24",
+    "category": "application",
+    "severity": "low",
+    "estimatedLossUsd": 60000,
+    "summary": "Weak multisig configuration / compromised signer reportedly emptied a community treasury.",
+    "tags": [
+      "dao",
+      "multisig"
+    ],
+    "sources": [
+      {
+        "label": "Medium — Coinmonks Saga DAO",
+        "url": "https://medium.com/coinmonks/was-the-saga-dao-rugged-by-one-of-our-own-dbd35e6218d8"
+      }
+    ],
+    "lesson": "Multisig threshold and signer hygiene matter more than token holdings; a 1-of-N threshold is a single signer.",
+    "mitigations": [
+      "Use a meaningful threshold (e.g., 4-of-7 minimum for treasury) with geographically distributed, independently controlled signers.",
+      "Hardware-wallet every signer; require periodic re-attestation.",
+      "Audit and publish the signer list and threshold; rotate signers on any departure.",
+      "Add transaction-simulation and human-readable previews for every multisig proposal."
+    ]
+  },
+  {
+    "id": "thunder-terminal-dec-2023",
+    "title": "Thunder Terminal MongoDB / session compromise",
+    "date": "2023-12-27",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 240000,
+    "summary": "Infrastructure secret exposure let attackers move hot-wallet funds via malicious approvals; team halted quickly.",
+    "tags": [
+      "infra",
+      "trading-terminal"
+    ],
+    "sources": [
+      {
+        "label": "Cointelegraph",
+        "url": "https://cointelegraph.com/news/thunder-terminal-hack-exploit-wallet-compromise-hacker-demands-ransom"
+      }
+    ],
+    "lesson": "Backend secret hygiene is a first-class wallet-security control. A leaked database connection string is equivalent to handing over the key custody pipeline.",
+    "mitigations": [
+      "Store database credentials and signing keys in a managed KMS / secrets manager with short-lived tokens, not in env files or code.",
+      "Network-isolate the signing service from the user-facing API; require mTLS between them.",
+      "Rotate credentials regularly and on any suspected compromise; log all signing requests with client identity.",
+      "Implement per-user spend velocity limits and require fresh auth for unusual flows.",
+      "Maintain a one-click 'pause withdrawals' kill switch operable by on-call engineers."
+    ]
+  },
+  {
+    "id": "aurory-syncspace-dec-2023",
+    "title": "Aurory SyncSpace race condition",
+    "date": "2023-12-17",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 830000,
+    "lossDescription": "Team treasury / inventory impact; not user NFTs.",
+    "summary": "Concurrent API buys corrupted hybrid inventory accounting; attacker bridged and sold AURY.",
+    "tags": [
+      "gaming",
+      "backend",
+      "race-condition"
+    ],
+    "sources": [
+      {
+        "label": "Decrypt — Aurory",
+        "url": "https://decrypt.co/210153/solana-game-aurory-suffers-830k-exploit-disables-arbitrum-bridge"
+      },
+      {
+        "label": "Pine Analytics — reference list",
+        "url": "https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents"
+      }
+    ],
+    "lesson": "Hybrid on-chain/off-chain inventory systems must treat the API as a financial system; race conditions and double-spend are the norm without explicit serialization.",
+    "mitigations": [
+      "Use database transactions with row-level locks (SELECT ... FOR UPDATE) on inventory-mutating endpoints.",
+      "Make purchase endpoints idempotent via client-supplied request IDs and server-side dedup.",
+      "Audit scope must include backend / API code, not just the on-chain program.",
+      "Add anomaly detection on rapid same-account requests and rate-limit per account.",
+      "Reconcile off-chain ledger against on-chain state continuously; alert on any mismatch."
+    ]
+  },
+  {
+    "id": "jito-website-ddos-dec-2023",
+    "title": "Jito claim site DDoS during JTO airdrop",
+    "date": "2023-12-07",
+    "category": "network",
+    "severity": "low",
+    "estimatedLossUsd": null,
+    "summary": "Web infrastructure flooded during high-profile claim; on-chain programs unaffected.",
+    "tags": [
+      "ddos",
+      "airdrop"
+    ],
+    "sources": [
+      {
+        "label": "Helius catalog",
+        "url": "https://www.helius.dev/blog/solana-hacks"
+      }
+    ],
+    "lesson": "Web infrastructure is part of the user-experience attack surface for high-profile launches even when funds remain safe on-chain.",
+    "mitigations": [
+      "Front-load airdrop claim sites with a CDN/DDoS provider (Cloudflare, Fastly) and load-test under realistic spike conditions.",
+      "Publish multiple independent claim entry points (CLI, IPFS-hosted UI) so a single domain failure is not blocking.",
+      "Provide an IPFS / Arweave fallback for the claim UI.",
+      "Communicate proactively about infrastructure status during high-traffic events."
+    ]
+  },
+  {
+    "id": "synthetify-dao-oct-2023",
+    "title": "Synthetify DAO malicious proposal",
+    "date": "2023-10-19",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 230000,
+    "summary": "Low-participation governance let an attacker pass a hidden transfer proposal among decoys.",
     "tags": [
       "governance",
       "dao"
     ],
     "sources": [
       {
-        "label": "Lossless analysis",
-        "url": "https://losslessdefi.medium.com/audius-hack-code-enabled-governance-attack-33ac9d8084c8"
-      },
-      {
-        "label": "Helius catalog",
-        "url": "https://www.helius.dev/blog/solana-hacks"
+        "label": "Blockworks",
+        "url": "https://blockworks.co/news/solana-exploit-dao-hacker"
       }
     ],
-    "lesson": "DAO governance code is just as critical as the token logic it controls; proposal execution must be sandboxed and time-locked.",
+    "lesson": "Inactive DAOs are hostile environments: low quorums and absent monitoring make malicious-proposal attacks trivial.",
     "mitigations": [
-      "Strict allow-list of instructions a passed proposal can execute against the treasury.",
-      "Time-lock between proposal pass and execution sized so the community and a security council can intervene.",
-      "Independent audit of governance and timelock contracts on every upgrade.",
-      "A security council with veto rights over proposals that touch treasury authority or token mint.",
-      "Continuous monitoring for new proposals affecting privileged accounts, with off-chain alerts."
+      "Set high quorum thresholds and minimum participation; raise them automatically as a function of treasury size.",
+      "Add a security council with veto power on proposals affecting treasuries.",
+      "Notify token holders of every new proposal via off-chain channels (email/Telegram bot/Discord).",
+      "Time-lock any proposal that touches treasury or program upgrade authorities."
     ]
   },
   {
-    "id": "nirvana-flash-loan-jul-2022",
-    "title": "Nirvana Finance flash loan / price manipulation",
-    "date": "2022-07-28",
-    "category": "application",
-    "severity": "high",
-    "estimatedLossUsd": 3500000,
-    "summary": "A flash loan pumped ANA spot; the protocol accepted inflated pricing for treasury swaps, draining stablecoin liquidity.",
-    "tags": [
-      "flash-loan",
-      "oracle",
-      "algorithmic-stablecoin"
-    ],
-    "sources": [
-      {
-        "label": "CoinDesk",
-        "url": "https://www.coindesk.com/tech/2022/07/28/solana-defi-protocol-nirvana-drained-of-liquidity-after-flash-loan-exploit"
-      },
-      {
-        "label": "Manuel Pena — historical review",
-        "url": "https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf"
-      }
-    ],
-    "lesson": "Algorithmic stablecoins built on internal price curves are flash-loan magnets; collateral pricing must come from manipulation-resistant external feeds.",
-    "mitigations": [
-      "Use an external, multi-source oracle (Pyth/Switchboard) with confidence intervals, never instantaneous internal pool spot.",
-      "Apply TWAPs over multiple blocks for any price input that drives mint or borrow capacity.",
-      "Cap per-block mint and per-block treasury outflow regardless of nominal collateral value.",
-      "Stress-test the bonding curve and treasury under simulated flash-loan scenarios pre-launch.",
-      "Require minimum diversified treasury composition so a single asset's manipulation cannot drain all backing."
-    ]
-  },
-  {
-    "id": "candy-machine-outage-apr-2022",
-    "title": "Candy Machine mint spam outage",
-    "date": "2022-04-30",
-    "endDate": "2022-05-01",
-    "category": "network",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "summary": "NFT mint bots flooded the network with transactions; consensus stalled for many hours until restart and mitigations (e.g. bot tax).",
-    "tags": [
-      "nft",
-      "spam",
-      "outage",
-      "metaplex"
-    ],
-    "sources": [
-      {
-        "label": "CoinDesk — Candy Machine",
-        "url": "https://www.coindesk.com/tech/2022/05/01/solana-goes-dark-for-7-hours-as-bots-swarm-candy-machine-nft-minting-tool"
-      },
-      {
-        "label": "Helius outages",
-        "url": "https://www.helius.dev/blog/solana-outages-complete-history"
-      }
-    ],
-    "lesson": "Hot-account write contention plus undifferentiated UDP ingest is a recipe for outages; mint mechanics need built-in spam disincentives.",
-    "mitigations": [
-      "Enable a 'bot tax' on failed mint instructions so brute-force attempts have economic cost.",
-      "Move ingress to QUIC with stake-weighted QoS and per-IP rate limits.",
-      "Use account locality / multiple parallel mint accounts to reduce write-lock contention on any single PDA.",
-      "Pre-test launches against synthetic mint floods on devnet before mainnet rollout."
-    ]
-  },
-  {
-    "id": "solend-whale-governance-jun-2022",
-    "title": "Solend whale liquidation risk & emergency governance (SLND1–SLND3)",
-    "date": "2022-06-19",
-    "endDate": "2022-06-21",
+    "id": "svt-flash-loan-aug-2023",
+    "title": "Solvent / SVT flash-loan economic exploit",
+    "date": "2023-08-26",
     "category": "application",
     "severity": "medium",
-    "estimatedLossUsd": null,
-    "summary": "One borrower concentrated SOL deposits and stable borrows; as spot fell, the community feared a large on-chain liquidation would move thin markets. Solend passed—then repealed—an emergency proposal to seize and OTC-liquidate the position; parameters were tightened and the user later migrated debt to Mango.",
-    "details": "Not a smart-contract drain: a risk-management and governance crisis. Reporting highlighted vote concentration on the first proposal and backlash over “mutable” DeFi social contract norms.",
-    "lesson": "Concentration risk is a pre-failure mode that does not require any code bug; lending-market parameters must include hard caps and emergency response must respect 'mutability' norms users were sold.",
+    "estimatedLossUsd": 400000,
+    "summary": "Flash loans amplified a flawed economic loop in SVT-related logic (~$400k).",
     "tags": [
-      "lending",
-      "governance",
-      "solend",
-      "liquidation-risk"
-    ],
-    "relatedIds": [
-      "solend-oracle-nov-2022",
-      "mango-markets-oracle-oct-2022"
+      "flash-loan"
     ],
     "sources": [
       {
-        "label": "Decrypt — Solend whale loan",
-        "url": "https://decrypt.co/103489/solend-whale-108m-loan-nearly-crashed-solana"
-      },
-      {
-        "label": "CoinDesk — vote to reverse powers",
-        "url": "https://www.coindesk.com/business/2022/06/20/solends-whale-liquidation-crisis-prompts-second-vote-to-reverse-emergency-powers"
-      },
-      {
-        "label": "Cointelegraph — debt moved to Mango",
-        "url": "https://cointelegraph.com/news/solana-whale-moves-25m-of-usdc-debt-from-solend-to-mango-markets"
-      },
-      {
-        "label": "Pine Analytics — write-up",
-        "url": "https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents"
+        "label": "SlowMist hacked DB",
+        "url": "https://hacked.slowmist.io/?c=Solana"
       }
     ],
+    "lesson": "Token economic loops that allow round-tripping in a single transaction are flash-loan-vulnerable; modeling token flows under attacker control is part of the audit scope.",
     "mitigations": [
-      "Per-user borrow caps and per-asset deposit caps from launch, sized to DEX depth at expected slippage.",
-      "Isolate volatile or thinly-traded collateral into separate, smaller lending markets (Aave-style isolation mode).",
-      "Pre-publish a stressed-market playbook (pause, limit liquidation size per tx, communicate timelines) before relying on emergency governance.",
-      "Cap the impact of any single voting wallet via vote weighting or quorum rules so emergency votes are not 88%-controlled by one address.",
-      "Maintain off-chain OTC liquidation desk relationships so large positions can be unwound without crashing on-chain markets."
+      "Disallow same-transaction sequences that round-trip through fee/discount paths in profit-positive ways.",
+      "Apply per-block trade limits or cooldowns on tokens with custom economic mechanics.",
+      "Audit economic invariants explicitly: total value out across all paths cannot exceed total value in for the same actor in one transaction.",
+      "Maintain monitoring for sudden token supply or pool ratio shifts."
     ]
   },
   {
-    "id": "slope-wallet-aug-2022",
-    "title": "Slope wallet seed phrase logging incident",
-    "date": "2022-08-02",
-    "category": "supply-chain",
-    "severity": "critical",
-    "estimatedLossUsd": 8000000,
-    "summary": "Mobile apps sent mnemonics to a logging server; thousands of wallets were drained. Not a Solana L1 consensus bug.",
-    "rootCause": "Sensitive data captured by error/analytics tooling (e.g. Sentry) without scrubbing.",
-    "lesson": "Wallet client code must treat seed phrases as nuclear material; analytics and crash reporters must be configured to scrub aggressively, and ideally never even see secrets.",
-    "tags": [
-      "wallet",
-      "keys",
-      "slope"
-    ],
-    "sources": [
-      {
-        "label": "Solana Foundation update",
-        "url": "https://solana.com/news/8-2-2022-application-wallet-incident"
-      },
-      {
-        "label": "SlowMist — large-scale theft analysis",
-        "url": "https://slowmist.medium.com/analysis-of-large-scale-theft-of-solana-5782cc999df4"
-      },
-      {
-        "label": "Manuel Pena — Slope section",
-        "url": "https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf"
-      },
-      {
-        "label": "Pine Analytics — telemetry detail",
-        "url": "https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents"
-      }
-    ],
-    "mitigations": [
-      "Architect wallets so seed material never leaves the secure enclave / OS keystore in any code path.",
-      "Configure error-tracking SDKs (Sentry et al.) with allow-lists, not deny-lists; assume default capture is unsafe.",
-      "Run static analysis to detect any path that logs or transmits values matching mnemonic/key patterns.",
-      "Annual third-party app pentests (mobile and extension) covering data egress, not only smart-contract calls.",
-      "Push users toward hardware-wallet pairing for non-trivial balances; surface a clear in-app warning above a threshold."
-    ]
-  },
-  {
-    "id": "optifi-program-close-aug-2022",
-    "title": "OptiFi accidental program close (funds locked)",
-    "date": "2022-08-29",
+    "id": "cypher-protocol-aug-2023",
+    "title": "Cypher Protocol exploit + later insider theft",
+    "date": "2023-08-07",
     "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 661000,
-    "lossDescription": "Team committed to compensating users; mostly team-owned liquidity.",
-    "summary": "A deployment mistake closed the main program, irreversibly locking USDC in PDAs until manual reimbursement.",
-    "tags": [
-      "operational",
-      "dex"
-    ],
-    "sources": [
-      {
-        "label": "OptiFi report",
-        "url": "https://medium.com/@OptiFi/optifi-program-incident-report-08-29-22-d8fe6d229bad"
-      },
-      {
-        "label": "CoinDesk",
-        "url": "https://www.coindesk.com/business/2022/08/30/solana-based-defi-protocol-optifi-loses-661k-in-programming-blunder"
-      }
-    ],
-    "lesson": "Solana program management is unforgiving: `solana program close` is irreversible and will strand all PDAs derived from that program. Treat all program-management commands like production rm -rf.",
-    "mitigations": [
-      "Place the upgrade authority on a multisig (Squads) requiring N-of-M approval before any deployment.",
-      "Maintain a deployment runbook with explicit, peer-reviewed commands; never paste destructive commands into a shared shell.",
-      "Use environment isolation (separate keypairs and CLI configs for dev/staging/mainnet) so wrong-target mistakes are harder.",
-      "Build a 'dry-run' / simulation step for `solana program close`-class operations.",
-      "Maintain on-call peer review for any program upgrade, with two human approvers."
-    ]
-  },
-  {
-    "id": "mango-markets-oracle-oct-2022",
-    "title": "Mango Markets oracle / spot manipulation",
-    "date": "2022-10-11",
-    "category": "application",
-    "severity": "critical",
-    "estimatedLossUsd": 49000000,
-    "lossDescription": "~$116M drained; ~$67M returned; remainder treated as bounty / legal case.",
-    "summary": "MNGO spot was pumped with large perp/spots positions; inflated collateral let the attacker borrow tens of millions in other assets.",
-    "details": "U.S. prosecutors later charged and secured convictions against the trader behind the scheme for fraud/market manipulation—an important precedent for “economic” DeFi attacks.",
+    "severity": "high",
+    "estimatedLossUsd": 1357000,
+    "lossDescription": "~$1.04M exploit plus ~$317k later taken from recovery efforts (reported).",
+    "summary": "Perps/margin program drained; subsequent insider misuse of redemption funds compounded harm.",
     "tags": [
       "perps",
-      "oracle",
-      "mango"
-    ],
-    "relatedIds": [
-      "uxd-mango-contagion-oct-2022",
-      "tulip-mango-contagion-oct-2022"
+      "insider",
+      "cypher"
     ],
     "sources": [
       {
-        "label": "CoinDesk — Mango manipulation",
-        "url": "https://www.coindesk.com/markets/2022/10/12/how-market-manipulation-led-to-a-100m-exploit-on-solana-defi-exchange-mango"
+        "label": "CoinDesk — Cypher",
+        "url": "https://www.coindesk.com/business/2023/08/07/solana-based-cypher-protocol-experiences-exploit-freezes-smart-contract"
       },
       {
-        "label": "Blockworks — oracle manipulation angle",
-        "url": "https://blockworks.co/news/mango-markets-mangled-by-oracle-manipulation-for-112m"
-      },
-      {
-        "label": "Decrypt — CFTC action",
-        "url": "https://decrypt.co/118732/cftc-charges-mango-markets-hacker"
-      },
-      {
-        "label": "Chainalysis — oracle manipulation trend",
-        "url": "https://www.chainalysis.com/blog/oracle-manipulation-attacks-rising/"
-      },
-      {
-        "label": "Helius catalog",
-        "url": "https://www.helius.dev/blog/solana-hacks"
+        "label": "Decrypt — insider confession",
+        "url": "https://decrypt.co/230757/solana-developer-confession-theft-cypher-protocol"
       }
     ],
-    "lesson": "Thin-liquidity collateral combined with permissive cross-margin and capital-efficient borrowing is an oracle-manipulation invitation, even when the oracle itself works as designed.",
+    "lesson": "Recovery mechanisms and recovery custodians are also exploit targets; insider threat is part of the model. Treat funds in a 'redemption pot' with the same custody discipline as user deposits.",
     "mitigations": [
-      "Set per-asset borrow caps inversely proportional to spot DEX depth at acceptable slippage.",
-      "Use price feeds with confidence intervals and reject prices whose interval widens beyond a threshold.",
-      "Apply TWAP/VWAP windows for collateral valuation that exceed the cost of moving spot for that window.",
-      "Limit cross-collateralization for low-cap governance tokens; isolate them from major-asset liquidity.",
-      "Implement circuit breakers that auto-pause borrowing when a single asset's mark moves more than X% in Y minutes."
+      "Run an external audit (Neodyme, OtterSec, Halborn, Sec3) before relying on perps/margin program logic.",
+      "Manage recovery / redemption funds through a multisig with independent signers, not a single contributor.",
+      "Background-check and rotate access for anyone with privileged keys; enforce least-privilege.",
+      "Publish on-chain accounting for redemption funds so any movement is publicly visible."
     ]
   },
   {
-    "id": "uxd-mango-contagion-oct-2022",
-    "title": "UXD Protocol exposure via Mango freeze",
-    "date": "2022-10-12",
+    "id": "marginfi-oracle-mar-2023",
+    "title": "MarginFi oracle squeeze (reported bad debt)",
+    "date": "2023-03-01",
     "category": "application",
     "severity": "medium",
-    "estimatedLossUsd": null,
-    "lossDescription": "~$19.9M temporarily locked; recovered after Mango settlement.",
-    "mitigated": true,
-    "summary": "UXD had USDC in Mango lending pools that were caught in the exploit pause; insurance and recovery paths restored backing.",
-    "tags": [
-      "stablecoin",
-      "contagion",
-      "mango"
-    ],
-    "relatedIds": [
-      "mango-markets-oracle-oct-2022"
-    ],
-    "sources": [
-      {
-        "label": "TokenInsight",
-        "url": "https://tokeninsight.com/en/news/uxd-protocol-affected-by-nearly-20-million-in-mango-attack"
-      }
-    ],
-    "lesson": "Composability is contagion. Any treasury or backing position deposited into a third-party protocol inherits that protocol's full failure surface.",
-    "mitigations": [
-      "Diversify backing across multiple protocols and venue types; cap exposure to any single counterparty.",
-      "Maintain an insurance fund explicitly sized for plausible third-party freezes or losses.",
-      "Continuously monitor counterparties and pre-define automatic withdrawal triggers (e.g., on counterparty pause).",
-      "Pre-publish a redemption playbook so users know what backing assumptions hold during third-party incidents."
-    ]
-  },
-  {
-    "id": "tulip-mango-contagion-oct-2022",
-    "title": "Tulip Protocol Mango vault exposure",
-    "date": "2022-10-12",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": null,
-    "lossDescription": "~$2.5M stranded then reclaimed.",
-    "mitigated": true,
-    "summary": "Yield vaults using Mango lending were frozen during the Mango incident; funds returned after negotiations.",
-    "tags": [
-      "yield",
-      "mango"
-    ],
-    "relatedIds": [
-      "mango-markets-oracle-oct-2022"
-    ],
-    "sources": [
-      {
-        "label": "TokenInsight",
-        "url": "https://tokeninsight.com/en/news/solana-ecosystem-projects-tulip-protocol-and-uxd-protocol-reopen-services"
-      }
-    ],
-    "lesson": "Yield aggregators must explicitly model and disclose third-party risk; a vault is only as safe as its furthest hop.",
-    "mitigations": [
-      "Whitelist target venues and require new integrations to pass an internal security review.",
-      "Cap allocations per third-party protocol with a per-vault and global limit.",
-      "Subscribe to upstream incident channels (status pages, Twitter, on-chain pause oracles) and auto-pause withdrawals on alert.",
-      "Make vault risk parameters visible in the UI so depositors understand counterparty exposure."
-    ]
-  },
-  {
-    "id": "solend-oracle-nov-2022",
-    "title": "Save (Solend) isolated pool oracle manipulation",
-    "date": "2022-11-02",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 1260000,
-    "mitigated": true,
-    "summary": "Stale or manipulable prices in isolated pools created ~$1.26M bad debt absorbed by the protocol treasury.",
+    "estimatedLossUsd": 2000000,
+    "lossDescription": "Public reporting varied; treat magnitude as approximate.",
+    "summary": "Thin-liquidity collateral and oracle latency reportedly enabled over-borrowing and bad debt; representative of oracle integration risk class on Solana.",
     "tags": [
       "lending",
       "oracle",
-      "solend"
+      "marginfi"
     ],
     "sources": [
       {
-        "label": "CoinDesk",
-        "url": "https://www.coindesk.com/business/2022/11/02/defi-protocol-solend-struck-by-126m-oracle-exploit"
+        "label": "Manuel Pena — MarginFi section",
+        "url": "https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf"
       }
     ],
-    "lesson": "Isolated lending pools accept by definition niche collateral; their oracle and parameter assumptions need stress-testing under thin-liquidity conditions.",
+    "lesson": "Oracle integration is an active engineering responsibility, not a one-time configuration; thin-liquidity collateral magnifies every mistake.",
     "mitigations": [
-      "Use multi-source oracles with strict staleness checks (e.g., reject prices older than N slots).",
-      "Set very conservative LTV and borrow caps for isolated pools; raise only with on-chain governance and time-lock.",
-      "Add per-block liquidation rate-limits to prevent cascade events.",
-      "Maintain a treasury insurance line specifically earmarked for isolated-pool bad debt."
+      "Reject stale prices using `getPriceNoOlderThan`-style helpers; treat 'no price' as 'no borrow'.",
+      "Use confidence intervals (Pyth) as a hard-cap on borrow capacity for that asset.",
+      "Set very low LTV and borrow caps for thinly-traded collateral; isolate them so contagion is bounded.",
+      "Add automated alerting on bad-debt accrual and oracle deviation."
+    ]
+  },
+  {
+    "id": "turbine-giant-block-feb-2023",
+    "title": "Turbine flooding from oversized block / forwarding loop",
+    "date": "2023-02-25",
+    "category": "core-protocol",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "summary": "Abnormally large shreds and forwarding behavior saturated deduplication, stalling the cluster until snapshot restart.",
+    "tags": [
+      "turbine",
+      "outage"
+    ],
+    "sources": [
+      {
+        "label": "Solana outage report",
+        "url": "https://solana.com/news/02-25-23-solana-mainnet-beta-outage-report"
+      }
+    ],
+    "lesson": "Block propagation with naive deduplication can be DoSed by oversized or rapidly re-forwarded shreds; networking and consensus must defend against pathological producers.",
+    "mitigations": [
+      "Cap block size and shred count; reject and slash producers exceeding the limit.",
+      "Strengthen Turbine deduplication and use bloom filters / probabilistic structures with stable behavior under flood.",
+      "Move to QUIC for shred propagation with explicit flow control.",
+      "Adopt strict shred-forwarding rules to prevent forwarding loops."
     ]
   },
   {
@@ -759,6 +1484,418 @@
     ]
   },
   {
+    "id": "serum-ftx-averted-nov-2022",
+    "title": "Serum / FTX upgrade key compromise (emergency fork)",
+    "date": "2022-11-13",
+    "category": "supply-chain",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "mitigated": true,
+    "summary": "After FTX collapse, Serum upgrade authority risk forced a community OpenBook fork; preventive response rather than a draining hack.",
+    "tags": [
+      "serum",
+      "openbook",
+      "governance"
+    ],
+    "sources": [
+      {
+        "label": "CollinsDeFiPen — Serum section",
+        "url": "https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375"
+      }
+    ],
+    "lesson": "Centralized upgrade authority on critical infrastructure is a counterparty-risk landmine; the FTX collapse showed how quickly an authority key becomes adversarial.",
+    "mitigations": [
+      "Always use multisig with independent signers for any program upgrade authority.",
+      "Document and publish the upgrade authority configuration so the community can audit.",
+      "Build community fork procedures and reproducible builds in advance, not under crisis.",
+      "Where possible, freeze upgrade authority entirely after maturity (final, immutable programs)."
+    ]
+  },
+  {
+    "id": "solend-oracle-nov-2022",
+    "title": "Save (Solend) isolated pool oracle manipulation",
+    "date": "2022-11-02",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 1260000,
+    "mitigated": true,
+    "summary": "Stale or manipulable prices in isolated pools created ~$1.26M bad debt absorbed by the protocol treasury.",
+    "tags": [
+      "lending",
+      "oracle",
+      "solend"
+    ],
+    "sources": [
+      {
+        "label": "CoinDesk",
+        "url": "https://www.coindesk.com/business/2022/11/02/defi-protocol-solend-struck-by-126m-oracle-exploit"
+      }
+    ],
+    "lesson": "Isolated lending pools accept by definition niche collateral; their oracle and parameter assumptions need stress-testing under thin-liquidity conditions.",
+    "mitigations": [
+      "Use multi-source oracles with strict staleness checks (e.g., reject prices older than N slots).",
+      "Set very conservative LTV and borrow caps for isolated pools; raise only with on-chain governance and time-lock.",
+      "Add per-block liquidation rate-limits to prevent cascade events.",
+      "Maintain a treasury insurance line specifically earmarked for isolated-pool bad debt."
+    ]
+  },
+  {
+    "id": "uxd-mango-contagion-oct-2022",
+    "title": "UXD Protocol exposure via Mango freeze",
+    "date": "2022-10-12",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": null,
+    "lossDescription": "~$19.9M temporarily locked; recovered after Mango settlement.",
+    "mitigated": true,
+    "summary": "UXD had USDC in Mango lending pools that were caught in the exploit pause; insurance and recovery paths restored backing.",
+    "tags": [
+      "stablecoin",
+      "contagion",
+      "mango"
+    ],
+    "relatedIds": [
+      "mango-markets-oracle-oct-2022"
+    ],
+    "sources": [
+      {
+        "label": "TokenInsight",
+        "url": "https://tokeninsight.com/en/news/uxd-protocol-affected-by-nearly-20-million-in-mango-attack"
+      }
+    ],
+    "lesson": "Composability is contagion. Any treasury or backing position deposited into a third-party protocol inherits that protocol's full failure surface.",
+    "mitigations": [
+      "Diversify backing across multiple protocols and venue types; cap exposure to any single counterparty.",
+      "Maintain an insurance fund explicitly sized for plausible third-party freezes or losses.",
+      "Continuously monitor counterparties and pre-define automatic withdrawal triggers (e.g., on counterparty pause).",
+      "Pre-publish a redemption playbook so users know what backing assumptions hold during third-party incidents."
+    ]
+  },
+  {
+    "id": "tulip-mango-contagion-oct-2022",
+    "title": "Tulip Protocol Mango vault exposure",
+    "date": "2022-10-12",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": null,
+    "lossDescription": "~$2.5M stranded then reclaimed.",
+    "mitigated": true,
+    "summary": "Yield vaults using Mango lending were frozen during the Mango incident; funds returned after negotiations.",
+    "tags": [
+      "yield",
+      "mango"
+    ],
+    "relatedIds": [
+      "mango-markets-oracle-oct-2022"
+    ],
+    "sources": [
+      {
+        "label": "TokenInsight",
+        "url": "https://tokeninsight.com/en/news/solana-ecosystem-projects-tulip-protocol-and-uxd-protocol-reopen-services"
+      }
+    ],
+    "lesson": "Yield aggregators must explicitly model and disclose third-party risk; a vault is only as safe as its furthest hop.",
+    "mitigations": [
+      "Whitelist target venues and require new integrations to pass an internal security review.",
+      "Cap allocations per third-party protocol with a per-vault and global limit.",
+      "Subscribe to upstream incident channels (status pages, Twitter, on-chain pause oracles) and auto-pause withdrawals on alert.",
+      "Make vault risk parameters visible in the UI so depositors understand counterparty exposure."
+    ]
+  },
+  {
+    "id": "mango-markets-oracle-oct-2022",
+    "title": "Mango Markets oracle / spot manipulation",
+    "date": "2022-10-11",
+    "category": "application",
+    "severity": "critical",
+    "estimatedLossUsd": 49000000,
+    "lossDescription": "~$116M drained; ~$67M returned; remainder treated as bounty / legal case.",
+    "summary": "MNGO spot was pumped with large perp/spots positions; inflated collateral let the attacker borrow tens of millions in other assets.",
+    "details": "U.S. prosecutors later charged and secured convictions against the trader behind the scheme for fraud/market manipulation—an important precedent for “economic” DeFi attacks.",
+    "tags": [
+      "perps",
+      "oracle",
+      "mango"
+    ],
+    "relatedIds": [
+      "uxd-mango-contagion-oct-2022",
+      "tulip-mango-contagion-oct-2022"
+    ],
+    "sources": [
+      {
+        "label": "CoinDesk — Mango manipulation",
+        "url": "https://www.coindesk.com/markets/2022/10/12/how-market-manipulation-led-to-a-100m-exploit-on-solana-defi-exchange-mango"
+      },
+      {
+        "label": "Blockworks — oracle manipulation angle",
+        "url": "https://blockworks.co/news/mango-markets-mangled-by-oracle-manipulation-for-112m"
+      },
+      {
+        "label": "Decrypt — CFTC action",
+        "url": "https://decrypt.co/118732/cftc-charges-mango-markets-hacker"
+      },
+      {
+        "label": "Chainalysis — oracle manipulation trend",
+        "url": "https://www.chainalysis.com/blog/oracle-manipulation-attacks-rising/"
+      },
+      {
+        "label": "Helius catalog",
+        "url": "https://www.helius.dev/blog/solana-hacks"
+      }
+    ],
+    "lesson": "Thin-liquidity collateral combined with permissive cross-margin and capital-efficient borrowing is an oracle-manipulation invitation, even when the oracle itself works as designed.",
+    "mitigations": [
+      "Set per-asset borrow caps inversely proportional to spot DEX depth at acceptable slippage.",
+      "Use price feeds with confidence intervals and reject prices whose interval widens beyond a threshold.",
+      "Apply TWAP/VWAP windows for collateral valuation that exceed the cost of moving spot for that window.",
+      "Limit cross-collateralization for low-cap governance tokens; isolate them from major-asset liquidity.",
+      "Implement circuit breakers that auto-pause borrowing when a single asset's mark moves more than X% in Y minutes."
+    ]
+  },
+  {
+    "id": "duplicate-block-outage-sep-2022",
+    "title": "Duplicate block / fork-choice stall",
+    "date": "2022-09-30",
+    "category": "core-protocol",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "summary": "Duplicate blocks from a leader combined with fork-choice issues halted finality until validator restart and patches.",
+    "tags": [
+      "fork",
+      "outage"
+    ],
+    "sources": [
+      {
+        "label": "Helius outages",
+        "url": "https://www.helius.dev/blog/solana-outages-complete-history"
+      }
+    ],
+    "lesson": "Fork-choice corner cases (especially around a validator's own last vote) need explicit modeling; a single faulty leader should not strand the cluster.",
+    "mitigations": [
+      "Improve fork-choice logic so validators can switch to a heavier fork even when it overlaps their last voted slot.",
+      "Slash or down-rank validators that produce duplicate blocks.",
+      "Add prioritized vote-transaction processing so consensus traffic is not crowded out during stress.",
+      "Run chaos/Jepsen-style consensus tests that induce duplicate-block scenarios."
+    ]
+  },
+  {
+    "id": "optifi-program-close-aug-2022",
+    "title": "OptiFi accidental program close (funds locked)",
+    "date": "2022-08-29",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 661000,
+    "lossDescription": "Team committed to compensating users; mostly team-owned liquidity.",
+    "summary": "A deployment mistake closed the main program, irreversibly locking USDC in PDAs until manual reimbursement.",
+    "tags": [
+      "operational",
+      "dex"
+    ],
+    "sources": [
+      {
+        "label": "OptiFi report",
+        "url": "https://medium.com/@OptiFi/optifi-program-incident-report-08-29-22-d8fe6d229bad"
+      },
+      {
+        "label": "CoinDesk",
+        "url": "https://www.coindesk.com/business/2022/08/30/solana-based-defi-protocol-optifi-loses-661k-in-programming-blunder"
+      }
+    ],
+    "lesson": "Solana program management is unforgiving: `solana program close` is irreversible and will strand all PDAs derived from that program. Treat all program-management commands like production rm -rf.",
+    "mitigations": [
+      "Place the upgrade authority on a multisig (Squads) requiring N-of-M approval before any deployment.",
+      "Maintain a deployment runbook with explicit, peer-reviewed commands; never paste destructive commands into a shared shell.",
+      "Use environment isolation (separate keypairs and CLI configs for dev/staging/mainnet) so wrong-target mistakes are harder.",
+      "Build a 'dry-run' / simulation step for `solana program close`-class operations.",
+      "Maintain on-call peer review for any program upgrade, with two human approvers."
+    ]
+  },
+  {
+    "id": "slope-wallet-aug-2022",
+    "title": "Slope wallet seed phrase logging incident",
+    "date": "2022-08-02",
+    "category": "supply-chain",
+    "severity": "critical",
+    "estimatedLossUsd": 8000000,
+    "summary": "Mobile apps sent mnemonics to a logging server; thousands of wallets were drained. Not a Solana L1 consensus bug.",
+    "rootCause": "Sensitive data captured by error/analytics tooling (e.g. Sentry) without scrubbing.",
+    "lesson": "Wallet client code must treat seed phrases as nuclear material; analytics and crash reporters must be configured to scrub aggressively, and ideally never even see secrets.",
+    "tags": [
+      "wallet",
+      "keys",
+      "slope"
+    ],
+    "sources": [
+      {
+        "label": "Solana Foundation update",
+        "url": "https://solana.com/news/8-2-2022-application-wallet-incident"
+      },
+      {
+        "label": "SlowMist — large-scale theft analysis",
+        "url": "https://slowmist.medium.com/analysis-of-large-scale-theft-of-solana-5782cc999df4"
+      },
+      {
+        "label": "Manuel Pena — Slope section",
+        "url": "https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf"
+      },
+      {
+        "label": "Pine Analytics — telemetry detail",
+        "url": "https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents"
+      }
+    ],
+    "mitigations": [
+      "Architect wallets so seed material never leaves the secure enclave / OS keystore in any code path.",
+      "Configure error-tracking SDKs (Sentry et al.) with allow-lists, not deny-lists; assume default capture is unsafe.",
+      "Run static analysis to detect any path that logs or transmits values matching mnemonic/key patterns.",
+      "Annual third-party app pentests (mobile and extension) covering data egress, not only smart-contract calls.",
+      "Push users toward hardware-wallet pairing for non-trivial balances; surface a clear in-app warning above a threshold."
+    ]
+  },
+  {
+    "id": "nirvana-flash-loan-jul-2022",
+    "title": "Nirvana Finance flash loan / price manipulation",
+    "date": "2022-07-28",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": 3500000,
+    "summary": "A flash loan pumped ANA spot; the protocol accepted inflated pricing for treasury swaps, draining stablecoin liquidity.",
+    "tags": [
+      "flash-loan",
+      "oracle",
+      "algorithmic-stablecoin"
+    ],
+    "sources": [
+      {
+        "label": "CoinDesk",
+        "url": "https://www.coindesk.com/tech/2022/07/28/solana-defi-protocol-nirvana-drained-of-liquidity-after-flash-loan-exploit"
+      },
+      {
+        "label": "Manuel Pena — historical review",
+        "url": "https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf"
+      }
+    ],
+    "lesson": "Algorithmic stablecoins built on internal price curves are flash-loan magnets; collateral pricing must come from manipulation-resistant external feeds.",
+    "mitigations": [
+      "Use an external, multi-source oracle (Pyth/Switchboard) with confidence intervals, never instantaneous internal pool spot.",
+      "Apply TWAPs over multiple blocks for any price input that drives mint or borrow capacity.",
+      "Cap per-block mint and per-block treasury outflow regardless of nominal collateral value.",
+      "Stress-test the bonding curve and treasury under simulated flash-loan scenarios pre-launch.",
+      "Require minimum diversified treasury composition so a single asset's manipulation cannot drain all backing."
+    ]
+  },
+  {
+    "id": "audius-governance-jul-2022",
+    "title": "Audius governance proposal exploit",
+    "date": "2022-07-23",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": 6100000,
+    "summary": "A governance program flaw allowed a malicious proposal to pass and move ~18.5M AUDIO from the treasury.",
+    "tags": [
+      "governance",
+      "dao"
+    ],
+    "sources": [
+      {
+        "label": "Lossless analysis",
+        "url": "https://losslessdefi.medium.com/audius-hack-code-enabled-governance-attack-33ac9d8084c8"
+      },
+      {
+        "label": "Helius catalog",
+        "url": "https://www.helius.dev/blog/solana-hacks"
+      }
+    ],
+    "lesson": "DAO governance code is just as critical as the token logic it controls; proposal execution must be sandboxed and time-locked.",
+    "mitigations": [
+      "Strict allow-list of instructions a passed proposal can execute against the treasury.",
+      "Time-lock between proposal pass and execution sized so the community and a security council can intervene.",
+      "Independent audit of governance and timelock contracts on every upgrade.",
+      "A security council with veto rights over proposals that touch treasury authority or token mint.",
+      "Continuous monitoring for new proposals affecting privileged accounts, with off-chain alerts."
+    ]
+  },
+  {
+    "id": "crema-flash-loan-jul-2022",
+    "title": "Crema Finance fake tick account + flash loan",
+    "date": "2022-07-02",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": 1600000,
+    "lossDescription": "~$8.8M taken; ~$7.2M returned; ~$1.6M kept as bounty.",
+    "mitigated": true,
+    "summary": "Concentrated liquidity tick accounts were not authenticated; a flash loan amplified fraudulent fee withdrawals.",
+    "tags": [
+      "amm",
+      "flash-loan",
+      "clmm"
+    ],
+    "sources": [
+      {
+        "label": "Halborn — Crema",
+        "url": "https://www.halborn.com/blog/post/explained-the-crema-finance-hack-july-2022"
+      },
+      {
+        "label": "CoinDesk",
+        "url": "https://www.coindesk.com/tech/2022/07/04/solana-defi-protocol-crema-loses-88m-in-exploit"
+      }
+    ],
+    "lesson": "Concentrated-liquidity AMMs have many program-derived data accounts whose authenticity must be verified; a single missed check becomes a flash-loan-amplified drain.",
+    "mitigations": [
+      "Derive tick accounts from canonical PDAs and assert PDA derivation on every read.",
+      "Reject any tick or position account whose program owner is not the AMM program itself.",
+      "Add invariant tests that 'no swap can produce fees larger than swap input' and run them with adversarial inputs.",
+      "Rate-limit fee withdrawals from any single account in a single transaction.",
+      "Subscribe pools to onchain monitoring (Hypernative, Range, Forta-style) for sudden fee-claim spikes."
+    ]
+  },
+  {
+    "id": "solend-whale-governance-jun-2022",
+    "title": "Solend whale liquidation risk & emergency governance (SLND1–SLND3)",
+    "date": "2022-06-19",
+    "endDate": "2022-06-21",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": null,
+    "summary": "One borrower concentrated SOL deposits and stable borrows; as spot fell, the community feared a large on-chain liquidation would move thin markets. Solend passed—then repealed—an emergency proposal to seize and OTC-liquidate the position; parameters were tightened and the user later migrated debt to Mango.",
+    "details": "Not a smart-contract drain: a risk-management and governance crisis. Reporting highlighted vote concentration on the first proposal and backlash over “mutable” DeFi social contract norms.",
+    "lesson": "Concentration risk is a pre-failure mode that does not require any code bug; lending-market parameters must include hard caps and emergency response must respect 'mutability' norms users were sold.",
+    "tags": [
+      "lending",
+      "governance",
+      "solend",
+      "liquidation-risk"
+    ],
+    "relatedIds": [
+      "solend-oracle-nov-2022",
+      "mango-markets-oracle-oct-2022"
+    ],
+    "sources": [
+      {
+        "label": "Decrypt — Solend whale loan",
+        "url": "https://decrypt.co/103489/solend-whale-108m-loan-nearly-crashed-solana"
+      },
+      {
+        "label": "CoinDesk — vote to reverse powers",
+        "url": "https://www.coindesk.com/business/2022/06/20/solends-whale-liquidation-crisis-prompts-second-vote-to-reverse-emergency-powers"
+      },
+      {
+        "label": "Cointelegraph — debt moved to Mango",
+        "url": "https://cointelegraph.com/news/solana-whale-moves-25m-of-usdc-debt-from-solend-to-mango-markets"
+      },
+      {
+        "label": "Pine Analytics — write-up",
+        "url": "https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents"
+      }
+    ],
+    "mitigations": [
+      "Per-user borrow caps and per-asset deposit caps from launch, sized to DEX depth at expected slippage.",
+      "Isolate volatile or thinly-traded collateral into separate, smaller lending markets (Aave-style isolation mode).",
+      "Pre-publish a stressed-market playbook (pause, limit liquidation size per tx, communicate timelines) before relying on emergency governance.",
+      "Cap the impact of any single voting wallet via vote weighting or quorum rules so emergency votes are not 88%-controlled by one address.",
+      "Maintain off-chain OTC liquidation desk relationships so large positions can be unwound without crashing on-chain markets."
+    ]
+  },
+  {
     "id": "durable-nonce-outage-jun-2022",
     "title": "Durable nonce double-processing outage",
     "date": "2022-06-01",
@@ -789,1317 +1926,151 @@
     ]
   },
   {
-    "id": "duplicate-block-outage-sep-2022",
-    "title": "Duplicate block / fork-choice stall",
-    "date": "2022-09-30",
-    "category": "core-protocol",
+    "id": "candy-machine-outage-apr-2022",
+    "title": "Candy Machine mint spam outage",
+    "date": "2022-04-30",
+    "endDate": "2022-05-01",
+    "category": "network",
     "severity": "high",
     "estimatedLossUsd": null,
-    "summary": "Duplicate blocks from a leader combined with fork-choice issues halted finality until validator restart and patches.",
+    "summary": "NFT mint bots flooded the network with transactions; consensus stalled for many hours until restart and mitigations (e.g. bot tax).",
     "tags": [
-      "fork",
-      "outage"
+      "nft",
+      "spam",
+      "outage",
+      "metaplex"
     ],
     "sources": [
+      {
+        "label": "CoinDesk — Candy Machine",
+        "url": "https://www.coindesk.com/tech/2022/05/01/solana-goes-dark-for-7-hours-as-bots-swarm-candy-machine-nft-minting-tool"
+      },
       {
         "label": "Helius outages",
         "url": "https://www.helius.dev/blog/solana-outages-complete-history"
       }
     ],
-    "lesson": "Fork-choice corner cases (especially around a validator's own last vote) need explicit modeling; a single faulty leader should not strand the cluster.",
+    "lesson": "Hot-account write contention plus undifferentiated UDP ingest is a recipe for outages; mint mechanics need built-in spam disincentives.",
     "mitigations": [
-      "Improve fork-choice logic so validators can switch to a heavier fork even when it overlaps their last voted slot.",
-      "Slash or down-rank validators that produce duplicate blocks.",
-      "Add prioritized vote-transaction processing so consensus traffic is not crowded out during stress.",
-      "Run chaos/Jepsen-style consensus tests that induce duplicate-block scenarios."
+      "Enable a 'bot tax' on failed mint instructions so brute-force attempts have economic cost.",
+      "Move ingress to QUIC with stake-weighted QoS and per-IP rate limits.",
+      "Use account locality / multiple parallel mint accounts to reduce write-lock contention on any single PDA.",
+      "Pre-test launches against synthetic mint floods on devnet before mainnet rollout."
     ]
   },
   {
-    "id": "turbine-giant-block-feb-2023",
-    "title": "Turbine flooding from oversized block / forwarding loop",
-    "date": "2023-02-25",
-    "category": "core-protocol",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "summary": "Abnormally large shreds and forwarding behavior saturated deduplication, stalling the cluster until snapshot restart.",
-    "tags": [
-      "turbine",
-      "outage"
-    ],
-    "sources": [
-      {
-        "label": "Solana outage report",
-        "url": "https://solana.com/news/02-25-23-solana-mainnet-beta-outage-report"
-      }
-    ],
-    "lesson": "Block propagation with naive deduplication can be DoSed by oversized or rapidly re-forwarded shreds; networking and consensus must defend against pathological producers.",
-    "mitigations": [
-      "Cap block size and shred count; reject and slash producers exceeding the limit.",
-      "Strengthen Turbine deduplication and use bloom filters / probabilistic structures with stable behavior under flood.",
-      "Move to QUIC for shred propagation with explicit flow control.",
-      "Adopt strict shred-forwarding rules to prevent forwarding loops."
-    ]
-  },
-  {
-    "id": "marginfi-oracle-mar-2023",
-    "title": "MarginFi oracle squeeze (reported bad debt)",
-    "date": "2023-03-01",
+    "id": "cashio-infinite-mint-mar-2022",
+    "title": "Cashio infinite mint / fake collateral",
+    "date": "2022-03-23",
     "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 2000000,
-    "lossDescription": "Public reporting varied; treat magnitude as approximate.",
-    "summary": "Thin-liquidity collateral and oracle latency reportedly enabled over-borrowing and bad debt; representative of oracle integration risk class on Solana.",
+    "severity": "critical",
+    "estimatedLossUsd": 52800000,
+    "lossDescription": "Partial returns to smaller holders; large net user losses reported.",
+    "summary": "Missing validation let an attacker mint ~2B CASH against worthless fake LP collateral, then swap out real stable liquidity.",
+    "details": "Post-mortems note rapid drainage through Saber and off-ramps (including CEX routes). Some secondary summaries claimed large sums briefly frozen on exchanges; treat venue-specific recovery as contested and check primary reporting.",
     "tags": [
-      "lending",
-      "oracle",
-      "marginfi"
+      "stablecoin",
+      "mint",
+      "saber"
     ],
     "sources": [
       {
-        "label": "Manuel Pena — MarginFi section",
-        "url": "https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf"
-      }
-    ],
-    "lesson": "Oracle integration is an active engineering responsibility, not a one-time configuration; thin-liquidity collateral magnifies every mistake.",
-    "mitigations": [
-      "Reject stale prices using `getPriceNoOlderThan`-style helpers; treat 'no price' as 'no borrow'.",
-      "Use confidence intervals (Pyth) as a hard-cap on borrow capacity for that asset.",
-      "Set very low LTV and borrow caps for thinly-traded collateral; isolate them so contagion is bounded.",
-      "Add automated alerting on bad-debt accrual and oracle deviation."
-    ]
-  },
-  {
-    "id": "cypher-protocol-aug-2023",
-    "title": "Cypher Protocol exploit + later insider theft",
-    "date": "2023-08-07",
-    "category": "application",
-    "severity": "high",
-    "estimatedLossUsd": 1357000,
-    "lossDescription": "~$1.04M exploit plus ~$317k later taken from recovery efforts (reported).",
-    "summary": "Perps/margin program drained; subsequent insider misuse of redemption funds compounded harm.",
-    "tags": [
-      "perps",
-      "insider",
-      "cypher"
-    ],
-    "sources": [
-      {
-        "label": "CoinDesk — Cypher",
-        "url": "https://www.coindesk.com/business/2023/08/07/solana-based-cypher-protocol-experiences-exploit-freezes-smart-contract"
+        "label": "CertiK — Cashio",
+        "url": "https://www.certik.com/resources/blog/3bHgCDnWaqUeQJn6695bea-cashio-app-incident-analysis"
       },
       {
-        "label": "Decrypt — insider confession",
-        "url": "https://decrypt.co/230757/solana-developer-confession-theft-cypher-protocol"
-      }
-    ],
-    "lesson": "Recovery mechanisms and recovery custodians are also exploit targets; insider threat is part of the model. Treat funds in a 'redemption pot' with the same custody discipline as user deposits.",
-    "mitigations": [
-      "Run an external audit (Neodyme, OtterSec, Halborn, Sec3) before relying on perps/margin program logic.",
-      "Manage recovery / redemption funds through a multisig with independent signers, not a single contributor.",
-      "Background-check and rotate access for anyone with privileged keys; enforce least-privilege.",
-      "Publish on-chain accounting for redemption funds so any movement is publicly visible."
-    ]
-  },
-  {
-    "id": "svt-flash-loan-aug-2023",
-    "title": "Solvent / SVT flash-loan economic exploit",
-    "date": "2023-08-26",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 400000,
-    "summary": "Flash loans amplified a flawed economic loop in SVT-related logic (~$400k).",
-    "tags": [
-      "flash-loan"
-    ],
-    "sources": [
-      {
-        "label": "SlowMist hacked DB",
-        "url": "https://hacked.slowmist.io/?c=Solana"
-      }
-    ],
-    "lesson": "Token economic loops that allow round-tripping in a single transaction are flash-loan-vulnerable; modeling token flows under attacker control is part of the audit scope.",
-    "mitigations": [
-      "Disallow same-transaction sequences that round-trip through fee/discount paths in profit-positive ways.",
-      "Apply per-block trade limits or cooldowns on tokens with custom economic mechanics.",
-      "Audit economic invariants explicitly: total value out across all paths cannot exceed total value in for the same actor in one transaction.",
-      "Maintain monitoring for sudden token supply or pool ratio shifts."
-    ]
-  },
-  {
-    "id": "synthetify-dao-oct-2023",
-    "title": "Synthetify DAO malicious proposal",
-    "date": "2023-10-19",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 230000,
-    "summary": "Low-participation governance let an attacker pass a hidden transfer proposal among decoys.",
-    "tags": [
-      "governance",
-      "dao"
-    ],
-    "sources": [
-      {
-        "label": "Blockworks",
-        "url": "https://blockworks.co/news/solana-exploit-dao-hacker"
-      }
-    ],
-    "lesson": "Inactive DAOs are hostile environments: low quorums and absent monitoring make malicious-proposal attacks trivial.",
-    "mitigations": [
-      "Set high quorum thresholds and minimum participation; raise them automatically as a function of treasury size.",
-      "Add a security council with veto power on proposals affecting treasuries.",
-      "Notify token holders of every new proposal via off-chain channels (email/Telegram bot/Discord).",
-      "Time-lock any proposal that touches treasury or program upgrade authorities."
-    ]
-  },
-  {
-    "id": "thunder-terminal-dec-2023",
-    "title": "Thunder Terminal MongoDB / session compromise",
-    "date": "2023-12-27",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 240000,
-    "summary": "Infrastructure secret exposure let attackers move hot-wallet funds via malicious approvals; team halted quickly.",
-    "tags": [
-      "infra",
-      "trading-terminal"
-    ],
-    "sources": [
-      {
-        "label": "Cointelegraph",
-        "url": "https://cointelegraph.com/news/thunder-terminal-hack-exploit-wallet-compromise-hacker-demands-ransom"
-      }
-    ],
-    "lesson": "Backend secret hygiene is a first-class wallet-security control. A leaked database connection string is equivalent to handing over the key custody pipeline.",
-    "mitigations": [
-      "Store database credentials and signing keys in a managed KMS / secrets manager with short-lived tokens, not in env files or code.",
-      "Network-isolate the signing service from the user-facing API; require mTLS between them.",
-      "Rotate credentials regularly and on any suspected compromise; log all signing requests with client identity.",
-      "Implement per-user spend velocity limits and require fresh auth for unusual flows.",
-      "Maintain a one-click 'pause withdrawals' kill switch operable by on-call engineers."
-    ]
-  },
-  {
-    "id": "aurory-syncspace-dec-2023",
-    "title": "Aurory SyncSpace race condition",
-    "date": "2023-12-17",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 830000,
-    "lossDescription": "Team treasury / inventory impact; not user NFTs.",
-    "summary": "Concurrent API buys corrupted hybrid inventory accounting; attacker bridged and sold AURY.",
-    "tags": [
-      "gaming",
-      "backend",
-      "race-condition"
-    ],
-    "sources": [
-      {
-        "label": "Decrypt — Aurory",
-        "url": "https://decrypt.co/210153/solana-game-aurory-suffers-830k-exploit-disables-arbitrum-bridge"
+        "label": "Halborn — Cashio explained",
+        "url": "https://www.halborn.com/blog/post/explained-the-cashio-hack-march-2022"
       },
       {
-        "label": "Pine Analytics — reference list",
+        "label": "Helius catalog",
+        "url": "https://www.helius.dev/blog/solana-hacks"
+      },
+      {
+        "label": "Pine Analytics — narrative timeline",
         "url": "https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents"
       }
     ],
-    "lesson": "Hybrid on-chain/off-chain inventory systems must treat the API as a financial system; race conditions and double-spend are the norm without explicit serialization.",
+    "lesson": "Collateral programs must verify both the token mint and the program that owns the deposited LP, and stablecoin issuers should bound how fast supply can grow regardless of inputs.",
     "mitigations": [
-      "Use database transactions with row-level locks (SELECT ... FOR UPDATE) on inventory-mutating endpoints.",
-      "Make purchase endpoints idempotent via client-supplied request IDs and server-side dedup.",
-      "Audit scope must include backend / API code, not just the on-chain program.",
-      "Add anomaly detection on rapid same-account requests and rate-limit per account.",
-      "Reconcile off-chain ledger against on-chain state continuously; alert on any mismatch."
+      "Whitelist exact mint addresses for accepted collateral and verify the LP token's program owner on every deposit.",
+      "Cap mint throughput per block, per hour, and per day to bound infinite-mint blast radius.",
+      "Independently audit any new collateral type before listing; require a separate review of the verification path, not only happy-path tests.",
+      "Continuously reconcile total CASH supply against expected backing; alert and halt mint on any drift.",
+      "Provide a backstop / insurance fund sized for plausible exploit scenarios and a documented refund mechanic."
     ]
   },
   {
-    "id": "jito-website-ddos-dec-2023",
-    "title": "Jito claim site DDoS during JTO airdrop",
-    "date": "2023-12-07",
-    "category": "network",
-    "severity": "low",
-    "estimatedLossUsd": null,
-    "summary": "Web infrastructure flooded during high-profile claim; on-chain programs unaffected.",
-    "tags": [
-      "ddos",
-      "airdrop"
-    ],
-    "sources": [
-      {
-        "label": "Helius catalog",
-        "url": "https://www.helius.dev/blog/solana-hacks"
-      }
-    ],
-    "lesson": "Web infrastructure is part of the user-experience attack surface for high-profile launches even when funds remain safe on-chain.",
-    "mitigations": [
-      "Front-load airdrop claim sites with a CDN/DDoS provider (Cloudflare, Fastly) and load-test under realistic spike conditions.",
-      "Publish multiple independent claim entry points (CLI, IPFS-hosted UI) so a single domain failure is not blocking.",
-      "Provide an IPFS / Arweave fallback for the claim UI.",
-      "Communicate proactively about infrastructure status during high-traffic events."
-    ]
-  },
-  {
-    "id": "saga-dao-multisig-jan-2024",
-    "title": "Saga DAO treasury multisig drain",
-    "date": "2024-01-24",
-    "category": "application",
-    "severity": "low",
-    "estimatedLossUsd": 60000,
-    "summary": "Weak multisig configuration / compromised signer reportedly emptied a community treasury.",
-    "tags": [
-      "dao",
-      "multisig"
-    ],
-    "sources": [
-      {
-        "label": "Medium — Coinmonks Saga DAO",
-        "url": "https://medium.com/coinmonks/was-the-saga-dao-rugged-by-one-of-our-own-dbd35e6218d8"
-      }
-    ],
-    "lesson": "Multisig threshold and signer hygiene matter more than token holdings; a 1-of-N threshold is a single signer.",
-    "mitigations": [
-      "Use a meaningful threshold (e.g., 4-of-7 minimum for treasury) with geographically distributed, independently controlled signers.",
-      "Hardware-wallet every signer; require periodic re-attestation.",
-      "Audit and publish the signer list and threshold; rotate signers on any departure.",
-      "Add transaction-simulation and human-readable previews for every multisig proposal."
-    ]
-  },
-  {
-    "id": "phantom-ddos-feb-2024",
-    "title": "Phantom wallet infrastructure DDoS",
-    "date": "2024-02-01",
-    "category": "network",
-    "severity": "low",
-    "estimatedLossUsd": null,
-    "summary": "RPC/API layer overwhelmed around Jupiter airdrop hype; funds remained on-chain.",
-    "tags": [
-      "wallet",
-      "ddos"
-    ],
-    "sources": [
-      {
-        "label": "Phantom on X",
-        "url": "https://x.com/phantom/status/1753100432145318116"
-      }
-    ],
-    "lesson": "Wallet RPC infrastructure is a critical dependency for the entire ecosystem; airdrop and launch days predictably amplify load.",
-    "mitigations": [
-      "Use multi-region, autoscaling RPC infrastructure with rate-limit shaping per IP.",
-      "Decouple the wallet UI from a single RPC provider; allow user-configurable endpoints.",
-      "Pre-stage capacity and run game-day load tests ahead of known events.",
-      "Provide degraded read-only modes when signing infrastructure is throttled."
-    ]
-  },
-  {
-    "id": "solana-jit-cache-outage-feb-2024",
-    "title": "JIT bytecode cache infinite recompile outage",
-    "date": "2024-02-06",
-    "category": "core-protocol",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "summary": "LoadedPrograms cache bug stalled validators; network restarted with legacy loader mitigation.",
-    "tags": [
-      "agave",
-      "outage",
-      "jit"
-    ],
-    "sources": [
-      {
-        "label": "Solana outage report",
-        "url": "https://solana.com/news/02-06-24-solana-mainnet-beta-outage-report"
-      }
-    ],
-    "lesson": "Backwards-compatibility code paths (legacy loaders) need test coverage equal to the modern ones; cache invariants should be exercised under fork conditions.",
-    "mitigations": [
-      "Add deterministic JIT-cache fork tests in CI and devnet.",
-      "Treat legacy loader code as security-sensitive surface; minimize and eventually deprecate it.",
-      "Maintain multiple validator client implementations so a single client bug cannot stall the cluster.",
-      "Pre-distribute hotfix release pipelines so patched validators can roll out within minutes."
-    ]
-  },
-  {
-    "id": "solareum-telegram-mar-2024",
-    "title": "Solareum Telegram bot key compromise",
-    "date": "2024-03-29",
-    "category": "supply-chain",
-    "severity": "high",
-    "estimatedLossUsd": 1000000,
-    "lossDescription": "Reports range ~$520k–$1.4M.",
-    "summary": "Bot architecture reportedly leaked or mishandled imported keys; hundreds of wallets drained.",
-    "tags": [
-      "telegram",
-      "bot",
-      "keys"
-    ],
-    "sources": [
-      {
-        "label": "Decrypt — Solareum",
-        "url": "https://decrypt.co/224371/solana-telegram-trading-bot-shut-down-users-drained-523k"
-      }
-    ],
-    "lesson": "Telegram trading bots that hold or import user keys are full custodians; they need bank-grade key custody and developer vetting, which most do not have.",
-    "mitigations": [
-      "Avoid custodial key models entirely; use session keys with strict scoped authority instead of full private keys.",
-      "If keys must be held, store in HSMs/KMS with per-user encryption envelopes.",
-      "Background-check developers and limit production access; rotate credentials on every offboard.",
-      "Continuous monitoring for unusual mass-withdrawal patterns; auto-pause on anomaly.",
-      "Publish a third-party security audit before accepting user funds."
-    ]
-  },
-  {
-    "id": "ionet-gpu-spoofing-apr-2024",
-    "title": "io.net worker metadata spoofing",
-    "date": "2024-04-18",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": null,
-    "summary": "Attackers faked GPU worker registrations; integrity of compute network degraded during beta.",
-    "tags": [
-      "depin",
-      "spam"
-    ],
-    "sources": [
-      {
-        "label": "io.net incident report",
-        "url": "https://ionet.medium.com/25th-april-incident-report-176e5fb5c576"
-      }
-    ],
-    "lesson": "Decentralized infrastructure registrations are an attack surface; without verifiable proof-of-resource, spoofing inflates network metrics and degrades quality.",
-    "mitigations": [
-      "Require cryptographic proof-of-work or proof-of-resource attestations from each worker.",
-      "Use TEEs / signed hardware attestations (e.g., NVIDIA confidential compute, SEV-SNP) where possible.",
-      "Monitor for duplicate hardware fingerprints and unrealistic registration spikes.",
-      "Apply staking/slashing for misreporting workers."
-    ]
-  },
-  {
-    "id": "pumpfun-insider-may-2024",
-    "title": "Pump.fun insider bonding-curve exploit",
-    "date": "2024-05-16",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 1900000,
-    "mitigated": true,
-    "summary": "Privileged employee abused withdrawal authority with flash-loan assisted manipulation; team replenished pools.",
-    "tags": [
-      "insider",
-      "memecoin",
-      "bonding-curve"
-    ],
-    "sources": [
-      {
-        "label": "NewsBTC post-mortem",
-        "url": "https://www.newsbtc.com/news/crypto-post-mortem-heres-how-pump-fun-was-exploited-for-2-million/"
-      }
-    ],
-    "lesson": "Insider threats demand the same controls as external attackers; privileged employee access combined with a flash-loan-borrowable bonding curve was a single-employee draining scenario.",
-    "mitigations": [
-      "Eliminate any single-signer privileged authority; route every privileged action through multisig with independent reviewers.",
-      "Implement separation of duties between code authorship and deployment.",
-      "Audit log every privileged action with immutable storage and out-of-team review.",
-      "Add invariant checks that bonding-curve liquidity cannot be withdrawn without explicit user-initiated trigger.",
-      "Run periodic insider-threat tabletop exercises."
-    ]
-  },
-  {
-    "id": "parcl-dns-aug-2024",
-    "title": "Parcl front-end DNS / phishing compromise",
-    "date": "2024-08-20",
-    "category": "supply-chain",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "lossDescription": "User losses not uniformly disclosed.",
-    "summary": "Domain/DNS compromise steered users to a malicious UI draining approvals.",
-    "tags": [
-      "dns",
-      "defi",
-      "frontend"
-    ],
-    "sources": [
-      {
-        "label": "Helius catalog",
-        "url": "https://www.helius.dev/blog/solana-hacks"
-      }
-    ],
-    "lesson": "Frontend takeover is increasingly common; DeFi sites need the same registrar/DNS hygiene as banks.",
-    "mitigations": [
-      "Registrar-lock the domain and enable DNSSEC.",
-      "Hardware-2FA on all registrar / DNS / hosting accounts; restrict access to a small trained group.",
-      "Use a CAA DNS record to whitelist certificate authorities.",
-      "Subscribe to certificate-transparency monitoring to alert on new cert issuance.",
-      "Provide an IPFS-pinned mirror and document it in the project's official channels for fallback verification."
-    ]
-  },
-  {
-    "id": "solana-elf-alignment-aug-2024",
-    "title": "ELF loader alignment vulnerability (coordinated patch)",
-    "date": "2024-08-08",
-    "category": "core-protocol",
-    "severity": "critical",
-    "estimatedLossUsd": null,
-    "mitigated": true,
-    "summary": "Critical runtime issue patched privately across validators before public disclosure; no confirmed in-the-wild exploit.",
-    "tags": [
-      "coordinated-disclosure",
-      "runtime"
-    ],
-    "sources": [
-      {
-        "label": "Crypto Briefing",
-        "url": "https://cryptobriefing.com/solana-critical-vulnerability-patch/"
-      }
-    ],
-    "lesson": "Coordinated, private patching for runtime vulnerabilities is a maturity milestone; the playbook must already exist before it's needed.",
-    "mitigations": [
-      "Maintain a private security disclosure pipeline with the Foundation, Anza, Firedancer, and major staking operators.",
-      "Pre-stage validator-side hotfix distribution channels with key-pinned signed releases.",
-      "Encourage diverse validator clients so a runtime issue can be partly mitigated by alternative implementations.",
-      "Test critical patches on devnet/testnet validators before mainnet rollout."
-    ]
-  },
-  {
-    "id": "banana-gun-sep-2024",
-    "title": "Banana Gun Telegram oracle / transfer exploit",
-    "date": "2024-09-19",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 1400000,
-    "mitigated": true,
-    "summary": "Message routing flaw let attacker trigger treasury drains; bots paused and users refunded.",
-    "tags": [
-      "telegram",
-      "bot"
-    ],
-    "sources": [
-      {
-        "label": "Cointelegraph",
-        "url": "https://cointelegraph.com/news/banana-gun-crypto-bot-refunds-3m"
-      }
-    ],
-    "lesson": "Trading bots that broker between Telegram messages and on-chain transactions are signing oracles; the message channel is part of the auth surface.",
-    "mitigations": [
-      "Authenticate Telegram message provenance; reject messages with mismatched session or origin.",
-      "Add a transfer cool-down period for outbound user transfers and second-channel confirmation for large amounts.",
-      "Mandatory 2FA for any non-trading withdrawal action.",
-      "Continuous monitoring for mass simultaneous transfers and auto-pause on anomaly.",
-      "Independent third-party audit covering the message-handling path, not only the on-chain program."
-    ]
-  },
-  {
-    "id": "dexx-key-leak-nov-2024",
-    "title": "DEXX custodial key handling breach",
-    "date": "2024-11-16",
+    "id": "wormhole-bridge-feb-2022",
+    "title": "Wormhole bridge signature verification exploit",
+    "date": "2022-02-02",
     "category": "application",
     "severity": "critical",
-    "estimatedLossUsd": 30000000,
-    "summary": "Centralized key material mishandling led to mass wallet drains across Solana (and reported cross-chain activity).",
-    "tags": [
-      "wallet",
-      "custody"
-    ],
-    "sources": [
-      {
-        "label": "Cointelegraph — DEXX",
-        "url": "https://cointelegraph.com/news/solana-dexx-hack-november-2024-suspicious-wallets"
-      }
-    ],
-    "lesson": "Centralized custody of user private keys is a regulated activity in everything but name; mishandling keys at any layer becomes a chain-of-custody failure.",
-    "mitigations": [
-      "Avoid custodial private-key models in favor of MPC or non-custodial signing.",
-      "If custody is required, store keys in HSM/KMS with per-user envelopes and never display in plaintext to operators.",
-      "Encrypt every export endpoint output; require step-up auth and rate-limit exports.",
-      "Continuous outbound monitoring for mass-withdrawal patterns; circuit-break at thresholds.",
-      "Publish reserve attestations and SOC 2 / equivalent third-party reviews."
-    ]
-  },
-  {
-    "id": "solana-web3js-supply-chain-dec-2024",
-    "title": "@solana/web3.js npm compromise",
-    "date": "2024-12-03",
-    "category": "supply-chain",
-    "severity": "critical",
-    "estimatedLossUsd": 160000,
-    "lossDescription": "Some sources cite higher at-risk notional during window; confirmed theft often cited ~$130–160k.",
-    "summary": "Publish token phishing led to malicious 1.95.6/1.95.7 builds exfiltrating key material from affected dApps.",
-    "tags": [
-      "npm",
-      "sdk",
-      "supply-chain"
-    ],
-    "sources": [
-      {
-        "label": "SecurityWeek",
-        "url": "https://www.securityweek.com/solana-web3-js-library-backdoored-in-supply-chain-attack/"
-      },
-      {
-        "label": "SC Media — supply-chain summary",
-        "url": "https://www.scworld.com/brief/supply-chain-attack-compromises-solana-web3-js-library"
-      },
-      {
-        "label": "Decrypt",
-        "url": "https://decrypt.co/294742/solana-web3-js-library-compromised-in-targeted-supply-chain-attack"
-      },
-      {
-        "label": "Mend.io — npm incident analysis",
-        "url": "https://www.mend.io/blog/the-solana-web3-js-incident-another-wake-up-call-for-supply-chain-security/"
-      }
-    ],
-    "lesson": "JavaScript dependency trees are a critical link in Solana dApp security; a single phished publish token can backdoor thousands of downstream apps.",
-    "mitigations": [
-      "Pin npm dependency versions and use lockfiles; require explicit upgrades with review.",
-      "Enable npm 2FA + provenance / sigstore signing for all maintainers.",
-      "Use `npm audit signatures` and a CI step that fails on signature mismatch.",
-      "Run dependency-monitoring tools (Socket.dev, Snyk, GitHub Dependabot) and respond to advisories within 24 hours.",
-      "Avoid handling raw private keys in dApp frontends; use wallet adapters / signTransaction patterns so a backdoored library cannot exfiltrate keys."
-    ]
-  },
-  {
-    "id": "noones-bridge-jan-2025",
-    "title": "NoOnes Solana bridge / hot wallet exploit",
-    "date": "2025-01-01",
-    "category": "application",
-    "severity": "high",
-    "estimatedLossUsd": 8000000,
-    "summary": "Bridge and hot-wallet logic reportedly allowed many small withdrawals across chains; mixed via Tornado.",
+    "estimatedLossUsd": 326000000,
+    "lossDescription": "Jump Crypto replenished backing; users made whole.",
+    "mitigated": true,
+    "summary": "An attacker spoofed the instructions sysvar used in guardian signature verification and minted 120k wETH on Solana without backing.",
+    "rootCause": "Failure to verify the real Sysvar:Instructions account; deprecated helper trusted attacker-supplied accounts.",
+    "response": "Bridge paused, patched within hours; Jump Crypto replaced ETH backing.",
+    "lesson": "Solana sysvars and program IDs must be verified by address, not by structural shape. Patch-gap risk on public repos means deployment must follow disclosure within hours, not days.",
+    "details": "Multiple independent write-ups emphasize patch-gap risk: a fix was visible in public version control before it was live on mainnet, which may have helped attackers time the exploit.",
     "tags": [
       "bridge",
+      "wormhole",
+      "sysvar",
       "cross-chain"
     ],
     "sources": [
       {
-        "label": "CryptoSlate",
-        "url": "https://cryptoslate.com/noones-acknowledges-8-million-exploit-after-zachxbt-raises-concerns/"
+        "label": "Wormhole incident report",
+        "url": "https://wormholecrypto.medium.com/wormhole-incident-report-02-02-22-ad9b8f21eec6"
+      },
+      {
+        "label": "CertiK analysis",
+        "url": "https://www.certik.com/resources/blog/1kDYgyBcisoD2EqiBpHE5l-wormhole-bridge-exploit-incident-analysis"
+      },
+      {
+        "label": "Chainalysis — Wormhole hack",
+        "url": "https://www.chainalysis.com/blog/wormhole-hack-february-2022/"
+      },
+      {
+        "label": "The Verge — GitHub / timing",
+        "url": "https://www.theverge.com/2022/2/3/22916111/wormhole-hack-github-error-325-million-theft-ethereum-solana"
       }
     ],
-    "lesson": "Hot-wallet driven bridges combined with permissive small-transfer flows create thousands of low-friction exits an attacker can chain together.",
     "mitigations": [
-      "Apply per-window aggregate limits across the entire hot wallet, not just per-transaction.",
-      "Velocity-based anomaly detection that triggers automated pause on unusual cross-chain outflow rates.",
-      "Hot/cold split with strict refill discipline and human approval above thresholds.",
-      "Separate signing infrastructure per chain and require step-up auth for cross-chain transfers."
+      "Validate every sysvar account by hardcoded address (e.g. the canonical Instructions sysvar pubkey), not by passed-in input.",
+      "Replace deprecated helpers (`load_instruction_at`) with verified, well-typed equivalents and lint deprecated APIs in CI.",
+      "Treat any commit touching guardian/signature logic as security-sensitive; coordinate the merge, audit, and on-chain upgrade in a single window.",
+      "Set up out-of-band monitoring for unexpected mints on bridge wrap mints and trip a circuit breaker on threshold breaches.",
+      "Limit the per-message and per-window mint ceilings (a 'governor') so a single forged VAA cannot mint hundreds of millions in one transaction."
     ]
   },
   {
-    "id": "npm-malware-jan-2025",
-    "title": "Solana-related npm malware wave (reported)",
-    "date": "2025-01-15",
-    "category": "supply-chain",
-    "severity": "medium",
-    "estimatedLossUsd": null,
-    "summary": "Collins’ survey documents additional typosquatting/malicious package incidents targeting Solana developers in early 2025; verify package names and publishers.",
-    "tags": [
-      "npm",
-      "malware"
-    ],
-    "sources": [
-      {
-        "label": "CollinsDeFiPen — supply chain section",
-        "url": "https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375"
-      }
-    ],
-    "lesson": "Typosquatting and malicious packages targeting Solana developers are a continuous, low-effort attack vector; defense relies on standard supply-chain hygiene applied consistently.",
-    "mitigations": [
-      "Lock dependency versions and forbid wildcard ranges in production builds.",
-      "Use organization-scoped packages and verify publisher identity.",
-      "Run a software composition analysis (SCA) tool in CI on every PR.",
-      "Sandbox developer machines; never sign mainnet transactions from a workstation that pulls arbitrary npm packages without review."
-    ]
-  },
-  {
-    "id": "timefun-backend-signing-mar-2025",
-    "title": "Time.fun backend co-signer validation flaw (disclosed)",
-    "date": "2025-03-01",
-    "category": "application",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "mitigated": true,
-    "summary": "Researchers showed a shared co-signer could be tricked into approving metadata/fees theft; fixed before malicious use.",
-    "tags": [
-      "backend",
-      "signing",
-      "disclosure"
-    ],
-    "sources": [
-      {
-        "label": "CollinsDeFiPen — Time.fun",
-        "url": "https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375"
-      }
-    ],
-    "lesson": "Shared backend co-signers are escalation-of-privilege bugs waiting to happen if they sign anything other than narrowly validated transactions.",
-    "mitigations": [
-      "Architect signing services to validate the exact instruction shape and account set before signing.",
-      "Separate the wallet that pays gas from the wallet that owns valuable assets.",
-      "Require transaction simulation against a strict allow-list policy before any backend signature.",
-      "Treat 'sign arbitrary user transaction' as a privileged operation; require multi-party approval.",
-      "Publish formal documentation of what the co-signer is and is not allowed to sign."
-    ]
-  },
-  {
-    "id": "loopscale-oracle-apr-2025",
-    "title": "Loopscale RateX PT oracle manipulation",
-    "date": "2025-04-26",
-    "category": "application",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "lossDescription": "~$5.8M drained then fully returned via negotiation.",
-    "mitigated": true,
-    "summary": "Attacker inflated collateral marks for RateX principal tokens, borrowed against vaults, then returned funds after bounty talks.",
-    "tags": [
-      "lending",
-      "oracle",
-      "loopscale"
-    ],
-    "sources": [
-      {
-        "label": "Loopscale Labs (X) — recovery",
-        "url": "https://x.com/LoopscaleLabs/status/1916230435291713786"
-      },
-      {
-        "label": "Halborn — Loopscale",
-        "url": "https://www.halborn.com/blog/post/explained-the-loopscale-hack-april-2025"
-      },
-      {
-        "label": "The Block",
-        "url": "https://www.theblock.co/post/352083/solana-defi-protocol-loopscale-hit-with-5-8-million-exploit-two-weeks-after-launch"
-      },
-      {
-        "label": "SlowMist hacked DB (Solana)",
-        "url": "https://hacked.slowmist.io/?c=Solana"
-      }
-    ],
-    "lesson": "Novel collateral types (principal tokens, LSTs, RWA wrappers) need oracle and risk-parameter design from scratch; copy-pasting LTVs from blue-chip assets is dangerous.",
-    "mitigations": [
-      "Run a separate oracle architecture for novel collateral types; use TWAPs and external feeds, not internal AMM marks.",
-      "Conservative initial caps and LTVs for any new collateral; raise only after stress-test and live observation.",
-      "Stress-test the entire collateral stack against flash-loan and liquidity-shock scenarios pre-launch.",
-      "Publish a public risk dashboard and bounty program with clear scope.",
-      "Maintain a quick-pause mechanism callable by a multisig within minutes."
-    ]
-  },
-  {
-    "id": "texture-lending-jul-2025",
-    "title": "Texture lending vault exploit",
-    "date": "2025-07-09",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 220000,
-    "lossDescription": "~$2.2M drained; ~$1.98M returned; attacker kept ~$220k bounty.",
-    "mitigated": true,
-    "summary": "Solana lending protocol Texture lost funds from a vault via a smart-contract bug; team negotiated partial return with a 10% bounty offer.",
-    "tags": [
-      "lending",
-      "texture"
-    ],
-    "sources": [
-      {
-        "label": "Texture (X)",
-        "url": "https://x.com/texture_fi/status/1942972150631002245"
-      },
-      {
-        "label": "SlowMist hacked DB (Solana)",
-        "url": "https://hacked.slowmist.io/?c=Solana"
-      }
-    ],
-    "lesson": "Vault validation paths are the highest-leverage code in a lending protocol; they deserve invariants and adversarial testing, not just unit tests.",
-    "mitigations": [
-      "Property-based testing of vault deposit/withdraw/redeem under adversarial inputs.",
-      "Independent audit covering edge-case validation, not only happy paths.",
-      "Real-time monitoring on vault TVL with automated pause on sudden large outflows.",
-      "Public bug bounty with payout floor that incentivizes whitehat reports over exploitation."
-    ]
-  },
-  {
-    "id": "swarms-discord-jul-2025",
-    "title": "Swarms Discord compromise (phishing)",
-    "date": "2025-07-21",
-    "category": "supply-chain",
-    "severity": "low",
-    "estimatedLossUsd": null,
-    "summary": "Team member phished via DM; Discord channels disrupted and members removed. No direct on-chain loss reported.",
-    "tags": [
-      "discord",
-      "phishing",
-      "social"
-    ],
-    "sources": [
-      {
-        "label": "Swarms (X)",
-        "url": "https://x.com/swarms_corp/status/1947156712227824027"
-      }
-    ],
-    "lesson": "Discord and other community platforms are part of the security perimeter; one phished moderator can disrupt thousands of users.",
-    "mitigations": [
-      "Hardware-2FA mandatory for every moderator and admin role.",
-      "Use role-scoped permissions; only a few accounts should have channel-deletion or member-removal powers.",
-      "Train team members to expect DM-based phishing and verify any 'support' DM out-of-band.",
-      "Configure audit-log alerting (e.g., Wick bot) for destructive admin actions."
-    ]
-  },
-  {
-    "id": "kodane-patch-manager-npm-jul-2025",
-    "title": "@kodane/patch-manager malicious npm (wallet drainer)",
-    "date": "2025-07-28",
-    "category": "supply-chain",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "summary": "Malicious npm package with Solana wallet-draining behavior; ~1,500 downloads before removal. Reporting tied it to AI-assisted packaging.",
-    "tags": [
-      "npm",
-      "supply-chain",
-      "wallet"
-    ],
-    "sources": [
-      {
-        "label": "The Hacker News",
-        "url": "https://thehackernews.com/2025/08/ai-generated-malicious-npm-package.html"
-      }
-    ],
-    "lesson": "AI-assisted package generation lowers the cost of creating convincing malicious packages; supply-chain controls are now more important, not less.",
-    "mitigations": [
-      "Pin dependency versions and review every new package added to the manifest.",
-      "Use automated SCA / typosquatting detection in CI.",
-      "Restrict which workstations can install dependencies for production builds.",
-      "Avoid handling raw keys in any process that loads npm packages; route signing through a separate, hardened service."
-    ]
-  },
-  {
-    "id": "credix-rug-aug-2025",
-    "title": "Credix (alleged rug / admin drain)",
-    "date": "2025-08-04",
-    "category": "application",
-    "severity": "critical",
-    "estimatedLossUsd": 4500000,
-    "lossDescription": "Framed as exploit; community reporting describes team disappearance and unpaid settlements.",
-    "summary": "Lending protocol reported an admin-wallet compromise and pool drain; subsequent behavior widely characterized as a rug pull.",
-    "tags": [
-      "lending",
-      "rug",
-      "credix"
-    ],
-    "sources": [
-      {
-        "label": "Web3 Is Going Great",
-        "url": "https://www.web3isgoinggreat.com/?id=credix-exploit"
-      },
-      {
-        "label": "SlowMist hacked DB (Solana)",
-        "url": "https://hacked.slowmist.io/?c=Solana"
-      }
-    ],
-    "lesson": "Single admin keys with mint and pool-drain authority are indistinguishable from rug-pull infrastructure regardless of the team's intent.",
-    "mitigations": [
-      "Move every privileged authority to multisig with independent, doxxed signers from launch.",
-      "Time-locked governance for any change to core program addresses or token mint authorities.",
-      "Publish on-chain proof of treasury composition and any movements.",
-      "Independent third-party audits made public before TVL grows.",
-      "Provide explicit user-protection mechanisms (insurance fund, withdrawal queue, emergency pause)."
-    ]
-  },
-  {
-    "id": "swissborg-kiln-sol-staking-sep-2025",
-    "title": "SwissBorg SOL Earn / Kiln API compromise",
-    "date": "2025-09-08",
-    "category": "supply-chain",
-    "severity": "critical",
-    "estimatedLossUsd": 41500000,
-    "lossDescription": "~192.6k SOL; SwissBorg reported full user reimbursement from treasury.",
-    "mitigated": true,
-    "summary": "Attacker abused compromised Kiln Connect API credentials to bury malicious stake instructions in transactions presented as routine unstaking, moving stake authority for SwissBorg program accounts.",
-    "tags": [
-      "staking",
-      "api",
-      "kiln",
-      "swissborg",
-      "solana-stake"
-    ],
-    "sources": [
-      {
-        "label": "SwissBorg — security update",
-        "url": "https://swissborg.com/blog/swissborg-security-update-kiln-breach"
-      },
-      {
-        "label": "SwissBorg & Kiln — joint statement",
-        "url": "https://swissborg.com/blog/joint-statement-kiln-x-swissborg-regarding-sol-incident"
-      },
-      {
-        "label": "Halborn explainer",
-        "url": "https://www.halborn.com/blog/post/explained-the-swissborg-hack-september-2025"
-      },
-      {
-        "label": "QuillAudits — technical breakdown",
-        "url": "https://www.quillaudits.com/blog/hack-analysis/swissborg-exploit"
-      },
-      {
-        "label": "Unchained",
-        "url": "https://unchainedcrypto.com/hackers-drain-41-million-from-swissborgs-solana-earn/"
-      }
-    ],
-    "lesson": "Staking-as-a-service APIs are a giant trust boundary; a stolen integration token can rewrite stake-account authority across many institutional clients at once.",
-    "mitigations": [
-      "Decode and human-verify every instruction in any inbound transaction touching stake authority before signing.",
-      "Reject any unstake transaction containing more than the expected number of instructions.",
-      "Keep stake-account authority on a multisig with a different trust domain than the staking-API integration token.",
-      "Use scoped, short-lived API credentials (with mTLS) and rotate on any incident at the provider.",
-      "Continuously reconcile expected stake authorities against on-chain state and alert on drift."
-    ]
-  },
-  {
-    "id": "aqua-rug-sep-2025",
-    "title": "Aqua (reported rug pull)",
-    "date": "2025-09-08",
-    "category": "application",
-    "severity": "high",
-    "estimatedLossUsd": 4650000,
-    "summary": "On-chain analysts traced ~21.8k SOL outflows from the project; funds split and sent through instant exchanges. Promotional ties to several Solana ecosystem names drew attention.",
-    "tags": [
-      "rug",
-      "aqua"
-    ],
-    "sources": [
-      {
-        "label": "Odaily — ZachXBT report (Chinese)",
-        "url": "https://www.odaily.news/zh-CN/newsflash/447163"
-      },
-      {
-        "label": "SlowMist hacked DB (Solana)",
-        "url": "https://hacked.slowmist.io/?c=Solana"
-      }
-    ],
-    "lesson": "Promotion by reputable infra teams is not a security signal; due diligence on tokenomics and key custody is independent of who tweets a project.",
-    "mitigations": [
-      "Investors and platforms should require a published key-custody and upgrade-authority disclosure before integration.",
-      "Look for time-locked vesting and on-chain proof of the reported tokenomics.",
-      "Verify multisig configuration on-chain (signers, threshold) before listing or partnering.",
-      "Maintain a public 'safety review' framework similar to Solana Foundation Stride for new projects."
-    ]
-  },
-  {
-    "id": "watt-protocol-x-oct-2025",
-    "title": "Watt Protocol X account compromise",
-    "date": "2025-10-09",
-    "category": "supply-chain",
-    "severity": "low",
-    "estimatedLossUsd": null,
-    "summary": "Official account used to post phishing links; flagged by Scam Sniffer.",
-    "tags": [
-      "phishing",
-      "twitter",
-      "social"
-    ],
-    "sources": [
-      {
-        "label": "Scam Sniffer (X)",
-        "url": "https://x.com/realScamSniffer/status/1976284421448925574"
-      }
-    ],
-    "lesson": "Project X accounts are a primary phishing distribution channel; their compromise turns a real audience into victims within minutes.",
-    "mitigations": [
-      "Hardware-2FA, password-manager-stored unique passwords, and verified-credentials backup codes.",
-      "Restrict X access to a small group; separate posting accounts from admin accounts.",
-      "Use approved-app monitoring; revoke unused integrations.",
-      "Pre-establish secondary verified channels (Discord announcement channel, on-chain message) for users to cross-reference."
-    ]
-  },
-  {
-    "id": "doodipals-key-leak-oct-2025",
-    "title": "DoodiPals private key leak",
-    "date": "2025-10-21",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 171000,
-    "lossDescription": "~917 SOL reported.",
-    "summary": "Leaked keys allowed sales from many project wallets; attacker swapped into SOL.",
-    "tags": [
-      "keys",
-      "nft",
-      "doodipals"
-    ],
-    "sources": [
-      {
-        "label": "evilcos (X)",
-        "url": "https://x.com/evilcos/status/1980443998461608427"
-      }
-    ],
-    "lesson": "NFT projects accumulate substantial treasury without commensurate operational security; private keys must be hardware-backed regardless of project size.",
-    "mitigations": [
-      "Hardware wallets (Ledger / Trezor) for all project signing keys; never store keys on workstations or cloud services.",
-      "Multisig (Squads) for treasury and mint authorities.",
-      "Off-chain reconciliation: treat the treasury like a small bank, with regular balance attestation.",
-      "Avoid mixing project signing keys with personal wallets, ever."
-    ]
-  },
-  {
-    "id": "dmt-dexmaxai-airdrop-phishing-nov-2025",
-    "title": "DMT airdrop / dexmaxai approval phishing",
-    "date": "2025-11-20",
-    "category": "application",
-    "severity": "medium",
-    "estimatedLossUsd": 130000,
-    "summary": "Claim flow tricked users into harmful token approvals; 1,000+ wallets affected; funds bridged out (e.g. HitBTC deposits reported).",
-    "tags": [
-      "phishing",
-      "airdrop",
-      "approvals"
-    ],
-    "sources": [
-      {
-        "label": "GoPlus (X)",
-        "url": "https://x.com/GoPlusZH/status/1991436599461319047"
-      }
-    ],
-    "lesson": "Airdrop claim flows are now standard phishing bait; users are conditioned to sign messages and approve token interactions during claims.",
-    "mitigations": [
-      "Wallets should highlight token-approval transactions as high-risk and require an additional confirmation.",
-      "Users should claim only from explicitly verified URLs and bookmark them in advance.",
-      "Token-approval transactions should default to bounded amounts, not unlimited.",
-      "Browser-extension defenses (Scam Sniffer, GoPlus Wallet Guard) should be installed as a second line of defense.",
-      "Project teams running airdrops should publish exact transaction shapes users will be asked to sign so that wallets and educators can verify."
-    ]
-  },
-  {
-    "id": "upbit-sol-hot-wallet-nov-2025",
-    "title": "Upbit Solana hot wallet compromise",
-    "date": "2025-11-27",
-    "category": "application",
-    "severity": "critical",
-    "estimatedLossUsd": 37000000,
-    "lossDescription": "Reports cite ~$36–38M in SPL assets; exchange committed to full reimbursement.",
-    "mitigated": true,
-    "summary": "Unauthorized withdrawals from Upbit’s Solana hot wallet; diverse SPL tokens affected. Deposits/withdrawals paused and assets moved toward cold storage.",
-    "tags": [
-      "exchange",
-      "custody",
-      "upbit",
-      "hot-wallet"
-    ],
-    "sources": [
-      {
-        "label": "CCN — timeline",
-        "url": "https://www.ccn.com/education/crypto/upbit-2025-hack-36-million-solana-assets-stolen/"
-      }
-    ],
-    "lesson": "Exchange hot wallets are perpetual attack targets; defense-in-depth includes withdrawal velocity controls and rapid pause infrastructure across every supported chain, including Solana.",
-    "mitigations": [
-      "Strict hot-cold split with daily refill ceilings sized to expected daily flow only.",
-      "Per-chain monitoring for unusual outflow patterns; auto-pause withdrawals on threshold breach.",
-      "MPC custody for hot-wallet signing rather than raw private keys on a single host.",
-      "Separate signing key pools per blockchain so a compromise on one chain cannot drain others.",
-      "Practice annual incident-response drills covering Solana-specific quirks (e.g., SPL token handling, durable nonces)."
-    ]
-  },
-  {
-    "id": "solana-owner-field-phishing-late-2025",
-    "title": "Phishing wave: malicious reassignment of account Owner field",
-    "date": "2025-10-01",
-    "endDate": "2025-12-31",
-    "category": "application",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "lossDescription": "Aggregate losses unclear; single-victim cases over $3M cited in analyses.",
-    "summary": "Attackers used txs that looked benign in simulation but reassigned SPL/token account owners, a Solana-specific vector vs typical EVM token transfers.",
-    "tags": [
-      "phishing",
-      "wallet",
-      "owner-field",
-      "pattern"
-    ],
-    "sources": [
-      {
-        "label": "CyberPress — SlowMist-cited analysis",
-        "url": "https://cyberpress.org/solana-phishing-attacks/"
-      }
-    ],
-    "lesson": "Solana's account model lets transaction-simulation present harmless previews while reassigning account ownership; wallets and users need new mental models for what to verify.",
-    "mitigations": [
-      "Wallets should explicitly decode and warn on `SystemProgram::Assign`, `Token::SetAuthority`, and any instruction that changes program ownership of a user account.",
-      "Show a security-focused diff in transaction previews (account owner changes, new authority pubkey) regardless of asset transfer.",
-      "Educate users that 'no token movement in simulation' is not 'safe transaction'.",
-      "dApp developers should never request signatures for instructions that reassign ownership unless absolutely required, and should explain why.",
-      "Browser security extensions should ship explicit detection for these patterns."
-    ]
-  },
-  {
-    "id": "solar-solana-zh-x-jan-2026",
-    "title": "Solar / Solana Mandarin community X compromise",
-    "date": "2026-01-27",
-    "category": "supply-chain",
-    "severity": "low",
-    "estimatedLossUsd": null,
-    "summary": "Community X account takeover (SlowMist listing).",
-    "tags": [
-      "twitter",
-      "social"
-    ],
-    "sources": [
-      {
-        "label": "SlowMist hacked DB (Solana)",
-        "url": "https://hacked.slowmist.io/?c=Solana"
-      }
-    ],
-    "lesson": "Community-language X accounts are high-trust targets; their compromise affects regional user bases that may not have the same English-speaking signals.",
-    "mitigations": [
-      "Apply the same hardware-2FA / password-manager / restricted-access policies to localized social accounts as to the main account.",
-      "Cross-post critical announcements between the global and local accounts so users have a verifiable second source.",
-      "Maintain a doxxed point of contact for each localized account to support recovery."
-    ]
-  },
-  {
-    "id": "step-finance-treasury-jan-2026",
-    "title": "Step Finance treasury drain (exec device compromise)",
-    "date": "2026-01-31",
-    "category": "supply-chain",
-    "severity": "critical",
-    "estimatedLossUsd": 29000000,
-    "lossDescription": "Estimates $27–40M (~262k SOL); variance from price/mark timing.",
-    "summary": "Stake authority moved to attacker-controlled accounts after operational compromise of executive devices; not a public smart-contract bug. STEP crashed; Step, SolanaFloor, and Remora later wound down with partial recovery reported.",
-    "tags": [
-      "step-finance",
-      "treasury",
-      "opsec"
-    ],
-    "sources": [
-      {
-        "label": "Step Finance (X)",
-        "url": "https://x.com/StepFinance_/status/2018379876642804213"
-      },
-      {
-        "label": "Decrypt — wind-down",
-        "url": "https://decrypt.co/358970/solana-defi-project-step-finance-to-wind-down-weeks-after-29m-hack"
-      },
-      {
-        "label": "Coin Insider",
-        "url": "https://www.coininsider.com/news/2026/02/solana-shake-up-3-platforms-shut-after-27m-hack"
-      },
-      {
-        "label": "SlowMist hacked DB (Solana)",
-        "url": "https://hacked.slowmist.io/?c=Solana"
-      }
-    ],
-    "lesson": "Endpoint compromise on executive devices is the most common path to large losses today; assume any device can be compromised and design custody so a single device cannot move funds.",
-    "mitigations": [
-      "Use hardware wallets in air-gapped or transaction-approval-only setups; never sign from a general-purpose laptop.",
-      "Require multisig threshold > 1 for any treasury action; isolate signers across distinct environments.",
-      "Deploy EDR / managed-detection on all executive endpoints; restrict admin software install.",
-      "Regular phishing and malware-defense training for all team members with privileged access.",
-      "Off-chain monitoring for unexpected stake-authority changes with a circuit breaker that requires multi-party reauthorization."
-    ]
-  },
-  {
-    "id": "stake-nova-flash-loan-feb-2026",
-    "title": "Stake Nova RedeemNovaSol flash-loan exploit",
-    "date": "2026-02-27",
-    "category": "application",
-    "severity": "high",
-    "estimatedLossUsd": 137014,
-    "lossDescription": "~95% of user deposits reported lost.",
-    "summary": "Business-logic / validation flaw in liquid staking redeem path; exploited via flash loan. Protocol patched and dApp taken offline; bounty offered.",
-    "tags": [
-      "liquid-staking",
-      "flash-loan",
-      "stake-nova"
-    ],
-    "sources": [
-      {
-        "label": "Chris Dior (X)",
-        "url": "https://x.com/chrisdior777/status/2027080169983295538"
-      }
-    ],
-    "lesson": "Liquid-staking redeem paths involve multiple accounting checks; a single missed validation under flash-loan conditions can drain user deposits in one transaction.",
-    "mitigations": [
-      "Property-based testing of redeem paths under adversarial inputs and flash-loan composition.",
-      "Independent audit before launch; every external integration adds attack surface.",
-      "Per-block redeem rate limits to bound flash-loan damage.",
-      "Real-time monitoring on TVL and pool ratios with auto-pause on anomalies.",
-      "Maintain a public bounty floor large enough to incentivize disclosure rather than exploitation."
-    ]
-  },
-  {
-    "id": "bonkfun-dns-mar-2026",
-    "title": "BONKfun DNS hijack",
-    "date": "2026-03-11",
-    "category": "supply-chain",
-    "severity": "medium",
-    "estimatedLossUsd": 30000,
-    "mitigated": true,
-    "summary": "Registrar social engineering moved the domain; malicious site caused ~$30k user losses. Team pledged 110% compensation; control restored ~March 18–19.",
-    "tags": [
-      "dns",
-      "phishing",
-      "bonkfun"
-    ],
-    "sources": [
-      {
-        "label": "Solport Tom (X)",
-        "url": "https://x.com/SolportTom/status/2031930573342519702"
-      }
-    ],
-    "lesson": "Domain registrars themselves can be socially engineered out of customer accounts; protocol teams must defend not just at the registrar account level but at the registrar selection level.",
-    "mitigations": [
-      "Use registrars with hardware-2FA, registrar-lock, and human-confirmed transfer policies.",
-      "Enable DNSSEC and CAA records.",
-      "Pre-publish a recovery process and out-of-band channels (Discord, X, on-chain) so users have a verifiable secondary source if the domain is hijacked.",
-      "Monitor certificate transparency logs and DNS records continuously; alert on unauthorized changes.",
-      "Maintain an IPFS / Arweave-pinned mirror for the production frontend."
-    ]
-  },
-  {
-    "id": "drift-protocol-apr-2026",
-    "title": "Drift Protocol multisig / durable nonce exploit",
-    "date": "2026-04-01",
-    "category": "application",
-    "severity": "critical",
-    "estimatedLossUsd": 285000000,
-    "lossDescription": "Largest Solana DeFi loss of 2026 in public reporting; laundering via swaps, bridges, mixers.",
-    "summary": "Long-running social engineering against contributors led to device/repo compromise, abuse of pre-signed durable-nonce txs and a zero-timelock council migration, then whitelisting of fake collateral (CVT) to borrow real assets. Widely attributed to DPRK-linked groups in industry reporting.",
-    "details": "Post-mortems emphasize operational security and multisig ceremony design rather than a single on-chain logic bug.",
-    "tags": [
-      "drift",
-      "durable-nonce",
-      "multisig",
-      "social-engineering",
-      "perps"
-    ],
-    "relatedIds": [
-      "solana-foundation-stride-sirn-apr-2026"
-    ],
-    "sources": [
-      {
-        "label": "Drift Protocol (X)",
-        "url": "https://x.com/DriftProtocol"
-      },
-      {
-        "label": "TRM Labs",
-        "url": "https://www.trmlabs.com/resources/blog/north-korean-hackers-attack-drift-protocol-in-285-million-heist"
-      },
-      {
-        "label": "Elliptic",
-        "url": "https://www.elliptic.co/blog/drift-protocol-exploited-for-286-million-in-suspected-dprk-linked-attack"
-      },
-      {
-        "label": "Chainalysis — lessons",
-        "url": "https://www.chainalysis.com/blog/lessons-from-the-drift-hack/"
-      },
-      {
-        "label": "The Hacker News",
-        "url": "https://thehackernews.com/2026/04/285-million-drift-hack-traced-to-six.html"
-      },
-      {
-        "label": "CoinDesk — suspicious activity",
-        "url": "https://www.coindesk.com/tech/2026/04/01/solana-defi-platform-drift-investigates-suspicious-activity-tells-users-to-halt-deposits"
-      },
-      {
-        "label": "CoinDesk — durable nonce",
-        "url": "https://www.coindesk.com/tech/2026/04/02/how-a-solana-feature-designed-for-convenience-let-an-attacker-drain-usd270-million-from-drift"
-      },
-      {
-        "label": "Bloomberg",
-        "url": "https://www.bloomberg.com/news/articles/2026-04-01/solana-based-defi-project-drift-hit-by-285-million-exploit"
-      },
-      {
-        "label": "BitPinas timeline",
-        "url": "https://bitpinas.com/cryptocurrency/drift-protocol-exploit/"
-      },
-      {
-        "label": "Pool Party Nodes — mechanics",
-        "url": "https://poolpartynodes.com/learn/crypto-news/solana-drift-protocol-exploit-2026/"
-      },
-      {
-        "label": "MEXC Learn",
-        "url": "https://www.mexc.com/learn/article/drift-protocol-hacked-for-285m-the-second-largest-exploit-in-solana-history/1"
-      }
-    ],
-    "lesson": "Sophisticated DPRK-style social engineering against contributors and multisig signers is now the largest loss vector in DeFi; controls must include human-process security, signer hygiene, and durable-nonce awareness alongside smart-contract audits.",
-    "mitigations": [
-      "Treat any pre-signed transaction (including durable nonces) as a long-lived signed authorization; track which nonces are outstanding and restrict their reuse.",
-      "Require human-readable decoding of every multisig payload and out-of-band confirmation between independent signers before approval.",
-      "Mandatory minimum timelock on Security Council changes (no zero-timelock migrations) and on collateral whitelist changes.",
-      "Strict allow-list for new collateral assets with multi-day cooling period and on-chain governance vote.",
-      "Air-gap signing from internet-connected workstations; never click links or open attachments on a signing device.",
-      "Endpoint-detection (EDR) and minimum-trust IDE/extension policies for all team members; treat repository clones from external counterparties as untrusted code.",
-      "Run a 'devil's advocate' security ceremony for every multisig signing: at least one signer's job is to look for malicious encodings.",
-      "Maintain a vetted intermediary verification process for any business development engagement that requires onboarding new vault assets or signing test transactions."
-    ]
-  },
-  {
-    "id": "solana-foundation-stride-sirn-apr-2026",
-    "title": "Solana Foundation: Stride + SIRN security programs",
-    "date": "2026-04-07",
+    "id": "jan-2022-duplicate-tx",
+    "title": "Duplicate transaction flood partial outage",
+    "date": "2022-01-21",
+    "endDate": "2022-01-22",
     "category": "network",
-    "severity": "informational",
+    "severity": "medium",
     "estimatedLossUsd": null,
-    "mitigated": true,
-    "summary": "Post-Drift announcements: Stride (public DeFi security assessments) and SIRN (incident-response network with vendor tooling). Foundation noted such programs would not have stopped pure social-engineering multisig abuse.",
-    "relatedIds": [
-      "drift-protocol-apr-2026"
-    ],
+    "summary": "Flood of duplicate txs stressed the network; contributed to early-2022 reliability narrative.",
     "tags": [
-      "foundation",
-      "initiative",
-      "sirn",
-      "stride"
+      "spam",
+      "outage"
     ],
     "sources": [
       {
-        "label": "CoinDesk",
-        "url": "https://www.coindesk.com/tech/2026/04/07/solana-foundation-unveils-security-overhaul-days-after-usd270-million-drift-exploit"
-      },
-      {
-        "label": "Cryptopolitan",
-        "url": "https://www.cryptopolitan.com/solana-unveils-crisis-mode-defi-threats/"
-      }
-    ]
-  },
-  {
-    "id": "cetus-sui-exploit-may-2025-see-also",
-    "title": "Cetus Protocol exploit (Sui/Aptos) — cross-chain note",
-    "date": "2025-05-22",
-    "category": "application",
-    "severity": "informational",
-    "estimatedLossUsd": null,
-    "lossDescription": "~$223M on Sui/Aptos (not Solana); Crema team lineage — omit from Solana loss rollups.",
-    "summary": "Major CLMM-style exploit on Sui; often discussed beside Solana incidents for team lineage and overflow/oracle patterns. Exclude from Solana-only loss totals when aggregating.",
-    "tags": [
-      "sui",
-      "see-also",
-      "crema-related",
-      "clmm"
-    ],
-    "sources": [
-      {
-        "label": "The Block — Cetus restarts",
-        "url": "https://www.theblock.co/post/357386/sui-dex-cetus-protocol-restarts-platform-after-recovering-from-223-million-exploit"
-      },
-      {
-        "label": "threesigma (X)",
-        "url": "https://x.com/threesigmaxyz/status/1926971295708627337"
-      }
-    ]
-  },
-  {
-    "id": "serum-ftx-averted-nov-2022",
-    "title": "Serum / FTX upgrade key compromise (emergency fork)",
-    "date": "2022-11-13",
-    "category": "supply-chain",
-    "severity": "high",
-    "estimatedLossUsd": null,
-    "mitigated": true,
-    "summary": "After FTX collapse, Serum upgrade authority risk forced a community OpenBook fork; preventive response rather than a draining hack.",
-    "tags": [
-      "serum",
-      "openbook",
-      "governance"
-    ],
-    "sources": [
-      {
-        "label": "CollinsDeFiPen — Serum section",
+        "label": "CollinsDeFiPen",
         "url": "https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375"
       }
     ],
-    "lesson": "Centralized upgrade authority on critical infrastructure is a counterparty-risk landmine; the FTX collapse showed how quickly an authority key becomes adversarial.",
+    "lesson": "Naive transaction ingest accepts duplicates as a free DoS amplifier; deduplication and admission control are part of consensus reliability.",
     "mitigations": [
-      "Always use multisig with independent signers for any program upgrade authority.",
-      "Document and publish the upgrade authority configuration so the community can audit.",
-      "Build community fork procedures and reproducible builds in advance, not under crisis.",
-      "Where possible, freeze upgrade authority entirely after maturity (final, immutable programs)."
+      "Validator-side dedup of inbound transactions with bloom filters.",
+      "QUIC-based ingress to enforce per-source flow control.",
+      "Per-IP / per-stake admission caps for transaction submission.",
+      "Encourage RPC providers to dedup at the edge before forwarding to validators."
     ]
   },
   {
@@ -2134,30 +2105,188 @@
     ]
   },
   {
-    "id": "jan-2022-duplicate-tx",
-    "title": "Duplicate transaction flood partial outage",
-    "date": "2022-01-21",
-    "endDate": "2022-01-22",
-    "category": "network",
+    "id": "jet-protocol-c-ratio-dec-2021",
+    "title": "Jet Protocol collateral-ratio bug (disclosed, patched pre-exploit)",
+    "date": "2021-12-21",
+    "category": "application",
     "severity": "medium",
     "estimatedLossUsd": null,
-    "summary": "Flood of duplicate txs stressed the network; contributed to early-2022 reliability narrative.",
+    "lossDescription": "Jet cited ~$25M at risk; no malicious exploitation reported.",
+    "mitigated": true,
+    "summary": "A code review found flawed collateral-ratio logic that could have enabled unsafe borrows; the team patched on mainnet and published a technical disclosure afterward.",
     "tags": [
-      "spam",
-      "outage"
+      "lending",
+      "jet",
+      "disclosure"
     ],
     "sources": [
       {
-        "label": "CollinsDeFiPen",
+        "label": "Jet Protocol — patch disclosure",
+        "url": "https://medium.com/jetprotocol/jet-protocol-upgrade-bug-patch-disclosure-6eb74cf7149"
+      },
+      {
+        "label": "Nitin132 — incident survey (hackathon)",
+        "url": "https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6"
+      }
+    ],
+    "lesson": "Whitehat-discoverable bugs in collateral math demonstrate the value of pre-mainnet adversarial review, internal red-teaming, and a tight responsible-disclosure pipeline.",
+    "mitigations": [
+      "Maintain a funded bug bounty (Immunefi or equivalent) with clear scope before TVL grows.",
+      "Require multi-party code review for any PR touching collateral, interest, or oracle math.",
+      "Add invariant tests that assert C-ratio computations cannot understate liabilities or overstate collateral under any input.",
+      "Provide a private security channel and PGP key for disclosures, with a 24-hour acknowledgement SLA."
+    ]
+  },
+  {
+    "id": "spl-token-lending-rounding-2021",
+    "title": "SPL token-lending rounding vulnerability (coordinated disclosure)",
+    "date": "2021-12-02",
+    "category": "core-protocol",
+    "severity": "critical",
+    "estimatedLossUsd": null,
+    "lossDescription": "Billions in TVL theoretically at risk; no malicious exploitation reported.",
+    "summary": "Neodyme found a rounding issue in SPL lending logic that could drain pools via repeated deposit/withdraw; forks used by major Solana lenders were patched privately.",
+    "rootCause": "Integer rounding allowed slight over-crediting of collateral tokens when combined with batched instructions.",
+    "lesson": "Shared library code needs the same scrutiny as bespoke programs, and 'small' rounding bugs become economically large under Solana's high transaction throughput and instruction batching.",
+    "tags": [
+      "spl",
+      "lending",
+      "rounding",
+      "whitehat"
+    ],
+    "sources": [
+      {
+        "label": "Neodyme disclosure",
+        "url": "https://neodyme.io/en/blog/lending_disclosure/"
+      },
+      {
+        "label": "CollinsDeFiPen — deep dive",
         "url": "https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375"
       }
     ],
-    "lesson": "Naive transaction ingest accepts duplicates as a free DoS amplifier; deduplication and admission control are part of consensus reliability.",
     "mitigations": [
-      "Validator-side dedup of inbound transactions with bloom filters.",
-      "QUIC-based ingress to enforce per-source flow control.",
-      "Per-IP / per-stake admission caps for transaction submission.",
-      "Encourage RPC providers to dedup at the edge before forwarding to validators."
+      "Use floor (not round) consistently for outflows; assert no transaction can withdraw more value than it deposited at the same exchange rate.",
+      "Add property-based / invariant tests that randomize batch sizes and exchange rates to detect drift.",
+      "Run formal-style invariant checks (e.g., SeaHorse, MoveProver-style, or hand-written invariants) against deposit/redeem pairs.",
+      "Coordinate disclosure across forks early; maintain an SPL-fork registry so patches can be propagated quickly.",
+      "Track a 'shadow accounting' offline reconciliation job that flags discrepancies between expected and on-chain balances."
+    ]
+  },
+  {
+    "id": "grape-protocol-ido-sep-2021",
+    "title": "Grape Protocol IDO / Raydium bot overload outage",
+    "date": "2021-09-14",
+    "endDate": "2021-09-15",
+    "category": "network",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "summary": "Bot traffic during an IDO overwhelmed validators; the network halted for about 17 hours before a coordinated restart.",
+    "tags": [
+      "ddos",
+      "outage",
+      "ido"
+    ],
+    "sources": [
+      {
+        "label": "Solana Foundation — initial outage overview",
+        "url": "https://solana.com/news/9-14-network-outage-initial-overview"
+      },
+      {
+        "label": "Jump Crypto — reflections on Sept 14 outage",
+        "url": "https://jumpcrypto.com/writing/reflections-on-the-sept-14-solana-outage/"
+      },
+      {
+        "label": "CoinDesk — Solana restarts after outage",
+        "url": "https://www.coindesk.com/business/2021/09/23/grape-network-the-startup-that-broke-solana-raises-18m"
+      },
+      {
+        "label": "Helius — incident catalog",
+        "url": "https://www.helius.dev/blog/solana-hacks"
+      }
+    ],
+    "lesson": "Performance-first L1s need explicit congestion controls and graceful-degradation paths for legitimate-but-extreme load, not just spam protection.",
+    "mitigations": [
+      "Apply runtime per-account write-lock and compute-unit limits to bound damage from hot accounts.",
+      "Use stake-weighted QoS and priority/local fee markets to ensure vote and critical-protocol traffic gets through.",
+      "Switch transaction ingress from raw UDP to QUIC with admission control.",
+      "Have an automated, signed snapshot/restart pipeline for validators rather than ad-hoc Discord coordination.",
+      "Application teams should treat network-stall risk as a first-class scenario in liquidations, oracle freshness checks, and refund logic."
+    ]
+  },
+  {
+    "id": "solend-auth-bypass-aug-2021",
+    "title": "Solend UpdateReserveConfig authentication bypass attempt",
+    "date": "2021-08-19",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": 16000,
+    "lossDescription": "~$2M at risk; five wrongful liquidations refunded (~$16k + bonus).",
+    "summary": "An attacker created their own lending market to pass authorization checks and maliciously tuned risk parameters; the team detected and patched within hours.",
+    "rootCause": "Missing check that the config authority signed; arbitrary lending market could be supplied to admin instructions.",
+    "response": "Borrow paused, wrongfully liquidated users reimbursed from liquidator earnings; authentication fix deployed.",
+    "lesson": "Privileged Solana instructions must enforce both account ownership and signer constraints; trusting a passed-in 'authority' account is the canonical Solana account-confusion bug.",
+    "tags": [
+      "lending",
+      "access-control",
+      "solend"
+    ],
+    "sources": [
+      {
+        "label": "Solend / Save on X",
+        "url": "https://x.com/save_finance/status/1428611597941891082"
+      },
+      {
+        "label": "HackMD — Solend incident notes",
+        "url": "https://hackmd.io/@prastut/r1wMdtcf3"
+      },
+      {
+        "label": "Solend auditor report (Google Doc)",
+        "url": "https://docs.google.com/document/d/1-WoQwT1QrPEX-r4N-fDamRQ50LM8DsdsOyq1iTabS3Q/edit"
+      },
+      {
+        "label": "Nitin132 — survey w/ patch link",
+        "url": "https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6"
+      },
+      {
+        "label": "CollinsDeFiPen — Solana security incidents",
+        "url": "https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375"
+      }
+    ],
+    "mitigations": [
+      "Require that the config authority be a signer and match the canonical PDA/multisig for the market.",
+      "Scope each admin instruction to the smallest possible account set and assert program ownership of every account it reads or writes.",
+      "Add real-time monitoring for parameter changes (LTV, liquidation bonus) with alerts to a security on-call rotation.",
+      "Implement governance time-locks and circuit breakers (e.g., a Brick-style emergency pause) for any reserve-config change.",
+      "Run negative-path fuzzing against admin instructions in CI so attacker-crafted accounts are part of regression tests."
+    ]
+  },
+  {
+    "id": "solana-turbine-bug-dec-2020",
+    "title": "Turbine block propagation bug (network partition)",
+    "date": "2020-12-08",
+    "category": "core-protocol",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "summary": "A Turbine propagation flaw let conflicting blocks for the same slot split the network; consensus stalled for roughly six hours until validators coordinated a restart.",
+    "details": "Validators broadcast incompatible blocks for one slot; fork-choice and gossip handling could not repair the partition quickly. Fixes improved block identification and fault propagation.",
+    "mitigated": true,
+    "tags": [
+      "outage",
+      "consensus",
+      "turbine"
+    ],
+    "sources": [
+      {
+        "label": "Helius — Solana outages history",
+        "url": "https://www.helius.dev/blog/solana-outages-complete-history"
+      }
+    ],
+    "lesson": "Block-propagation paths are part of consensus; treating distinct blocks for the same slot as identical was the root failure. Network resilience needs structured fault propagation, not just retries.",
+    "mitigations": [
+      "Identify blocks by hash, not by slot number alone, throughout block-propagation logic.",
+      "Propagate fault-detection events over gossip so all validators learn about partitions quickly.",
+      "Run client-diversity testing against synthetic forks before shipping consensus changes.",
+      "Maintain documented validator-coordination playbooks (snapshot, restart slot, contacts) reachable out-of-band."
     ]
   },
   {
