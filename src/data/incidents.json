@@ -1,61 +1,58 @@
 [
   {
     "id": "avici-rain-card-contract-aug-2026",
-    "title": "Avici / Rain Solana card contract authorization exploit",
+    "title": "Avici / Rain card contract authorization exploit",
     "date": "2026-08-28",
-    "category": "application",
+    "category": "supply-chain",
     "severity": "medium",
     "estimatedLossUsd": 1100000,
-    "lossDescription": "Widely cited cluster total is about $1.1M across Rain-powered Solana card programs. Avici reconciled $500,859.22 from 1,685 users; Tria reported more than $430,000 from 636 users. Attacker proceeds were swapped to SOL, bridged to Ethereum, and partly sent through Tornado Cash. Avici and Tria pledged full reimbursement; Avici filed an FBI IC3 report.",
-    "summary": "On 28 August 2026 an attacker exploited an authorization flaw in a legacy Rain Solana card contract used by Avici and other Rain-powered neobanks. After funding a fresh wallet with about 1.79 SOL via deBridge, the attacker repeatedly called SubmitSignatures alongside Solana's Ed25519 program, then AddCollateralAdmin and WithdrawCollateralAsset, registering itself as administrator on user collateral accounts and sweeping card balances. Avici reported $500,859.22 taken from 1,685 cardholders; Tria reported more than $430,000 from 636 users. Rain upgraded affected contract versions and said unauthorized activity stopped; self-custodial wallets were not hit.",
-    "details": "On-chain analysts described the bug as a second signature verification incorrectly routed to the first instruction, so the runtime accepted the attacker's signature twice. The drain ran for a few hours starting about 16:49 UTC. Avici's authorization and collateral programs were upgradeable under a single upgrade authority. A parallel phishing wave impersonating Avici was reported separately and is not this contract bug.",
+    "lossDescription": "Losses were borne by end users holding topped-up card balances across multiple neobanks built on Rain's shared Solana card infrastructure, not by the platforms' treasuries or self-custodial wallets. Avici reconciled $500,859.22 across 1,685 users and Tria reported a further ~$431,945 across 636 users, with on-chain analysts estimating ~$1.1M in total bridged off Solana (via deBridge) and partly laundered through Tornado Cash. Avici, Tria, and Rain pledged and processed full refunds, with Avici and Tria adding 10% cashback; a separate, parallel wallet-drainer phishing campaign impersonating Avici (e.g. getavici.today) reportedly cost users a further ~$600K and is not included in this figure.",
+    "summary": "On August 28, 2026 an attacker exploited an authorization flaw in an outdated version of a Solana card contract operated by card-issuing infrastructure provider Rain, which underpins dozens of consumer neobanks. Funding a fresh wallet with only ~1.79 SOL (~$190) bridged from Ethereum, the attacker ran a repeating three-instruction sequence per victim — SubmitSignatures (alongside Solana's Ed25519 precompile), AddCollateralAdmin, then WithdrawCollateralAsset — registering itself as an administrator on user collateral accounts and sweeping topped-up card balances. The flaw lived in Rain's third-party contract rather than any single neobank's own code, so it cascaded simultaneously across Avici, Tria, Solayer Pay, and other Rain-powered programs before Rain upgraded the affected contracts.",
+    "details": "The root cause was a signature-verification routing bug: the second signature check was incorrectly bound to the first instruction, so Solana's runtime accepted the attacker's own signature as valid a second time and admitted an administrator key it should have rejected. Only the separate on-chain contract holding post-top-up card balances was drained; self-custodial Solana and EVM wallets, EVM card balances, and on/off-ramps were unaffected. Analysts also noted both Avici programs were upgradeable under a single-key (non-multisig) upgrade authority, and no pre-incident third-party audit of the vulnerable contract has been disclosed.",
     "tags": [
       "avici",
       "rain",
-      "card-contract",
-      "authorization",
-      "ed25519",
+      "card-infrastructure",
       "neobank",
-      "shared-infra"
+      "authorization-bypass",
+      "signature-verification",
+      "shared-infrastructure"
     ],
     "relatedIds": [
-      "swissborg-kiln-sol-staking-sep-2025"
+      "swissborg-kiln-sol-staking-sep-2025",
+      "wormhole-bridge-feb-2022"
     ],
     "sources": [
       {
-        "label": "Avici (X)",
-        "url": "https://x.com/avici/status/2093439613201482068"
-      },
-      {
-        "label": "SlowMist Hacked DB",
-        "url": "https://hacked.slowmist.io/?c=Solana"
+        "label": "The Defiant",
+        "url": "https://thedefiant.io/news/hacks/attacker-drains-more-than-usd1-million-from-avici-users-in-live-solana-neobank-attack"
       },
       {
         "label": "The Crypto Times",
         "url": "https://www.cryptotimes.io/2026/08/29/solana-neobank-avici-hacked-attacker-spends-190-to-drain-500k-from-1685-users/"
       },
       {
-        "label": "CoinDesk",
-        "url": "https://www.coindesk.com/web3/2026/08/29/a-usd1-1-million-crypto-card-hack-crashed-a-neobank-s-token-49"
+        "label": "Cryptonews.net",
+        "url": "https://cryptonews.net/news/security/33366330/"
       },
       {
-        "label": "Cryptopolitan",
-        "url": "https://www.cryptopolitan.com/avici-crashes-hackers-drain-solana-neobank/"
+        "label": "CoinPedia",
+        "url": "https://coinpedia.org/news/avici-attacker-turns-190-into-670k-as-team-refunds-users-with-10-cashback/"
       },
       {
-        "label": "Blockonomi",
-        "url": "https://blockonomi.com/1-1m-crypto-card-exploit-crashes-avici-token-49-as-solana-contract-vulnerability-exposed/"
+        "label": "Our Crypto Talk",
+        "url": "https://ourcryptotalk.com/news/avici-exploit-rain-solana-card-contract"
       }
     ],
-    "lesson": "Vendor card programs that hold spendable balances are shared custody, not self-custody. A signature-binding bug in one legacy contract version can drain card collateral across every brand still running that version.",
+    "lesson": "Shared on-chain infrastructure concentrates systemic risk: a single authorization bug in one provider's contract can cascade across every consumer product that embeds it, so \"self-custodial\" branding must be measured against the administrative permissions of the contracts that actually hold user funds.",
     "mitigations": [
-      "Bind each Ed25519 signature verification to the specific instruction it is meant to authorize; reject transactions where a second verify is routed to the first instruction.",
-      "Remove or disable AddCollateralAdmin (and any admin-withdraw path) on user card-collateral accounts after issuance, or require a multisig / timelocked governance path that cannot be completed in the same transaction as the drain.",
-      "Force-upgrade or sunset every deployed version of a shared vendor program as soon as a successor is live; inventory partners still on legacy bytecode and refuse to leave them on the old program id.",
-      "Halt AddCollateralAdmin and WithdrawCollateralAsset automatically when a single address performs those calls across many unrelated user accounts in a short window.",
-      "Hold card-spend balances in a vault whose withdraw authority cannot be rewritten by a user-supplied signature bundle; keep self-custodial wallet funds on a separate program with no shared admin.",
-      "Use a multisig or Squads-style upgrade authority on consumer-facing programs instead of a single upgrade key.",
-      "Publish a partner incident SLA for shared card infra: freeze, upgrade, user notification, and pre-funded reimbursement within hours, plus a named collection address for recovery outreach."
+      "Treat signature-verification wiring as critical: assert that each Ed25519 precompile instruction is bound to the specific instruction it is meant to authorize, and add tests that reject replaying or re-routing a signature to a second instruction.",
+      "Require multisig (not single-key) upgrade authority and a minimum timelock on any program that can add administrators to or withdraw from user-fund accounts.",
+      "Gate privileged instructions like AddCollateralAdmin behind independent, out-of-band authorization rather than a single on-chain signature check that can be spoofed.",
+      "Version-pin and inventory every deployment of shared third-party infrastructure contracts, and roll security patches to all downstream consumers simultaneously instead of leaving outdated versions live.",
+      "Commission targeted third-party audits of any contract holding custodial or semi-custodial balances before production use, with re-audits on every upgrade.",
+      "Deploy real-time monitoring that flags anomalous admin-registration events followed by rapid collateral withdrawals and can pause the affected program automatically.",
+      "Publish clear, accurate custody disclosures so users understand which balances sit in administratively controlled contracts versus truly self-custodial wallets."
     ]
   },
   {

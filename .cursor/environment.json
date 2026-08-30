@@ -1,0 +1,4 @@
+{
+  "name": "Solana Security Wiki",
+  "install": "npm ci"
+}
