@@ -29,3 +29,6 @@ scripts/.venv/
 scripts/logs/
 scripts/output/
 scripts/seen_urls.json
+.vercel
+.env*
+.wrangler

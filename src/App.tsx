@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { HomePage } from "./pages/HomePage";
@@ -12,7 +11,6 @@ import { SimdsPage } from "./pages/SimdsPage";
 export default function App() {
   return (
     <BrowserRouter>
-      <Analytics />
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
