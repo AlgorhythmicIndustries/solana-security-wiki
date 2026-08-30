@@ -1,0 +1,16 @@
+{
+  "name": "Solana Security Wiki",
+  "install": "npm ci",
+  "terminals": [
+    {
+      "name": "vite-dev",
+      "command": "npm run dev"
+    }
+  ],
+  "ports": [
+    {
+      "name": "vite",
+      "port": 5173
+    }
+  ]
+}
