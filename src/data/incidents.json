@@ -1,5 +1,64 @@
 [
   {
+    "id": "avici-rain-card-contract-aug-2026",
+    "title": "Avici / Rain Solana card contract authorization exploit",
+    "date": "2026-08-28",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 1100000,
+    "lossDescription": "Widely cited cluster total is about $1.1M across Rain-powered Solana card programs. Avici reconciled $500,859.22 from 1,685 users; Tria reported more than $430,000 from 636 users. Attacker proceeds were swapped to SOL, bridged to Ethereum, and partly sent through Tornado Cash. Avici and Tria pledged full reimbursement; Avici filed an FBI IC3 report.",
+    "summary": "On 28 August 2026 an attacker exploited an authorization flaw in a legacy Rain Solana card contract used by Avici and other Rain-powered neobanks. After funding a fresh wallet with about 1.79 SOL via deBridge, the attacker repeatedly called SubmitSignatures alongside Solana's Ed25519 program, then AddCollateralAdmin and WithdrawCollateralAsset, registering itself as administrator on user collateral accounts and sweeping card balances. Avici reported $500,859.22 taken from 1,685 cardholders; Tria reported more than $430,000 from 636 users. Rain upgraded affected contract versions and said unauthorized activity stopped; self-custodial wallets were not hit.",
+    "details": "On-chain analysts described the bug as a second signature verification incorrectly routed to the first instruction, so the runtime accepted the attacker's signature twice. The drain ran for a few hours starting about 16:49 UTC. Avici's authorization and collateral programs were upgradeable under a single upgrade authority. A parallel phishing wave impersonating Avici was reported separately and is not this contract bug.",
+    "tags": [
+      "avici",
+      "rain",
+      "card-contract",
+      "authorization",
+      "ed25519",
+      "neobank",
+      "shared-infra"
+    ],
+    "relatedIds": [
+      "swissborg-kiln-sol-staking-sep-2025"
+    ],
+    "sources": [
+      {
+        "label": "Avici (X)",
+        "url": "https://x.com/avici/status/2093439613201482068"
+      },
+      {
+        "label": "SlowMist Hacked DB",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      },
+      {
+        "label": "The Crypto Times",
+        "url": "https://www.cryptotimes.io/2026/08/29/solana-neobank-avici-hacked-attacker-spends-190-to-drain-500k-from-1685-users/"
+      },
+      {
+        "label": "CoinDesk",
+        "url": "https://www.coindesk.com/web3/2026/08/29/a-usd1-1-million-crypto-card-hack-crashed-a-neobank-s-token-49"
+      },
+      {
+        "label": "Cryptopolitan",
+        "url": "https://www.cryptopolitan.com/avici-crashes-hackers-drain-solana-neobank/"
+      },
+      {
+        "label": "Blockonomi",
+        "url": "https://blockonomi.com/1-1m-crypto-card-exploit-crashes-avici-token-49-as-solana-contract-vulnerability-exposed/"
+      }
+    ],
+    "lesson": "Vendor card programs that hold spendable balances are shared custody, not self-custody. A signature-binding bug in one legacy contract version can drain card collateral across every brand still running that version.",
+    "mitigations": [
+      "Bind each Ed25519 signature verification to the specific instruction it is meant to authorize; reject transactions where a second verify is routed to the first instruction.",
+      "Remove or disable AddCollateralAdmin (and any admin-withdraw path) on user card-collateral accounts after issuance, or require a multisig / timelocked governance path that cannot be completed in the same transaction as the drain.",
+      "Force-upgrade or sunset every deployed version of a shared vendor program as soon as a successor is live; inventory partners still on legacy bytecode and refuse to leave them on the old program id.",
+      "Halt AddCollateralAdmin and WithdrawCollateralAsset automatically when a single address performs those calls across many unrelated user accounts in a short window.",
+      "Hold card-spend balances in a vault whose withdraw authority cannot be rewritten by a user-supplied signature bundle; keep self-custodial wallet funds on a separate program with no shared admin.",
+      "Use a multisig or Squads-style upgrade authority on consumer-facing programs instead of a single upgrade key.",
+      "Publish a partner incident SLA for shared card infra: freeze, upgrade, user notification, and pre-funded reimbursement within hours, plus a named collection address for recovery outreach."
+    ]
+  },
+  {
     "id": "allbridge-core-flash-loan-jul-2026",
     "title": "Allbridge Core stablecoin pool flash-loan manipulation",
     "date": "2026-07-19",
