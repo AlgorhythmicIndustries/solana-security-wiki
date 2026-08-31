@@ -799,6 +799,43 @@
     ]
   },
   {
+    "id": "catfi-pumpfun-rug-feb-2025",
+    "title": "CatFi Pump.fun meme coin rug pull",
+    "date": "2025-02-01",
+    "category": "rug_pull",
+    "severity": "medium",
+    "estimatedLossUsd": 600000,
+    "lossDescription": "South Korean prosecutors calculated ~900 million WON (~$600,000) in damages across 256 investors; defendants allegedly pocketed over 400 million WON (~$267,000) via coordinated mass selling.",
+    "summary": "Five individuals allegedly created the CatFi token on Solana launchpad Pump.fun in February 2025, promoted it to a market cap of ~$8.37M, then executed coordinated mass selling that crashed the token to ~$12,170 within hours. South Korean prosecutors charged the five under the Virtual Asset User Protection Act, marking the country's first rug-pull prosecution and first prosecution of a crypto crime executed on a decentralized exchange.",
+    "details": "Two defendants responsible for social media promotion were arrested; three who controlled the technical side and aided the others' escape were charged but not arrested. Long after the collapse, traders pumped the dormant token roughly 6,000% in an attempted 'unrug' following news of the arrests.",
+    "tags": [
+      "pump-fun",
+      "catfi",
+      "rug-pull",
+      "meme-coin",
+      "south-korea",
+      "law-enforcement"
+    ],
+    "relatedIds": [
+      "pumpfun-insider-may-2024"
+    ],
+    "sources": [
+      {
+        "label": "Decrypt / Yahoo Finance",
+        "url": "https://finance.yahoo.com/markets/crypto/articles/solana-meme-coin-surges-6-130901647.html"
+      }
+    ],
+    "lesson": "Permissionless launchpad tokens with concentrated insider supply remain a persistent rug-pull vector; on-chain holder-concentration analysis before buying and emerging legal precedent (e.g. Korea's Virtual Asset User Protection Act) are now key deterrents and remedies.",
+    "mitigations": [
+      "Check token holder distribution and creator/insider wallet concentration on tools like Bubblemaps or SolScan before purchasing newly launched Pump.fun tokens.",
+      "Avoid tokens where a small cluster of wallets controls a dominant share of supply that can be dumped in a single coordinated sell.",
+      "Treat hours-old launchpad tokens with vertical price action as high probability of coordinated exit; wait for liquidity lock and vesting evidence.",
+      "Prefer launches with transparent, on-chain-verifiable liquidity locks and team-token vesting schedules.",
+      "Preserve on-chain transaction records to support law-enforcement complaints under applicable virtual-asset consumer-protection statutes.",
+      "Educate retail participants that community 'unrug' efforts do not recover original losses and often create secondary speculative traps."
+    ]
+  },
+  {
     "id": "npm-malware-jan-2025",
     "title": "Solana-related npm malware wave (reported)",
     "date": "2025-01-15",
