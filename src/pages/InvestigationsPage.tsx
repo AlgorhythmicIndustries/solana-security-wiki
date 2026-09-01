@@ -10,17 +10,15 @@ export function InvestigationsPage() {
 
   return (
     <>
-      <h2 className="page-title">Investigation drafts</h2>
+      <h2 className="page-title">Investigations</h2>
       <p className="page-lede">
-        On-chain IR notes for wiki incidents. These pages are{" "}
-        <span className="pill">draft</span> and{" "}
-        <span className="pill">not published</span> — they are not a substitute
-        for the live incident articles. Every drain claim is supposed to carry a
-        full signature; missing hashes are labeled as coverage gaps.
+        On-chain IR notes for wiki incidents. These pages are AI generated and
+        are not a substitute for the live incident articles. Every drain claim
+        is supposed to carry a full signature; missing hashes are labeled as
+        coverage gaps.
       </p>
       <p className="muted">
-        {sorted.length} drafts in this batch (owner-field phishing through
-        Solareum).
+        {sorted.length} investigations (owner-field phishing through Solareum).
       </p>
       <ul className="timeline">
         {sorted.map((d) => {
@@ -30,8 +28,6 @@ export function InvestigationsPage() {
               <article className="incident-card">
                 <div className="incident-meta">
                   <span className="pill">{formatDate(d.date)}</span>
-                  <span className="pill">draft</span>
-                  <span className="pill">not published</span>
                 </div>
                 <h3>
                   <a href={d.href}>{d.title}</a>

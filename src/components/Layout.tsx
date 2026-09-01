@@ -150,13 +150,13 @@ export function Layout() {
           <li>
             <Link to="/">Incident Timeline &amp; search</Link>
           </li>
+          <li>
+            <Link to="/investigations">Investigations</Link>
+          </li>
         </ul>
 
         <div className="nav-section-title">Articles</div>
         <ul className="nav-list">
-          <li>
-            <Link to="/investigations">Investigation drafts</Link>
-          </li>
           <li>
             <Link to="/trends">Exploitation trends &amp; defender focus</Link>
           </li>

@@ -7,7 +7,7 @@ export interface InvestigationDraft {
   published: false;
 }
 
-/** Static HTML IR drafts served from /investigations/. Not live wiki articles. */
+/** Static HTML IR notes served from /investigations/. Not live wiki articles. */
 export const investigationDrafts: InvestigationDraft[] = [
   {
     incidentId: "solana-owner-field-phishing-late-2025",
