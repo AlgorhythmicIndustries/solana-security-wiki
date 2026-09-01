@@ -18,7 +18,7 @@ export function InvestigationsPage() {
         coverage gaps.
       </p>
       <p className="muted">
-        {sorted.length} investigations (owner-field phishing through Solareum).
+        {sorted.length} investigations (Avici through Solareum).
       </p>
       <ul className="timeline">
         {sorted.map((d) => {

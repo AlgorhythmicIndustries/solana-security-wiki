@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for Drift Protocol durable-nonce / fake-CVT." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Drift Protocol durable-nonce / fake-CVT — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">1 Apr 2026</span>
+          </div>
+          <h1>Drift Protocol durable-nonce / fake-CVT</h1>
+          <p class="muted">
+            Wiki id <code>drift-protocol-apr-2026</code>
+            · <a href="/incident/drift-protocol-apr-2026">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              On 1 Apr 2026 ~16:05 UTC, two pre-signed durable-nonce Squads v4
+              transactions transferred Drift admin to a plain wallet, then fake
+              CarbonVote Token (CVT) collateral and raised withdraw guards
+              enabled borrowing of real assets. Public reporting ~$285M.
+              Social-engineering of signers plus a zero-timelock 2-of-5 council,
+              not a single program math bug.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Exploited admin multisig <a href="https://solscan.io/account/2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88"><code>2LW6PSEjp81xSEttWwXDB6Etb1eKdhYPbFEojYbyhx88</code></a>
+              (vault <a href="https://solscan.io/account/AiLGdNitMjv8n5HMS7HAdV2kaeJZZFd4jdfn5xp1PKrW"><code>AiLGdNitMjv8n5HMS7HAdV2kaeJZZFd4jdfn5xp1PKrW</code></a>), 2-of-5, zero timelock.
+              New admin wallet <a href="https://solscan.io/account/H7PiGqqUaanBovwKgEtreJbKmQe6dbq6VTrw6guy7ZgL"><code>H7PiGqqUaanBovwKgEtreJbKmQe6dbq6VTrw6guy7ZgL</code></a>.
+            </p>
+            <p>
+              Attacker members <a href="https://solscan.io/account/39JyWrdbVdRqjzw9yyEjxNtTbTKcTPLdtdCgbz7C7Aq8"><code>39JyWrdbVdRqjzw9yyEjxNtTbTKcTPLdtdCgbz7C7Aq8</code></a>
+              and <a href="https://solscan.io/account/6UJbu9ut5VAsFYQFgPEa5xPfoyF5bB5oi4EknFPvu924"><code>6UJbu9ut5VAsFYQFgPEa5xPfoyF5bB5oi4EknFPvu924</code></a>.
+              Shared nonce funder <a href="https://solscan.io/account/FMJnBkVpHj5JzN7w4XFysCwY931CYSYk1DsXzqNi7YPF"><code>FMJnBkVpHj5JzN7w4XFysCwY931CYSYk1DsXzqNi7YPF</code></a>.
+              Nonces <a href="https://solscan.io/account/7s7s6saC5LHZoLyBXLM3pCjpWaA7meyQdP8NiH9ktAeC"><code>7s7s6saC5LHZoLyBXLM3pCjpWaA7meyQdP8NiH9ktAeC</code></a> (Mar 24)
+              and <a href="https://solscan.io/account/EmYEryTDXtuVCxrjNqJXbiwr4hfiJajd4g5P58vvhQnc"><code>EmYEryTDXtuVCxrjNqJXbiwr4hfiJajd4g5P58vvhQnc</code></a> (Mar 31).
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC 1 Apr 2026</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>16:05:18</td>
+                  <td>TX A — <code>VaultTxCreate(UpdateAdmin → H7PiG)</code></td>
+                  <td><a href="https://solscan.io/tx/2HvMSgDEfKhNryYZKhjowrBY55rUx5MWtcWkG9hqxZCFBaTiahPwfynP1dxBSRk9s5UTVc8LFeS4Btvkm9pc2C4H"><code>2HvMSgDEfKhNryYZKhjowrBY55rUx5MWtcWkG9hqxZCFBaTiahPwfynP1dxBSRk9s5UTVc8LFeS4Btvkm9pc2C4H</code></a></td>
+                </tr>
+                <tr>
+                  <td>16:05:19</td>
+                  <td>TX B — approve + <code>VaultTxExecute</code></td>
+                  <td><a href="https://solscan.io/tx/4BKBmAJn6TdsENij7CsVbyMVLJU1tX27nfrMM1zgKv1bs2KJy6Am2NqdA3nJm4g9C6eC64UAf5sNs974ygB9RsN1"><code>4BKBmAJn6TdsENij7CsVbyMVLJU1tX27nfrMM1zgKv1bs2KJy6Am2NqdA3nJm4g9C6eC64UAf5sNs974ygB9RsN1</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Serialized <code>UpdateAdmin</code> payload account
+              <a href="https://solscan.io/account/2QmMUBZYv2Ssm6ED73Gapt8cgn9u1HQbPaJtfYdDDAwc"><code>2QmMUBZYv2Ssm6ED73Gapt8cgn9u1HQbPaJtfYdDDAwc</code></a>.
+              Drift program <a href="https://solscan.io/account/dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"><code>dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH</code></a>.
+              Fake collateral mint cited in the gist
+              <a href="https://solscan.io/account/G84LEhbNMR1yYbHgHbnNYNSK8mpTKcazh5jcW5yMPQKo"><code>G84LEhbNMR1yYbHgHbnNYNSK8mpTKcazh5jcW5yMPQKo</code></a>
+              with oracle <a href="https://solscan.io/account/B6X3YojuJcfHnTTre68b2XxDPCVTfeA4N7ZJEpME2nFp"><code>B6X3YojuJcfHnTTre68b2XxDPCVTfeA4N7ZJEpME2nFp</code></a>.
+            </p>
+            <p>
+              $10,000 USDC insurance-fund withdraw 63s before the admin change:
+              <a href="https://solscan.io/tx/BkUZ8nss1api3b4sFUDZAU81k2R2Y6SB4J77GF14UPrCeYGfRFaay1StPpwGTL86d1kJArWhiNi8xdAfR1AeVb6"><code>BkUZ8nss1api3b4sFUDZAU81k2R2Y6SB4J77GF14UPrCeYGfRFaay1StPpwGTL86d1kJArWhiNi8xdAfR1AeVb6</code></a>
+              to <a href="https://solscan.io/account/DTQL9x7yxEtpAyuCt8QBGpbNu13GYuSMvFZkjyvi92NY"><code>DTQL9x7yxEtpAyuCt8QBGpbNu13GYuSMvFZkjyvi92NY</code></a>.
+            </p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> The ~31 subsequent real-asset
+                withdrawal signatures are not enumerated here. CVT mint /
+                Raydium seed txs are not hashed in this draft.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Durable-nonce pre-signs that could not be revoked without advancing
+              the nonce; 2-of-5 council with zero timelock after a Mar 25
+              Squads migration; attacker-controlled oracle + fake CVT collateral.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Recovery multisig <a href="https://solscan.io/account/E44y4Gm693AFdGXk4zir5D3ivHn7jns9aWkm8c5q1NDQ"><code>E44y4Gm693AFdGXk4zir5D3ivHn7jns9aWkm8c5q1NDQ</code></a>
+              (vault <a href="https://solscan.io/account/GA5aPX7hFNaxoi8akdbcFVMCrkdfbYC42q7BERPguTNo"><code>GA5aPX7hFNaxoi8akdbcFVMCrkdfbYC42q7BERPguTNo</code></a>)
+              took Drift program upgrade authority on 2 Apr
+              (<a href="https://solscan.io/tx/34RTi6ZbWPfDJuwzJLCV57cA81Xv7Tguyt3egjecfZqyhao23MGWLkAGtbapKr3MdgRMrFUsSLtSejMir3kaC6Wa"><code>34RTi6ZbWPfDJuwzJLCV57cA81Xv7Tguyt3egjecfZqyhao23MGWLkAGtbapKr3MdgRMrFUsSLtSejMir3kaC6Wa</code></a>).
+              Industry reporting attributed the campaign to DPRK-linked groups.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Full list of 31 withdraw signatures after admin takeover.</li>
+              <li>CVT create / LP seed hashes.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://gist.github.com/andrewhong5297/512c55864505f0c6caaece9e9b07b7c3">Andrew Hong — Drift multisig notes</a></li>
+              <li><a href="https://www.chainalysis.com/blog/lessons-from-the-drift-hack/">Chainalysis</a></li>
+              <li><a href="https://www.trmlabs.com/resources/blog/north-korean-hackers-attack-drift-protocol-in-285-million-heist">TRM Labs</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>
