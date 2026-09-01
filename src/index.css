@@ -155,13 +155,24 @@ code {
 .app-shell {
   display: grid;
   grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
+  grid-template-areas: "sidebar main";
   min-height: 100vh;
   min-height: 100dvh;
+}
+
+/* Skip-link is first in the DOM for a11y but must not take a grid cell.
+   Without named areas, auto-placement put the article in the narrow
+   column and the nav in the wide one. */
+.app-shell > .skip-link {
+  grid-area: sidebar;
 }
 
 @media (max-width: 900px) {
   .app-shell {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "sidebar"
+      "main";
   }
 }
 
@@ -221,6 +232,7 @@ code {
 }
 
 .sidebar {
+  grid-area: sidebar;
   position: sticky;
   top: 0;
   align-self: start;
@@ -342,6 +354,7 @@ code {
 }
 
 .main {
+  grid-area: main;
   --main-max: 72rem;
   padding: 2rem clamp(1rem, 4vw, 3rem) calc(4rem + var(--safe-bottom));
   padding-left: calc(clamp(1rem, 4vw, 3rem) + var(--safe-left));
