@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for UXD Mango contagion." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>UXD Mango contagion — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">12 Oct 2022</span>
+          </div>
+          <h1>UXD Mango contagion</h1>
+          <p class="muted">
+            Wiki id <code>uxd-mango-contagion-oct-2022</code>
+            · <a href="/incident/uxd-mango-contagion-oct-2022">Live incident page</a>
+          </p>
+
+          <div class="callout">
+            <p>
+              <strong>Contagion, not a UXD bug.</strong> Related
+              <a href="/incident/mango-markets-oracle-oct-2022">Mango Markets oracle</a>.
+            </p>
+          </div>
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              UXD backing in Mango was caught in the exploit pause. Pause
+              <code>DisableDepositoryRegularMinting</code>
+              <a href="https://solscan.io/tx/5MEJm1CcMhtak7ADHkPzL68g2NnVXrwXN6jximykJrZk9KNG8fea3kwR6D2s3ERSixcqxjz4omGFy4zYVRx7z3zp"><code>5MEJm1CcMhtak7ADHkPzL68g2NnVXrwXN6jximykJrZk9KNG8fea3kwR6D2s3ERSixcqxjz4omGFy4zYVRx7z3zp</code></a>
+              at <strong>12 Oct 2022 02:35:41 UTC</strong>.
+              Mint <a href="https://solscan.io/account/7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT"><code>7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT</code></a>.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              USDC reimburse <strong>16010171.231993 USDC</strong>
+              <a href="https://solscan.io/tx/sKNRc1zFcJ7UHXLnDJrk7xGerDKiRtFANMyykE1rm37oXnhm5EtuKARsA3ombVsvkkNbQqzZ9b3DbvGMAKvgfbT"><code>sKNRc1zFcJ7UHXLnDJrk7xGerDKiRtFANMyykE1rm37oXnhm5EtuKARsA3ombVsvkkNbQqzZ9b3DbvGMAKvgfbT</code></a>.
+              WSOL <strong>125637.957110683 WSOL</strong>
+              <a href="https://solscan.io/tx/TtfuSJ6AetqXLwZy1BAXTQfDHHdxJBS6SZrgfy5cYuEyj8pMZcEmGSAub3GLDgnteQiQW1kR4ZqR2mokpbTfRW3"><code>TtfuSJ6AetqXLwZy1BAXTQfDHHdxJBS6SZrgfy5cYuEyj8pMZcEmGSAub3GLDgnteQiQW1kR4ZqR2mokpbTfRW3</code></a>
+              to DAO <a href="https://solscan.io/account/CzZySsi1dRHMitTtNe2P12w3ja2XmfcGgqJBS8ytBhhY"><code>CzZySsi1dRHMitTtNe2P12w3ja2XmfcGgqJBS8ytBhhY</code></a>.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>Role</th><th>Signature / account</th></tr></thead>
+              <tbody>
+                <tr><td>Pause 12 Oct 02:35:41 UTC</td><td><a href="https://solscan.io/tx/5MEJm1CcMhtak7ADHkPzL68g2NnVXrwXN6jximykJrZk9KNG8fea3kwR6D2s3ERSixcqxjz4omGFy4zYVRx7z3zp"><code>5MEJm1CcMhtak7ADHkPzL68g2NnVXrwXN6jximykJrZk9KNG8fea3kwR6D2s3ERSixcqxjz4omGFy4zYVRx7z3zp</code></a></td></tr>
+                <tr><td>16010171.231993 USDC reimburse</td><td><a href="https://solscan.io/tx/sKNRc1zFcJ7UHXLnDJrk7xGerDKiRtFANMyykE1rm37oXnhm5EtuKARsA3ombVsvkkNbQqzZ9b3DbvGMAKvgfbT"><code>sKNRc1zFcJ7UHXLnDJrk7xGerDKiRtFANMyykE1rm37oXnhm5EtuKARsA3ombVsvkkNbQqzZ9b3DbvGMAKvgfbT</code></a></td></tr>
+                <tr><td>125637.957110683 WSOL</td><td><a href="https://solscan.io/tx/TtfuSJ6AetqXLwZy1BAXTQfDHHdxJBS6SZrgfy5cYuEyj8pMZcEmGSAub3GLDgnteQiQW1kR4ZqR2mokpbTfRW3"><code>TtfuSJ6AetqXLwZy1BAXTQfDHHdxJBS6SZrgfy5cYuEyj8pMZcEmGSAub3GLDgnteQiQW1kR4ZqR2mokpbTfRW3</code></a></td></tr>
+                <tr><td>DAO</td><td><a href="https://solscan.io/account/CzZySsi1dRHMitTtNe2P12w3ja2XmfcGgqJBS8ytBhhY"><code>CzZySsi1dRHMitTtNe2P12w3ja2XmfcGgqJBS8ytBhhY</code></a></td></tr>
+                <tr><td>UXD mint</td><td><a href="https://solscan.io/account/7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT"><code>7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT</code></a></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Third-party Mango freeze, not a UXD program bug.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Minting disabled; hashed USDC/WSOL reimbursements above. Wiki
+              ~$19.9M temporarily locked is a pointer to the Mango incident, not
+              a UXD drain.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Wiki ~$19.9M locked figure is a contagion pointer, not a UXD exploit tx.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://tokeninsight.com/en/news/uxd-protocol-affected-by-nearly-20-million-in-mango-attack">TokenInsight</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>

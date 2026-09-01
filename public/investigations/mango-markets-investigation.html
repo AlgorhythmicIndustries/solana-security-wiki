@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for Mango Markets oracle." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Mango Markets oracle — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">11 Oct 2022</span>
+          </div>
+          <h1>Mango Markets oracle</h1>
+          <p class="muted">
+            Wiki id <code>mango-markets-oracle-oct-2022</code>
+            · <a href="/incident/mango-markets-oracle-oct-2022">Live incident page</a>
+          </p>
+
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Primary Mango oracle / spot manipulation. Program
+              <a href="https://solscan.io/account/mv3ekLzLbnVPNxjSKvqBpU3ZeZXPQdEC3bp5MDEBG68"><code>mv3ekLzLbnVPNxjSKvqBpU3ZeZXPQdEC3bp5MDEBG68</code></a>.
+              Signers <a href="https://solscan.io/account/yUJw9a2PyoqKkH47i4yEGf4WXomSHMiK7Lp29Xs2NqM"><code>yUJw9a2PyoqKkH47i4yEGf4WXomSHMiK7Lp29Xs2NqM</code></a>
+              (Arkham: Mango Markets Exploiter) and
+              <a href="https://solscan.io/account/J44uRJxJEDTyPgFG6BtQJ3skhex8FeBbDJWVoh3z9dJU"><code>J44uRJxJEDTyPgFG6BtQJ3skhex8FeBbDJWVoh3z9dJU</code></a>.
+              Related contagion cards:
+              <a href="/incident/uxd-mango-contagion-oct-2022">UXD</a>,
+              <a href="/incident/tulip-mango-contagion-oct-2022">Tulip</a>.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              SettlePnl
+              <a href="https://solscan.io/tx/SFVdKJpzm2hsK5Kq9LDBD47ZXQu85s5UffCYUrzsqZUBiWrCm1q7JG95PpRye42fqnZyAXeAvYPKxiV6urcEDv1"><code>SFVdKJpzm2hsK5Kq9LDBD47ZXQu85s5UffCYUrzsqZUBiWrCm1q7JG95PpRye42fqnZyAXeAvYPKxiV6urcEDv1</code></a>
+              at <strong>22:29:27 UTC</strong>.
+              50M USDC
+              <a href="https://solscan.io/tx/2dLcq66rxNmyJbX8WgkJ7dnavw87mPYt1CtGyGE6wgWcYoRSPan4wjaSVSBV4fsLYJfuNCfwqVDJNQS4WMRNPamn"><code>2dLcq66rxNmyJbX8WgkJ7dnavw87mPYt1CtGyGE6wgWcYoRSPan4wjaSVSBV4fsLYJfuNCfwqVDJNQS4WMRNPamn</code></a>
+              slot <strong>154863916</strong>.
+              15 Oct return to
+              <a href="https://solscan.io/account/9mM6NfXauEFviFY1S1thbo7HXYNiSWSvwZEhguJw26wY"><code>9mM6NfXauEFviFY1S1thbo7HXYNiSWSvwZEhguJw26wY</code></a>.
+              Prefix <code>6ZRCB7AA…</code> = FTX via Arkham (full address is a
+              coverage gap).
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>Role</th><th>Id</th></tr></thead>
+              <tbody>
+                <tr><td>Program</td><td><a href="https://solscan.io/account/mv3ekLzLbnVPNxjSKvqBpU3ZeZXPQdEC3bp5MDEBG68"><code>mv3ekLzLbnVPNxjSKvqBpU3ZeZXPQdEC3bp5MDEBG68</code></a></td></tr>
+                <tr><td>Signer (Arkham exploiter)</td><td><a href="https://solscan.io/account/yUJw9a2PyoqKkH47i4yEGf4WXomSHMiK7Lp29Xs2NqM"><code>yUJw9a2PyoqKkH47i4yEGf4WXomSHMiK7Lp29Xs2NqM</code></a></td></tr>
+                <tr><td>Signer</td><td><a href="https://solscan.io/account/J44uRJxJEDTyPgFG6BtQJ3skhex8FeBbDJWVoh3z9dJU"><code>J44uRJxJEDTyPgFG6BtQJ3skhex8FeBbDJWVoh3z9dJU</code></a></td></tr>
+                <tr><td>SettlePnl 22:29:27 UTC</td><td><a href="https://solscan.io/tx/SFVdKJpzm2hsK5Kq9LDBD47ZXQu85s5UffCYUrzsqZUBiWrCm1q7JG95PpRye42fqnZyAXeAvYPKxiV6urcEDv1"><code>SFVdKJpzm2hsK5Kq9LDBD47ZXQu85s5UffCYUrzsqZUBiWrCm1q7JG95PpRye42fqnZyAXeAvYPKxiV6urcEDv1</code></a></td></tr>
+                <tr><td>50M USDC slot 154863916</td><td><a href="https://solscan.io/tx/2dLcq66rxNmyJbX8WgkJ7dnavw87mPYt1CtGyGE6wgWcYoRSPan4wjaSVSBV4fsLYJfuNCfwqVDJNQS4WMRNPamn"><code>2dLcq66rxNmyJbX8WgkJ7dnavw87mPYt1CtGyGE6wgWcYoRSPan4wjaSVSBV4fsLYJfuNCfwqVDJNQS4WMRNPamn</code></a></td></tr>
+                <tr><td>15 Oct return dest</td><td><a href="https://solscan.io/account/9mM6NfXauEFviFY1S1thbo7HXYNiSWSvwZEhguJw26wY"><code>9mM6NfXauEFviFY1S1thbo7HXYNiSWSvwZEhguJw26wY</code></a></td></tr>
+                <tr><td>FTX via Arkham (truncated)</td><td><code>6ZRCB7AA…</code></td></tr>
+              </tbody>
+            </table>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Full FTX address beyond
+                <code>6ZRCB7AA…</code> is not listed. Remaining borrow / MNGO
+                pump txs beyond the hashed SettlePnl and 50M USDC samples are
+                not listed. Wiki ~$116M drained / ~$67M returned is a write-up
+                pointer around those samples.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Thin MNGO spot + permissive cross-margin (wiki). Hashed SettlePnl
+              and 50M USDC samples above; full pump sequence is not enumerated.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Protocol pause; 15 Oct return destination hashed. Legal / CFTC
+              coverage in References.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Full FTX address beyond 6ZRCB7AA….</li>
+              <li>Remaining MNGO pump / borrow transactions beyond SettlePnl and 50M USDC samples.</li>
+              <li>Wiki ~$116M / ~$67M figures are write-up pointers.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://www.coindesk.com/markets/2022/10/12/how-market-manipulation-led-to-a-100m-exploit-on-solana-defi-exchange-mango">CoinDesk — Mango manipulation</a></li>
+              <li><a href="https://blockworks.co/news/mango-markets-mangled-by-oracle-manipulation-for-112m">Blockworks — oracle manipulation</a></li>
+              <li><a href="https://decrypt.co/118732/cftc-charges-mango-markets-hacker">Decrypt — CFTC action</a></li>
+              <li><a href="https://www.chainalysis.com/blog/oracle-manipulation-attacks-rising/">Chainalysis — oracle manipulation trend</a></li>
+              <li><a href="https://www.helius.dev/blog/solana-hacks">Helius catalog</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>

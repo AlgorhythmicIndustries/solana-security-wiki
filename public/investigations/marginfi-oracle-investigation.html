@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for MarginFi oracle." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>MarginFi oracle — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">1 Mar 2023</span>
+          </div>
+          <h1>MarginFi oracle</h1>
+          <p class="muted">
+            Wiki id <code>marginfi-oracle-mar-2023</code>
+            · <a href="/incident/marginfi-oracle-mar-2023">Live incident page</a>
+          </p>
+
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Wiki card cites reported bad debt / oracle squeeze (~$2M, magnitude
+              approximate). This pass found <strong>no unique ~$2M squeeze
+              transaction on 1 Mar 2023</strong>.
+              v2 program <a href="https://solscan.io/account/MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA"><code>MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA</code></a>
+              existed by Feb 2023 (do not treat 2026 existence as a 2023 IoC).
+              pdata <a href="https://solscan.io/account/4Q8u2ny8YYgytJEncwZQfVWbd5axZtfgDxYKHehvPQR7"><code>4Q8u2ny8YYgytJEncwZQfVWbd5axZtfgDxYKHehvPQR7</code></a>.
+              Last Feb upgrade
+              <a href="https://solscan.io/tx/3oHCvF56mtJpdpTkG2pXXS4jznKK1UMcR8Xy7wZgTXCQbvCHRFUn3nCofojDi2yq6jhQus4GzQBgZuc7aJiqzJZR"><code>3oHCvF56mtJpdpTkG2pXXS4jznKK1UMcR8Xy7wZgTXCQbvCHRFUn3nCofojDi2yq6jhQus4GzQBgZuc7aJiqzJZR</code></a>.
+              Lookalike <code>MFv2hWf31Z4…SiVU</code> is null. No official X.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <table class="hash-table">
+              <thead><tr><th>Role</th><th>Id</th></tr></thead>
+              <tbody>
+                <tr><td>v2 program (existed by Feb 2023)</td><td><a href="https://solscan.io/account/MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA"><code>MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA</code></a></td></tr>
+                <tr><td>pdata</td><td><a href="https://solscan.io/account/4Q8u2ny8YYgytJEncwZQfVWbd5axZtfgDxYKHehvPQR7"><code>4Q8u2ny8YYgytJEncwZQfVWbd5axZtfgDxYKHehvPQR7</code></a></td></tr>
+                <tr><td>Last Feb upgrade</td><td><a href="https://solscan.io/tx/3oHCvF56mtJpdpTkG2pXXS4jznKK1UMcR8Xy7wZgTXCQbvCHRFUn3nCofojDi2yq6jhQus4GzQBgZuc7aJiqzJZR"><code>3oHCvF56mtJpdpTkG2pXXS4jznKK1UMcR8Xy7wZgTXCQbvCHRFUn3nCofojDi2yq6jhQus4GzQBgZuc7aJiqzJZR</code></a></td></tr>
+                <tr><td>Lookalike (null)</td><td><code>MFv2hWf31Z4…SiVU</code></td></tr>
+              </tbody>
+            </table>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Exploit / squeeze transaction is
+                not hashed. Do not invent a 1 Mar drain. Do not treat a 2026
+                program-id observation as a 2023 indicator. Lookalike
+                <code>MFv2hWf31Z4…SiVU</code> is null — not an IoC.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Wiki class is thin-liquidity collateral + oracle latency. That
+              class is not proven here by a hashed 1 Mar squeeze tx.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              See Manuel Pena write-up in References. No official X post.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>No unique ~$2M squeeze transaction on 1 Mar 2023.</li>
+              <li>Wiki ~$2M remains a write-up pointer.</li>
+              <li>Full lookalike pubkey beyond MFv2hWf31Z4…SiVU (account is null).</li>
+              <li>No official X post.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf">Manuel Pena — MarginFi section</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>
