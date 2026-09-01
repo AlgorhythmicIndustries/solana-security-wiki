@@ -18,7 +18,7 @@ export function InvestigationsPage() {
         coverage gaps.
       </p>
       <p className="muted">
-        {sorted.length} investigations (Avici through Solareum).
+        {sorted.length} investigations (Aquifer AMM through Solareum).
       </p>
       <ul className="timeline">
         {sorted.map((d) => {
@@ -28,6 +28,14 @@ export function InvestigationsPage() {
               <article className="incident-card">
                 <div className="incident-meta">
                   <span className="pill">{formatDate(d.date)}</span>
+                  {d.status === "draft" ? (
+                    <span className="pill">Draft</span>
+                  ) : null}
+                  {d.published ? (
+                    <span className="pill">Published</span>
+                  ) : (
+                    <span className="pill">Not published</span>
+                  )}
                 </div>
                 <h3>
                   <a href={d.href}>{d.title}</a>
