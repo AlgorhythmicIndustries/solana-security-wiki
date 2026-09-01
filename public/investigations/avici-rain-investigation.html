@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Avici / Rain card-contract drain." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Avici / Rain card-contract drain — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">28 Aug 2026</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Avici / Rain card-contract drain</h1>
+          <p class="muted">
+            Wiki id <code>avici-rain-card-contract-aug-2026</code>
+            · <a href="/incident/avici-rain-card-contract-aug-2026">Live incident page</a>
+          </p>
+          
+          <div class="callout">
+            <p>
+              <strong>Live page already has a writeup.</strong> This draft is the
+              IR companion. It does not add a conflicting drain-tx list: the
+              live article describes the same Rain authorization path and
+              refunds. Individual <code>WithdrawCollateralAsset</code> signatures
+              are not hashed here.
+            </p>
+          </div>
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              On 28 Aug 2026 an attacker exploited an authorization flaw in an
+              outdated Rain Solana card contract used by Avici, Tria, Solayer Pay,
+              and other neobanks. Avici reconciled <strong>$500,859.22</strong>
+              across 1,685 users; Tria reported ~$431,945 across 636 users;
+              on-chain observers estimated ~$1.1M bridged off Solana. Rain and
+              the platforms refunded card balances (Avici/Tria added 10%
+              cashback). A parallel wallet-drainer phishing campaign
+              (<code>getavici.today</code>, ~$600K reporting) is a separate
+              vector and is not in the $1.1M figure.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Attacker seed <a href="https://solscan.io/account/FVNFzqAny8spWdPmYw6RQ9TkYa29ueFFiqCFD1gQnCEj"><code>FVNFzqAny8spWdPmYw6RQ9TkYa29ueFFiqCFD1gQnCEj</code></a>
+              was created 28 Aug 2026 ~13:40 UTC and funded with ~1.79 SOL
+              (~$190) via deBridge, then first hit card contracts ~16:49 UTC
+              (Nikita / @0xVishnya timeline, Our Crypto Talk, Crypto Times).
+            </p>
+            <p>
+              Repeating per-victim sequence: <code>SubmitSignatures</code> with
+              the Ed25519 precompile, <code>AddCollateralAdmin</code>, then
+              <code>WithdrawCollateralAsset</code>. Analysts described thousands
+              of automated txs (one checkpoint: 14,672 signatures, 2,344 failed).
+            </p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> No single drain signature, Rain
+                program id, or deBridge / Tornado hop is hashed in this draft.
+                Do not invent a canonical vault-drain tx. The live incident page
+                already covers mechanism and refunds without a conflicting hash
+                list.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Signature-verification routing bug: a second Ed25519 check was
+              bound to the first instruction, so the runtime accepted the
+              attacker’s signature twice and admitted an unauthorized collateral
+              admin. Shared Rain infra, not Avici’s self-custodial wallets.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Rain upgraded affected contract versions. Avici filed IC3.
+              Card-balance refunds processed; phishing drainers remain out of
+              the protocol-loss total.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Per-victim <code>WithdrawCollateralAsset</code> signatures (thousands of txs).</li>
+              <li>Rain program ids and deBridge / Tornado hashes.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://www.cryptotimes.io/2026/08/29/solana-neobank-avici-hacked-attacker-spends-190-to-drain-500k-from-1685-users/">Crypto Times</a></li>
+              <li><a href="https://ourcryptotalk.com/news/avici-exploit-rain-solana-card-contract">Our Crypto Talk</a></li>
+              <li><a href="/incident/avici-rain-card-contract-aug-2026">Live wiki incident</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

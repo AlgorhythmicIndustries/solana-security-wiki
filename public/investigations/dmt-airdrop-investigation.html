@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for DMT / dexmaxai airdrop phishing." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>DMT / dexmaxai airdrop phishing — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">20 Nov 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>DMT / dexmaxai airdrop phishing</h1>
+          <p class="muted">
+            Wiki id <code>dmt-dexmaxai-airdrop-phishing-nov-2025</code>
+            · <a href="/incident/dmt-dexmaxai-airdrop-phishing-nov-2025">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              On 20 Nov 2025 GoPlus warned that the @dexmaxai DMT airdrop tricked
+              users into extra token authorizations. Pattern on Solana:
+              Tokenkeg <code>Approve</code> then <code>TransferChecked</code>.
+              1,000+ wallets; &gt;$130k bridged. Project X/site went offline
+              (rug reporting).
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Truncated collector pubkeys and
+                unverified HitBTC deposit attribution are not expanded to full
+                hashes here. Do not invent a Tokenkeg approve/transfer signature
+                list or a HitBTC hop. Wiki $130k remains an unhashed aggregate.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Claim UI asked for a second signature that was SPL delegate
+              approval, not the airdrop mint. Drainers then
+              <code>TransferChecked</code> against the delegate.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              GoPlus: revoke delegates or move assets. Solana revoke tools, not
+              EVM Revoke.cash.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Collector full pubkey / approve+transfer signature list.</li>
+              <li>HitBTC deposit hashes (unverified in this draft).</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://x.com/GoPlusZH/status/1991436599461319047">GoPlus (X)</a></li>
+              <li><a href="https://www.wublock123.com/news/news-52197">Wu Blockchain / GoPlus alert</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Allbridge Core flash-loan." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Allbridge Core flash-loan — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">19 Jul 2026</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Allbridge Core flash-loan</h1>
+          <p class="muted">
+            Wiki id <code>allbridge-core-flash-loan-jul-2026</code>
+            · <a href="/incident/allbridge-core-flash-loan-jul-2026">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              A Kamino flash loan of ~1.122M USDC funded USDC/USDT swaps that
+              skewed Allbridge Core’s Solana pool math. The attacker withdrew
+              liquidity at the distorted rate, repaid the loan in the same
+              transaction, and kept ~$1.65M reporting (PeckShield / Allbridge).
+              This is a pool-swap manipulation, not a forged bridge mint.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Solana exploiter <a href="https://solscan.io/account/FhffBraZsGn4H2LxLNToEcaHWEfWwT2UcSz4oRHb7Qdc"><code>FhffBraZsGn4H2LxLNToEcaHWEfWwT2UcSz4oRHb7Qdc</code></a>.
+              Gas funding (Solana):
+              <a href="https://solscan.io/tx/46aaqf6Ksd2S44g5jyM9dbEX1yAjGMsPJ6yfiG6frHfFMMKdVhMMnp7WsD8LQ6q5t9ySbXv6FWBT1XKHXQXLBKKs"><code>46aaqf6Ksd2S44g5jyM9dbEX1yAjGMsPJ6yfiG6frHfFMMKdVhMMnp7WsD8LQ6q5t9ySbXv6FWBT1XKHXQXLBKKs</code></a>.
+              ETH gas send that preceded that hop:
+              <a href="https://etherscan.io/tx/0xffdd97cdc0f348140de33ca9383c8ca77117a9dec913d9188daa0942d97f273c"><code>0xffdd97cdc0f348140de33ca9383c8ca77117a9dec913d9188daa0942d97f273c</code></a>.
+            </p>
+            <p>
+              Atomic exploit (19 Jul 2026):
+              <a href="https://solscan.io/tx/3LNLaGi36bqoSBFBqcQ3ZvDbnGCxrxu4rqahZrnfHZjKSYxfR1mqiCXtBXjjeBmoRQDeSiKxZ7c1nFb8pBgTY39Q"><code>3LNLaGi36bqoSBFBqcQ3ZvDbnGCxrxu4rqahZrnfHZjKSYxfR1mqiCXtBXjjeBmoRQDeSiKxZ7c1nFb8pBgTY39Q</code></a>.
+            </p>
+            <p>
+              Proceeds left Solana via Mayan MCTP (Circle CCTP under the hood).
+              Hashed Ethereum receipts at <a href="https://etherscan.io/address/0x651591b68A9c9650FB23F642162353306281ffDe"><code>0x651591b68A9c9650FB23F642162353306281ffDe</code></a>:
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>Receipt</th><th>Ethereum tx</th></tr></thead>
+              <tbody>
+                <tr><td>282.866562 ETH</td><td><a href="https://etherscan.io/tx/0x97d092320b84678f234fb59ab6bc651f9ea566ccdc69bc1fe2cf23e2ae631a92"><code>0x97d092320b84678f234fb59ab6bc651f9ea566ccdc69bc1fe2cf23e2ae631a92</code></a></td></tr>
+                <tr><td>295.588646 ETH</td><td><a href="https://etherscan.io/tx/0xb2759bfa73b5dafb9b137367e0197e87db45143d836a01d35cf16a695dc48c84"><code>0xb2759bfa73b5dafb9b137367e0197e87db45143d836a01d35cf16a695dc48c84</code></a></td></tr>
+                <tr><td>557,774.209343 DAI</td><td><a href="https://etherscan.io/tx/0x70a6953a85d60aecd0e68385ce7053ab1b75ed864c123759b3fb87e2e1db07c5"><code>0x70a6953a85d60aecd0e68385ce7053ab1b75ed864c123759b3fb87e2e1db07c5</code></a></td></tr>
+              </tbody>
+            </table>
+            <p>
+              Recovery address published by Allbridge:
+              <a href="https://etherscan.io/address/0x01a494079DCB715f622340301463cE50cd69A4D0"><code>0x01a494079DCB715f622340301463cE50cd69A4D0</code></a>.
+            </p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Native Circle CCTP
+                <em>mint</em> logs (USDC minted on Ethereum before solver
+                conversion to ETH/DAI) are not expanded here. Do not treat the
+                CertiK-alert destination <a href="https://etherscan.io/address/0x651591b68A9c9650FB23F642162353306281ffDe"><code>0x651591b68A9c9650FB23F642162353306281ffDe</code></a>
+                as a hashed hop by itself; it is only the recipient of the three
+                receipts above. Unverified CertiK dests without those hashes are
+                not hops.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Withdrawal / swap pricing derived from pool balances a single
+              flash-loaned transaction can move. Same class as Allbridge’s 2023
+              BNB-chain pool incident.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Core paused; LPs urged to withdraw. Allbridge asked arbitrageurs
+              who caught the imbalance to return funds to the recovery address.
+              Later reporting said Core resumed with CCTP / LayerZero and
+              without the manipulated pools.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Raw CCTP USDC mint receipts (pre-solver) on Ethereum.</li>
+              <li>Post-receipt Railgun / NEAR Intents / MAYAChain ZEC hops are not hashed here.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://bitok.org/blog/allbridge-hack-1-65m-exploit-analysis">BitOK reconstruction</a></li>
+              <li><a href="https://olympixai.medium.com/how-allbridge-core-lost-1-65m-on-solana-to-a-two-year-old-known-bug-0da3d3c16895">Olympix — pool math</a></li>
+              <li><a href="https://decrypt.co/373831/allbridge-pauses-cross-chain-protocol-after-1-65m-flash-loan-attack">Decrypt</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

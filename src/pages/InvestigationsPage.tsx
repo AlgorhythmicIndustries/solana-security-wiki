@@ -19,8 +19,7 @@ export function InvestigationsPage() {
         full signature; missing hashes are labeled as coverage gaps.
       </p>
       <p className="muted">
-        {sorted.length} drafts in this batch (owner-field phishing through
-        Solareum).
+        {sorted.length} drafts (Avici through Solareum).
       </p>
       <ul className="timeline">
         {sorted.map((d) => {

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Solar / Solana Mandarin X compromise." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Solar / Solana Mandarin X compromise — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">27 Jan 2026</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Solar / Solana Mandarin X compromise</h1>
+          <p class="muted">
+            Wiki id <code>solar-solana-zh-x-jan-2026</code>
+            · <a href="/incident/solar-solana-zh-x-jan-2026">Live incident page</a>
+          </p>
+          
+          <div class="callout">
+            <p>
+              <strong>Not Solareum Telegram 2024.</strong> Distinct from
+              <a href="/investigations/solareum-telegram-investigation.html">solareum-telegram-investigation.html</a>
+              / <a href="/incident/solareum-telegram-mar-2024"><code>solareum-telegram-mar-2024</code></a>.
+              This card is a Mandarin-community X account takeover (SlowMist).
+            </p>
+          </div>
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              On 27 Jan 2026 a Solar / Solana Mandarin community X account was
+              compromised (SlowMist listing). This is social-account abuse.
+              There is no on-chain protocol drain hashed for this incident.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap / no protocol drain.</strong> No program,
+                collector, or drain signature. Victim-signed phishing txs, if
+                any, are not in the sources used here. Do not merge with
+                Solareum Telegram.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Compromise of a high-trust localized X account, not a Solana program bug.</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>SlowMist catalog entry; wiki severity low / loss unclear.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>No drain hash (expected: none for a protocol vault).</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://hacked.slowmist.io/?c=Solana">SlowMist hacked DB (Solana)</a></li>
+              <li><a href="/investigations/solareum-telegram-investigation.html">Solareum Telegram draft (2024, distinct)</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

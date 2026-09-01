@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Across Protocol Solana relayer." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Across Protocol Solana relayer — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">17 Jul 2026</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Across Protocol Solana relayer</h1>
+          <p class="muted">
+            Wiki id <code>across-protocol-solana-relayer-jul-2026</code>
+            · <a href="/incident/across-protocol-solana-relayer-jul-2026">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              At ~05:30 UTC on 17 Jul 2026, Across’s Solana spoke was attacked.
+              Losses were limited to the Risk Labs relayer that fronts capital
+              in the intent model. User funds were not pooled; in-flight fills
+              completed. Later Across reporting put gross relayer payout near
+              $4.5M across 581 filled forgeries (1,627 forged deposits).
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Live signer IoC is
+              <a href="https://solscan.io/account/8bkoZToaTBBtAPczgHqD4XVxWtvBkiy4crtexEtYDYSL"><code>8bkoZToaTBBtAPczgHqD4XVxWtvBkiy4crtexEtYDYSL</code></a>
+              — note the <strong>o</strong> in <code>8bkoZToa</code>. Some
+              early coverage (Crypto Times) printed the typo
+              <code>8bkoZTaTBBtAPczgHqD4XVxWtvBkiy4crtexEtYDYSL</code>
+              (missing <code>o</code>). Do not use the typo as an IoC.
+            </p>
+            <p>
+              EVM addresses published with the Solana signer:
+              <a href="https://etherscan.io/address/0xa0C0e9f307b5A26cA3FB5891c19154fc7A02BeF7"><code>0xa0C0e9f307b5A26cA3FB5891c19154fc7A02BeF7</code></a>,
+              <a href="https://etherscan.io/address/0xA6fb971F3B7a9b9F76EdA76bc89268fe26560189"><code>0xA6fb971F3B7a9b9F76EdA76bc89268fe26560189</code></a>.
+            </p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> An Ethereum USDC floor of ~1.2M
+                is not hashed in this draft. Do not invent that mint or transfer
+                hash. Forged Solana deposit signatures (1,627 single-use wallets)
+                are also not enumerated here.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Off-chain relayer event parsing (<code>SvmCpiEventsClient</code>)
+              accepted inner instructions through the SpokePool event-authority
+              PDA without checking the 8-byte Anchor event discriminator.
+              Attackers CPI’d a read-only helper with forged
+              <code>FundsDeposited</code> payloads. No user escrow moved.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Solana deposits disabled within minutes. SEAL 911 tracing.
+              Later post-mortem: CCTP fallback for Solana order flow; white-hat
+              recovery reporting followed. Not a protocol vault drain.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>~1.2M USDC Ethereum floor tx (full hash missing).</li>
+              <li>Per-fill destination hashes for the 581 relayer payouts.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://www.cryptotimes.io/2026/07/17/across-protocol-reports-first-attack-on-solana-after-34b-in-bridge-volume/">Crypto Times (contains the 8bkoZTa typo)</a></li>
+              <li><a href="https://0xposed.io/radar/across-protocol-solana-relayer-exploit-risk-labs-capital-only-user-funds-safe">0xposed — 8bkoZToa IoC</a></li>
+              <li><a href="https://en.cryptonomist.ch/2026/07/24/across-solana-relayer-attack/">Cryptonomist — post-mortem numbers</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

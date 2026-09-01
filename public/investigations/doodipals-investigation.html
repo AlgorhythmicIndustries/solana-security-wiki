@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for DoodiPals key leak." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>DoodiPals key leak — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">21 Oct 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>DoodiPals key leak</h1>
+          <p class="muted">
+            Wiki id <code>doodipals-key-leak-oct-2025</code>
+            · <a href="/incident/doodipals-key-leak-oct-2025">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              20–21 Oct 2025 (wiki date 21 Oct): leaked project keys let an
+              attacker sell $DOODi from many wallets into SOL (~917 SOL /
+              ~$171k reporting). Team and MistTrack traced SOL to FixedFloat.
+              Distinct from a protocol vault bug.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Shared hot <a href="https://solscan.io/account/5ndLnEYqSFiA5yUFHo6LVZ1eWc6Rhh11K5CfJNkoHEPs"><code>5ndLnEYqSFiA5yUFHo6LVZ1eWc6Rhh11K5CfJNkoHEPs</code></a>
+              appears as a gas-funder cluster that also funds Across-related
+              activity in later labeling. Treat that overlap as a
+              <strong>FLAG, not a merge</strong>, without more evidence that
+              DoodiPals and Across share an operator.
+            </p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Individual $DOODi→SOL sale
+                signatures and FixedFloat deposit hashes are not in the sources
+                used here. evilcos / MistTrack state the ~917 SOL outcome
+                without a hashed sale list in this draft.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Leaked private keys across many project wallets, not an AMM invariant failure.</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Team posted wallet/tx summaries and said they were working with
+              FixedFloat; police report. Later 1:1 token migration talk for
+              pre-hack holders.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Hashed SOL sales into FixedFloat.</li>
+              <li>Operator identity linking 5ndLnEYq to Across (FLAG only).</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://x.com/evilcos/status/1980443998461608427">evilcos (X)</a></li>
+              <li><a href="https://blockchain.news/flashnews/doodipals-hack-alert-hacker-swaps-doodi-for-sol-nets-917-sol">MistTrack / Blockchain.News</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

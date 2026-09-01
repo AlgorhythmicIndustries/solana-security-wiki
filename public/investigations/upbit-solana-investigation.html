@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Upbit Solana hot wallet." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Upbit Solana hot wallet — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">27 Nov 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Upbit Solana hot wallet</h1>
+          <p class="muted">
+            Wiki id <code>upbit-sol-hot-wallet-nov-2025</code>
+            · <a href="/incident/upbit-sol-hot-wallet-nov-2025">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Official Upbit notice: abnormal Solana hot-wallet withdrawals
+              detected at <strong>04:42 KST on 27 Nov 2025</strong>, sized at
+              <strong>KRW 44.5 billion</strong> (corrected from KRW 54B using
+              prices at that timestamp). Wiki ~$37M is a separate press
+              estimate. This draft does <strong>not</strong> invent a USD
+              conversion of the KRW print.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Notice 5800 lists destination accounts (excerpt of hashed SOL
+              notice destinations; full table is on Upbit):
+            </p>
+            <ul>
+              <li><a href="https://solscan.io/account/2bhVZDJjRLTdJJZWtCC25t3bDY3iXQP7LXY2oQtRJJTA"><code>2bhVZDJjRLTdJJZWtCC25t3bDY3iXQP7LXY2oQtRJJTA</code></a> (SOL; also DRIFT ATA)</li>
+              <li><a href="https://solscan.io/account/33jzE31DDMF1cPdoLw8o8v5fiiiSTTyTSKrKRUJyRWWg"><code>33jzE31DDMF1cPdoLw8o8v5fiiiSTTyTSKrKRUJyRWWg</code></a> (SOL; BONK / 2Z ATAs)</li>
+              <li><a href="https://solscan.io/account/5dorac4RBEp1ht2yNsfq6tEgmRqYoFsmnyrty8mqLYWc"><code>5dorac4RBEp1ht2yNsfq6tEgmRqYoFsmnyrty8mqLYWc</code></a> (SOL; BONK / JUP ATAs)</li>
+              <li><a href="https://solscan.io/account/8VWiu28Hvy74paVJhDsdxMx5mGAgy8W3qafNZAwpfTUy"><code>8VWiu28Hvy74paVJhDsdxMx5mGAgy8W3qafNZAwpfTUy</code></a> (SOL; JUP ATA)</li>
+              <li><a href="https://solscan.io/account/CfjGxhkx9SvNATeGQySghf1j9DvoNmnuk6JWZMEPGjLc"><code>CfjGxhkx9SvNATeGQySghf1j9DvoNmnuk6JWZMEPGjLc</code></a> (SOL; JUP ATA <a href="https://solscan.io/account/23JPm15PgYWV5uTnjADEVN8uSma2rdcULq3EGciTArzS"><code>23JPm15PgYWV5uTnjADEVN8uSma2rdcULq3EGciTArzS</code></a>)</li>
+            </ul>
+            <p>
+              Subsequent Jupiter aggregator dumps of stolen SPL into stables
+              are widely reported (thousands of txs). This draft
+              <strong>stops at notice destinations / Jupiter dumps</strong>
+              without inventing dump signatures.
+            </p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Individual hot-wallet outflow
+                signatures and Jupiter dump signatures are not hashed here.
+                Do not convert KRW 44.5B into a USD figure in this draft.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Unauthorized control of the Solana hot-wallet signing path.
+              Cold wallets were reported untouched. Not a Solana L1 bug.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Deposits/withdrawals paused; remaining hot assets to cold storage;
+              Upbit pledged to cover customer losses from reserves. LAYER freeze
+              (~KRW 2.3B in the corrected notice) via issuer cooperation.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Per-token outflow signatures from the hot wallet.</li>
+              <li>Hashed Jupiter dump txs (notice destinations only).</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://www.upbit.com/service_center/notice?id=5800&amp;view=share">Upbit notice 5800 (KRW 44.5B at 04:42 KST)</a></li>
+              <li><a href="https://www.ccn.com/education/crypto/upbit-2025-hack-36-million-solana-assets-stolen/">CCN — wiki-linked timeline</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>
