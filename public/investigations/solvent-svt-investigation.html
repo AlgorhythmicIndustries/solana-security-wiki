@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for Solvent / SVT." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Solvent / SVT — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">26 Aug 2023</span>
+          </div>
+          <h1>Solvent / SVT</h1>
+          <p class="muted">
+            Wiki id <code>svt-flash-loan-aug-2023</code>
+            · <a href="/incident/svt-flash-loan-aug-2023">Live incident page</a>
+          </p>
+
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Wiki card <code>svt-flash-loan-aug-2023</code> lists ~$400k flash-loan
+              impact. In the <strong>26 Aug 2023</strong> Solana window this pass
+              hashed only <strong>915.234043 SVT</strong>
+              <a href="https://solscan.io/tx/5d2Bh7TqsMMUmyg4TkT4HGsfGvGREd6Mg8ToVGhbtJEab1SnqLziUd3L9SLy16YfZQPSZAdn27UxHMvKNRNQKrFQ"><code>5d2Bh7TqsMMUmyg4TkT4HGsfGvGREd6Mg8ToVGhbtJEab1SnqLziUd3L9SLy16YfZQPSZAdn27UxHMvKNRNQKrFQ</code></a>.
+              <strong>Do not label that signature as the $400k exploit.</strong>
+              Mint <a href="https://solscan.io/account/svtMpL5eQzdmB3uqK9NXaQkq8prGZoKQFNVJghdWCkV"><code>svtMpL5eQzdmB3uqK9NXaQkq8prGZoKQFNVJghdWCkV</code></a>.
+              EOA prefix <code>0x4b44…</code> only. BSC / BNB Tornado hashes are
+              unhashed. No official X.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <table class="hash-table">
+              <thead><tr><th>Role</th><th>Id</th></tr></thead>
+              <tbody>
+                <tr><td>SVT mint</td><td><a href="https://solscan.io/account/svtMpL5eQzdmB3uqK9NXaQkq8prGZoKQFNVJghdWCkV"><code>svtMpL5eQzdmB3uqK9NXaQkq8prGZoKQFNVJghdWCkV</code></a></td></tr>
+                <tr><td>915.234043 SVT (not the $400k exploit)</td><td><a href="https://solscan.io/tx/5d2Bh7TqsMMUmyg4TkT4HGsfGvGREd6Mg8ToVGhbtJEab1SnqLziUd3L9SLy16YfZQPSZAdn27UxHMvKNRNQKrFQ"><code>5d2Bh7TqsMMUmyg4TkT4HGsfGvGREd6Mg8ToVGhbtJEab1SnqLziUd3L9SLy16YfZQPSZAdn27UxHMvKNRNQKrFQ</code></a></td></tr>
+                <tr><td>EOA (truncated)</td><td><code>0x4b44…</code></td></tr>
+              </tbody>
+            </table>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> No ~$400k Solana flash-loan
+                signature was found in the 26 Aug window. Full EOA beyond
+                <code>0x4b44…</code> is not listed. BSC Tornado hashes are not
+                hashed. Do not invent a $400k Solana drain tx.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Wiki describes a flash-loan economic loop. That loop is
+              <strong>not</strong> proven by the 915.234043 SVT transfer above.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              See SlowMist catalog pointer in References. No official X post.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>No ~$400k Solana flash-loan signature in the 26 Aug window.</li>
+              <li>Full EOA beyond prefix 0x4b44….</li>
+              <li>BSC / BNB Tornado hashes.</li>
+              <li>No official X post.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://hacked.slowmist.io/?c=Solana">SlowMist hacked DB</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>

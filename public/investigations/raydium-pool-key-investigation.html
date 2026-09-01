@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for Raydium pool owner key." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Raydium pool owner key — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">16 Dec 2022</span>
+          </div>
+          <h1>Raydium pool owner key</h1>
+          <p class="muted">
+            Wiki id <code>raydium-pool-owner-key-dec-2022</code>
+            · <a href="/incident/raydium-pool-owner-key-dec-2022">Live incident page</a>
+          </p>
+
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Privileged pool-owner key compromise. Owner
+              <a href="https://solscan.io/account/HggGrUeg4ReGvpPMLJMFKV69NTXL1r4wQ9Pk9Ljutwyv"><code>HggGrUeg4ReGvpPMLJMFKV69NTXL1r4wQ9Pk9Ljutwyv</code></a>.
+              Receiver <a href="https://solscan.io/account/AgJddDJLt17nHyXDCpyGELxwsZZQPqfUsuwzoiqVGJwD"><code>AgJddDJLt17nHyXDCpyGELxwsZZQPqfUsuwzoiqVGJwD</code></a>.
+              Distinct from the Raydium DNS card the same day — do not merge
+              drains. Several drain / upgrade signatures in this pass are
+              truncated prefixes only (coverage gaps).
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <table class="hash-table">
+              <thead><tr><th>Role</th><th>Id</th></tr></thead>
+              <tbody>
+                <tr><td>Owner</td><td><a href="https://solscan.io/account/HggGrUeg4ReGvpPMLJMFKV69NTXL1r4wQ9Pk9Ljutwyv"><code>HggGrUeg4ReGvpPMLJMFKV69NTXL1r4wQ9Pk9Ljutwyv</code></a></td></tr>
+                <tr><td>Receiver</td><td><a href="https://solscan.io/account/AgJddDJLt17nHyXDCpyGELxwsZZQPqfUsuwzoiqVGJwD"><code>AgJddDJLt17nHyXDCpyGELxwsZZQPqfUsuwzoiqVGJwD</code></a></td></tr>
+                <tr><td>Gas (truncated) 4.459745 SOL</td><td><code>32ity5nn…5itU</code> from <code>5ndLnEYq…HEPs</code></td></tr>
+                <tr><td>First drain 10:11:58 slot 167192704</td><td><code>5gjJdnFH…bnay</code></td></tr>
+                <tr><td>Last pre-14:16</td><td><code>5NeKbXqr…4gon</code></td></tr>
+                <tr><td>Custom 18</td><td><code>3G5UTojP…ErZh</code></td></tr>
+                <tr><td>Owner-change InvalidOwner 14:26:02</td><td><code>4yFawW9…</code></td></tr>
+                <tr><td>V4 upgrade 17 Dec 10:27</td><td><code>2x5qod9E…NXMK8</code></td></tr>
+                <tr><td>V4 upgrade 17 Dec 14:48</td><td><code>4WUsN1Du…igBw3</code></td></tr>
+                <tr><td>First Wormhole 3120.91 USDC</td><td><code>9fjgDgmf…eadp</code></td></tr>
+              </tbody>
+            </table>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Truncated signatures and accounts
+                above are not full hashes. Do not invent the missing characters.
+                Do not use the DNS-card $2.2M figure as a second hashed drain
+                on this page.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Malware/Trojan theft of a privileged pool-owner key (wiki);
+              admin withdrawals on legacy pools. Full drain-tx list is not
+              hashed in this pass.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Authority rotated; V4 upgrades noted above as truncated
+              signatures. Official X posts are References only.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Full signatures for 32ity5nn…5itU, 5gjJdnFH…bnay, 5NeKbXqr…4gon, 3G5UTojP…ErZh, 4yFawW9…, 2x5qod9E…NXMK8, 4WUsN1Du…igBw3, 9fjgDgmf…eadp.</li>
+              <li>Full gas funder beyond 5ndLnEYq…HEPs.</li>
+              <li>Remaining withdrawPNL / pool drains beyond the truncated samples.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://x.com/RaydiumProtocol/status/1603762271028748289">Raydium X — initial disclosure (pointer only)</a></li>
+              <li><a href="https://x.com/RaydiumProtocol/status/1604251722351710211">Raydium X follow-up (pointer only)</a></li>
+              <li><a href="https://github.com/raydium-io/dec_16_exploit">Raydium — on-chain forensics repo</a></li>
+              <li><a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682">Martin Obe — Raydium exploit</a></li>
+              <li><a href="https://www.certik.com/resources/blog/36QC53X75PfwlZhOSMkSFd-raydium-protocol-exploit-incident-analysis">CertiK — Raydium</a></li>
+              <li><a href="https://www.helius.dev/blog/solana-hacks">Helius catalog</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>
