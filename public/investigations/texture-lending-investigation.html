@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Texture lending." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Texture lending — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">9 Jul 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Texture lending</h1>
+          <p class="muted">
+            Wiki id <code>texture-lending-jul-2025</code>
+            · <a href="/incident/texture-lending-jul-2025">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Texture vault rebalance lacked an ownership check on the LP destination.
+              Two drain transactions on 9 Jul 2025 credited
+              <a href="https://solscan.io/account/6DpG2dUoYGJrhTTC5bTHbyuQ3SGxpDRjqZzwduwNJY1k"><code>6DpG2dUoYGJrhTTC5bTHbyuQ3SGxpDRjqZzwduwNJY1k</code></a>
+              a unique <strong>2,208,490.894823 USDC</strong>. The wiki’s $220k figure
+              is the 10% bounty kept after ~$1.98M was returned, not the unique drain.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Vault program <a href="https://solscan.io/account/Vau3BGKpqWi24LHwVQnVvd31ATGLQ3YmpUJ1DYTdgQs"><code>Vau3BGKpqWi24LHwVQnVvd31ATGLQ3YmpUJ1DYTdgQs</code></a>.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>USDC to 6DpG2d…</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr><td>00:21:55</td><td>+1,668,112.358942 USDC</td><td><a href="https://solscan.io/tx/4Nt66S9gNzS1X7aTX97x62xGd1p3hbDUKKmWgxJEFwDhJHGcTL55LPz6mKjSG5ZsDFT2j6KnzXgmZTSS9EUdPnNW"><code>4Nt66S9gNzS1X7aTX97x62xGd1p3hbDUKKmWgxJEFwDhJHGcTL55LPz6mKjSG5ZsDFT2j6KnzXgmZTSS9EUdPnNW</code></a></td></tr>
+                <tr><td>12:32:33</td><td>+540,378.535881 USDC</td><td><a href="https://solscan.io/tx/4jbHKNjyRRqLwb3fbvqD4SEC196Xp2wbLNgi5Fi1sGtyEVBAjo7c3deiyQWYjEST4p9PQhrgmfs9oih7nAjEPNba"><code>4jbHKNjyRRqLwb3fbvqD4SEC196Xp2wbLNgi5Fi1sGtyEVBAjo7c3deiyQWYjEST4p9PQhrgmfs9oih7nAjEPNba</code></a></td></tr>
+              </tbody>
+            </table>
+            <p>Sum of those two credits: 2,208,490.894823 USDC.</p>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Missing ownership check on vault rebalance LP destination.</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>Team negotiated return with a 10% bounty (~$220k). Treat wiki estimatedLossUsd 220000 as bounty, not unique drain.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Return-transaction signatures for the ~$1.98M are not hashed in this draft.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://x.com/texture_fi/status/1942972150631002245">Texture (X)</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

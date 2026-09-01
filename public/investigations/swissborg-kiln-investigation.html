@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for SwissBorg / Kiln SOL staking." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>SwissBorg / Kiln SOL staking — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">8 Sep 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>SwissBorg / Kiln SOL staking</h1>
+          <p class="muted">
+            Wiki id <code>swissborg-kiln-sol-staking-sep-2025</code>
+            · <a href="/incident/swissborg-kiln-sol-staking-sep-2025">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Compromised Kiln Connect API credentials were used to bury stake-authority
+              changes inside txs presented as routine unstaking for SwissBorg SOL Earn.
+              Eight stake withdraws on 8 Sep 2025 12:22–12:25 UTC credited exploiter
+              <a href="https://solscan.io/account/TYFWG3hvvxWMs2KXEk8cDuJCsXEyKs65eeqpD9P4mK1"><code>TYFWG3hvvxWMs2KXEk8cDuJCsXEyKs65eeqpD9P4mK1</code></a>. Observed sum of
+              those eight credits is <strong>192,623.410048043 SOL</strong>. The listed
+              figure 192,623.410088043 SOL differs by 0.000040 SOL; this draft uses the
+              hashed withdraw amounts, not the extra 40 lamports.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Skeleton stake authorize (31 Aug 2025 09:55:37 UTC):
+              <a href="https://solscan.io/tx/5DCPDEVrnVdM4jHgxYGtuuzvSubg15sSpkBCxexfuApRAfXEmNfokiTyj6bxE52QNGVbPnwm9L3YzcEoMHHEpLV"><code>5DCPDEVrnVdM4jHgxYGtuuzvSubg15sSpkBCxexfuApRAfXEmNfokiTyj6bxE52QNGVbPnwm9L3YzcEoMHHEpLV</code></a>.
+            </p>
+            <p>
+              Exploiter <a href="https://solscan.io/account/TYFWG3hvvxWMs2KXEk8cDuJCsXEyKs65eeqpD9P4mK1"><code>TYFWG3hvvxWMs2KXEk8cDuJCsXEyKs65eeqpD9P4mK1</code></a>;
+              related holding <a href="https://solscan.io/account/2dmoNLgfP1UjqM9ZxtTqWY1YJMHJdXnUkwTrcLhL7Xoq"><code>2dmoNLgfP1UjqM9ZxtTqWY1YJMHJdXnUkwTrcLhL7Xoq</code></a>;
+              second exploiter <a href="https://solscan.io/account/6bnSQH4UtGKgo4hUXRj8MeMz2bqPP6hxSaRrBjL96QaT"><code>6bnSQH4UtGKgo4hUXRj8MeMz2bqPP6hxSaRrBjL96QaT</code></a>.
+              Bitget probe <a href="https://solscan.io/tx/26q2ZhRqaj4jq5LtGV1ZgHd5mVc49SSwnxKbUxjuhxBJucor3DA4bJrJjwYz42aWcbaQZ7HD73YBdm77BiJ4jNLf"><code>26q2ZhRqaj4jq5LtGV1ZgHd5mVc49SSwnxKbUxjuhxBJucor3DA4bJrJjwYz42aWcbaQZ7HD73YBdm77BiJ4jNLf</code></a>.
+            </p>
+            <table class="hash-table">
+              <thead>
+                <tr><th>UTC</th><th>Credit to exploiter</th><th>From stake</th><th>Signature</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>12:22:03</td><td>+19039.369452205 SOL</td><td><a href="https://solscan.io/account/8ELwAvLLcmSwt1k3QHwBT7Hj9pEjv2qQF3X5yu4JXUKi"><code>8ELwAvLLcmSwt1k3QHwBT7Hj9pEjv2qQF3X5yu4JXUKi</code></a></td><td><a href="https://solscan.io/tx/CfFAp2GzwxK7B9jD1QPHaCT333czvaXpRMz74HhREyKkvr55HzXeewhVteDirpLP1TKdMtUfVLYm73p26PUWZ4d"><code>CfFAp2GzwxK7B9jD1QPHaCT333czvaXpRMz74HhREyKkvr55HzXeewhVteDirpLP1TKdMtUfVLYm73p26PUWZ4d</code></a></td></tr>
+                <tr><td>12:23:48</td><td>+22170.711222489 SOL</td><td><a href="https://solscan.io/account/BcNKASVphMrm9AWSXmYR7fw9ewB7Qau18K69wC1EZmGx"><code>BcNKASVphMrm9AWSXmYR7fw9ewB7Qau18K69wC1EZmGx</code></a></td><td><a href="https://solscan.io/tx/2Cn6DzHKe5EMFjC2SnNznCotnHFg85AEUYz94QCBSrW5Z3CcgLmStKaeVoHj9Vipq9Rw96Wm5f7PeZ7uuWyZHsnL"><code>2Cn6DzHKe5EMFjC2SnNznCotnHFg85AEUYz94QCBSrW5Z3CcgLmStKaeVoHj9Vipq9Rw96Wm5f7PeZ7uuWyZHsnL</code></a></td></tr>
+                <tr><td>12:23:55</td><td>+24545.820276257 SOL</td><td><a href="https://solscan.io/account/5mh69Tx22Z574fo6QxgBe7aE5mTxHpSPDmfikjRQe534"><code>5mh69Tx22Z574fo6QxgBe7aE5mTxHpSPDmfikjRQe534</code></a></td><td><a href="https://solscan.io/tx/2oSyFfaAjiGkdZhivR6KY2mB3Vhc1UUjXYoRLNQrgFCESuMMvKAD9NakbUxkRjzDi2wzxtMaRQDjBBoQFgxGt3Wf"><code>2oSyFfaAjiGkdZhivR6KY2mB3Vhc1UUjXYoRLNQrgFCESuMMvKAD9NakbUxkRjzDi2wzxtMaRQDjBBoQFgxGt3Wf</code></a></td></tr>
+                <tr><td>12:24:02</td><td>+25373.501819020 SOL</td><td><a href="https://solscan.io/account/GvyfmShUFnFpgzP63ruVzHb4dVSp4X7SMzznKdUNfYD5"><code>GvyfmShUFnFpgzP63ruVzHb4dVSp4X7SMzznKdUNfYD5</code></a></td><td><a href="https://solscan.io/tx/31kHEX3wvZhnZRLJvSHgT2ftDMW2AxxfLJ4D24cY7J1jo1onqMEfcnM3goargneWqZTDGYryouddtQMk9qAvFjTT"><code>31kHEX3wvZhnZRLJvSHgT2ftDMW2AxxfLJ4D24cY7J1jo1onqMEfcnM3goargneWqZTDGYryouddtQMk9qAvFjTT</code></a></td></tr>
+                <tr><td>12:24:10</td><td>+25373.501819018 SOL</td><td><a href="https://solscan.io/account/77oy5fSKLHc1VHn3No8bxP1G8TqGKF2USZcAoL2tb7SY"><code>77oy5fSKLHc1VHn3No8bxP1G8TqGKF2USZcAoL2tb7SY</code></a></td><td><a href="https://solscan.io/tx/2EAqjHBY6m4opdBLDQ7YiTX3KHpTJiwidFCUZ7hkE1wpLt4pYDJEgqHaaZ4FBzEEAiZqe5fsq8czkTdd8gC52jMK"><code>2EAqjHBY6m4opdBLDQ7YiTX3KHpTJiwidFCUZ7hkE1wpLt4pYDJEgqHaaZ4FBzEEAiZqe5fsq8czkTdd8gC52jMK</code></a></td></tr>
+                <tr><td>12:24:49</td><td>+25373.501819017 SOL</td><td><a href="https://solscan.io/account/ALpwKn1RskbkkPcJQb157P57gxyt82WcHB4EhXActPcZ"><code>ALpwKn1RskbkkPcJQb157P57gxyt82WcHB4EhXActPcZ</code></a></td><td><a href="https://solscan.io/tx/6Ri47GRE2JCvPnrA6wcrLnFooL8RhT5x8xN5J2mFwhrMryxzxFdfXYcThxPN49JdwtTdic45yVtYyrKip5oR8MX"><code>6Ri47GRE2JCvPnrA6wcrLnFooL8RhT5x8xN5J2mFwhrMryxzxFdfXYcThxPN49JdwtTdic45yVtYyrKip5oR8MX</code></a></td></tr>
+                <tr><td>12:24:59</td><td>+25373.501820019 SOL</td><td><a href="https://solscan.io/account/DXxU84PWxpmToqW5GSZB5X7ucZt6gmdwkBi6ioP2fdXX"><code>DXxU84PWxpmToqW5GSZB5X7ucZt6gmdwkBi6ioP2fdXX</code></a></td><td><a href="https://solscan.io/tx/4S1iX5mYqUKf3t1uQ8EGfKFynfWcdfPpqmwtPkeDP1XRvHP8rqxgpQBBfijm4ojp1LBF4HY5GaPJtYgckFUvbDXF"><code>4S1iX5mYqUKf3t1uQ8EGfKFynfWcdfPpqmwtPkeDP1XRvHP8rqxgpQBBfijm4ojp1LBF4HY5GaPJtYgckFUvbDXF</code></a></td></tr>
+                <tr><td>12:25:08</td><td>+25373.501820018 SOL</td><td><a href="https://solscan.io/account/9kHJ9Qn9xwRjXZx6zQqNSo53tzC9wXjfLZJNJCECR3CV"><code>9kHJ9Qn9xwRjXZx6zQqNSo53tzC9wXjfLZJNJCECR3CV</code></a></td><td><a href="https://solscan.io/tx/5yVsTap9zCh23pjdfEWmbaHXPBMrss5B4NsxdjCgDL8QGQMSq7jsiSJrZ6vQDrV9sB54qzhsqdYaQxdKg6Pz4KqN"><code>5yVsTap9zCh23pjdfEWmbaHXPBMrss5B4NsxdjCgDL8QGQMSq7jsiSJrZ6vQDrV9sB54qzhsqdYaQxdKg6Pz4KqN</code></a></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Kiln reported a GitHub token leading to a malicious Kiln Connect API
+              payload on deactivate-stake for large positions (reporting threshold
+              above 150k SOL). SwissBorg signed the composed unstake txs without
+              independently decoding the extra stake-authorize instructions.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              SwissBorg reimbursed users from treasury. Kiln and SwissBorg published
+              a joint statement. Integration credentials were rotated.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>0.000040 SOL gap between observed eight-withdraw sum and the listed 192,623.410088043 SOL figure.</li>
+              <li>Full instruction dump of the 31 Aug skeleton authorize is not reproduced here.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://swissborg.com/blog/swissborg-security-update-kiln-breach">SwissBorg security update</a></li>
+              <li><a href="https://swissborg.com/blog/joint-statement-kiln-x-swissborg-regarding-sol-incident">Joint statement</a></li>
+              <li><a href="https://www.halborn.com/blog/post/explained-the-swissborg-hack-september-2025">Halborn</a></li>
+              <li><a href="https://www.quillaudits.com/blog/hack-analysis/swissborg-exploit">QuillAudits</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

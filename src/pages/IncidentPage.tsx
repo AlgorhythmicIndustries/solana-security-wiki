@@ -1,5 +1,6 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import { getIncidentById, incidents } from "../data/incidents";
+import { getInvestigationDraft } from "../data/investigationDrafts";
 import {
   categoryLabel,
   formatDate,
@@ -17,6 +18,7 @@ export function IncidentPage() {
   const related = (inc.relatedIds ?? [])
     .map((rid) => incidents.find((i) => i.id === rid))
     .filter(Boolean);
+  const draft = getInvestigationDraft(inc.id);
 
   return (
     <article className="article">
@@ -24,6 +26,13 @@ export function IncidentPage() {
         <Link to="/">← Timeline</Link>
       </p>
       <h1>{inc.title}</h1>
+      {draft && (
+        <p className="incident-meta">
+          <span className="pill">draft</span>
+          <span className="pill">not published</span>
+          <a href={draft.href}>Open investigation draft</a>
+        </p>
+      )}
       <p className="muted">
         {formatDate(inc.date)}
         {inc.endDate ? ` – ${formatDate(inc.endDate)}` : ""}

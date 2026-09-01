@@ -155,6 +155,9 @@ export function Layout() {
         <div className="nav-section-title">Articles</div>
         <ul className="nav-list">
           <li>
+            <Link to="/investigations">Investigation drafts</Link>
+          </li>
+          <li>
             <Link to="/trends">Exploitation trends &amp; defender focus</Link>
           </li>
           <li>

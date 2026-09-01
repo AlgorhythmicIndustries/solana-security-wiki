@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Loopscale RateX." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Loopscale RateX — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">26 Apr 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Loopscale RateX</h1>
+          <p class="muted">
+            Wiki id <code>loopscale-oracle-apr-2025</code>
+            · <a href="/incident/loopscale-oracle-apr-2025">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Attacker inflated RateX principal-token marks, then
+              <code>CREATE_LOAN</code> against Loopscale vaults. Five hashed loans:
+              four USDC (1.5M + 1.5M + 1.5M + 1,226,725) and 1,211.4 WSOL. Funds
+              returned 27–29 Apr 2025 after negotiation.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Protocol <a href="https://solscan.io/account/1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78"><code>1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78</code></a>;
+              malicious program <a href="https://solscan.io/account/BdADVdaAdDbFo85EP2ynEanQQMDDJgPyTZmAKtaHKRbK"><code>BdADVdaAdDbFo85EP2ynEanQQMDDJgPyTZmAKtaHKRbK</code></a>;
+              exploiter 1 <a href="https://solscan.io/account/4QsqugQcrCuSVzU9WjeLDoR6HaaSZtMEZr5JCyxwHgCV"><code>4QsqugQcrCuSVzU9WjeLDoR6HaaSZtMEZr5JCyxwHgCV</code></a>;
+              exploiter 2 <a href="https://solscan.io/account/C1QyPYoWQiueqhtLeaG5Nhkv1LJ8oweBNCbfGJ3LprYT"><code>C1QyPYoWQiueqhtLeaG5Nhkv1LJ8oweBNCbfGJ3LprYT</code></a>.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>CREATE_LOAN</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr><td>1.5M USDC</td><td><a href="https://solscan.io/tx/2Cti6x4wMw2CCvDwQYa4JvnHZAeQaSu6krAtMnBjx9mxHpr3LTmbRDwZs21fjRiwU2Z5dV4BTJbkjaD7E2mxrRrq"><code>2Cti6x4wMw2CCvDwQYa4JvnHZAeQaSu6krAtMnBjx9mxHpr3LTmbRDwZs21fjRiwU2Z5dV4BTJbkjaD7E2mxrRrq</code></a></td></tr>
+                <tr><td>1.5M USDC</td><td><a href="https://solscan.io/tx/55dmSjy4Whjfqbfp8LwRduzTwz1fDeLu6aj8STqDXeiezZneNJwr2XiX3Qy7yWb2G2DL3d991ACD6sejNkQ7eH5Q"><code>55dmSjy4Whjfqbfp8LwRduzTwz1fDeLu6aj8STqDXeiezZneNJwr2XiX3Qy7yWb2G2DL3d991ACD6sejNkQ7eH5Q</code></a></td></tr>
+                <tr><td>1.5M USDC</td><td><a href="https://solscan.io/tx/XxksDRzx1KFVJpUzVCFDjRCXJcUzwbdTRYPmHQzZwmzYS6DptV8qAJxU2CGAXhxyPvWLPitFCAuPA6ASBG5beub"><code>XxksDRzx1KFVJpUzVCFDjRCXJcUzwbdTRYPmHQzZwmzYS6DptV8qAJxU2CGAXhxyPvWLPitFCAuPA6ASBG5beub</code></a></td></tr>
+                <tr><td>1,226,725 USDC</td><td><a href="https://solscan.io/tx/2SkCkmX2Q8R7W7RDzgfc6ZFCmYgehmENw72sgTQLfNLHGupNdPDeNkW6S7qCNgYtintFcxhkBCsyf81XA9NSF2RJ"><code>2SkCkmX2Q8R7W7RDzgfc6ZFCmYgehmENw72sgTQLfNLHGupNdPDeNkW6S7qCNgYtintFcxhkBCsyf81XA9NSF2RJ</code></a></td></tr>
+                <tr><td>1,211.4 WSOL</td><td><a href="https://solscan.io/tx/3LcknBmavGUAMJvNMAc5xwsLqFaKs3vfguWsoTNYzpBv76B4ChiagitSHogpdMwWZpuKDV3a62uT4wXn2SvLZvGP"><code>3LcknBmavGUAMJvNMAc5xwsLqFaKs3vfguWsoTNYzpBv76B4ChiagitSHogpdMwWZpuKDV3a62uT4wXn2SvLZvGP</code></a></td></tr>
+              </tbody>
+            </table>
+            <p>
+              USDC→SOL swap <a href="https://solscan.io/tx/bR4YweLndnAAUX3DxwSfSqQNZcTgjdhnamLg35hF7tKzMnTPEzHvyAyQJtsAooKwgXY68tBuZzptc2R4aCqLz7H"><code>bR4YweLndnAAUX3DxwSfSqQNZcTgjdhnamLg35hF7tKzMnTPEzHvyAyQJtsAooKwgXY68tBuZzptc2R4aCqLz7H</code></a>.
+              Wormhole:
+              <a href="https://solscan.io/tx/5XzyPcvEL8JRD4B8rZcQxKCAi3FtxFYmGBjaWw5rSAu3ET3Z59RHuJafSJebeazZ3xDZDj9Qum8EubRchzN1Gm1e"><code>5XzyPcvEL8JRD4B8rZcQxKCAi3FtxFYmGBjaWw5rSAu3ET3Z59RHuJafSJebeazZ3xDZDj9Qum8EubRchzN1Gm1e</code></a>,
+              <a href="https://solscan.io/tx/FcafMbKHC4e1bArfsWJTDDgYtqktWTLeptmBnpGpSKZTdkSFYUJqtffwmvV1PQTX7Vfxp1EjHdjWMFcw1VWahTH"><code>FcafMbKHC4e1bArfsWJTDDgYtqktWTLeptmBnpGpSKZTdkSFYUJqtffwmvV1PQTX7Vfxp1EjHdjWMFcw1VWahTH</code></a>,
+              <a href="https://solscan.io/tx/4KHQphm8CSS9YxgDiKgAfsLmTceFLYD8f9JEiaoZZRi7RQxfL3kPY4MD9GXuazeG6eyebChuupkQBA93ufh41QU2"><code>4KHQphm8CSS9YxgDiKgAfsLmTceFLYD8f9JEiaoZZRi7RQxfL3kPY4MD9GXuazeG6eyebChuupkQBA93ufh41QU2</code></a>.
+            </p>
+            <p>
+              SOL return 28 Apr:
+              <a href="https://solscan.io/tx/66YqTDPxYukrPtwfPbXv3utHKi2KfqvXXf3De3Km5eQ9GjSbY2kYe1yBk4zVj371fH8BjT9CCPqv4w4wQXnRaxei"><code>66YqTDPxYukrPtwfPbXv3utHKi2KfqvXXf3De3Km5eQ9GjSbY2kYe1yBk4zVj371fH8BjT9CCPqv4w4wQXnRaxei</code></a>.
+              Other 27–28 Apr exploiter-1 sigs:
+              <a href="https://solscan.io/tx/szTUQPi7DRJtFLgpfQAc4Fd6r8rE3LymcbwU261TUGkbydEkk8b4XHaGVnFhsr5FiARAnuX5H7UKWZM7o4UR2PK"><code>szTUQPi7DRJtFLgpfQAc4Fd6r8rE3LymcbwU261TUGkbydEkk8b4XHaGVnFhsr5FiARAnuX5H7UKWZM7o4UR2PK</code></a>,
+              <a href="https://solscan.io/tx/4LmiUpTBCBPkpNqF9DKpxHC8pKz99oAqCt4ZVE6jLnfXQMbwggRcWeQkxxKC9rqa7gXbXc6d3ArnYUqMs8eyi9mf"><code>4LmiUpTBCBPkpNqF9DKpxHC8pKz99oAqCt4ZVE6jLnfXQMbwggRcWeQkxxKC9rqa7gXbXc6d3ArnYUqMs8eyi9mf</code></a>,
+              <a href="https://solscan.io/tx/5CRE8eGpTuYhU66CpQm1yhoh1gUae9Msc1FjjnxxsQrdJTy2AFn5ww6cvrthgE3DzkF1k3H8Cpo24DaiAWRnfp9V"><code>5CRE8eGpTuYhU66CpQm1yhoh1gUae9Msc1FjjnxxsQrdJTy2AFn5ww6cvrthgE3DzkF1k3H8Cpo24DaiAWRnfp9V</code></a>,
+              <a href="https://solscan.io/tx/52WDpTTmPZ8PG2dSMx2hG7yFQY2EUrtoqcTPDHBGwLBXcVTf7uQFtMBLKHrre5i9cyChNrp1XpWEaAwnKaadAseJ"><code>52WDpTTmPZ8PG2dSMx2hG7yFQY2EUrtoqcTPDHBGwLBXcVTf7uQFtMBLKHrre5i9cyChNrp1XpWEaAwnKaadAseJ</code></a>.
+            </p>
+            <p>EVM wallet cited in postmortem: <a href="https://etherscan.io/address/0xc9d30E520Af584d0867FfC71DE162f1C09987Fe8"><code>0xc9d30E520Af584d0867FfC71DE162f1C09987Fe8</code></a>.</p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Loopscale ETH return hashes were
+                published truncated (<code>0x4a…72f0</code>, <code>0x17…95ce</code>,
+                <code>0xda…a110</code>, <code>0xa9…7860</code>). Full hashes are not
+                expanded here.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Oracle / mark for RateX PT collateral used manipulable internal prices, enabling oversized CREATE_LOAN.</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>Pause, negotiation, full return 27–29 Apr. Wiki lists mitigated.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>ETH return tx hashes truncated in public postmortem.</li>
+              <li>Exact 5.73M USDC unique vs four CREATE_LOAN legs (5,726,725 USDC) — 1,211.4 WSOL is separate.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://x.com/LoopscaleLabs/status/1916230435291713786">Loopscale Labs (X)</a></li>
+              <li><a href="https://www.halborn.com/blog/post/explained-the-loopscale-hack-april-2025">Halborn</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

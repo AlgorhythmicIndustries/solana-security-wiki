@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Aqua rug." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Aqua rug — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">8 Sep 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Aqua rug</h1>
+          <p class="muted">
+            Wiki id <code>aqua-rug-sep-2025</code>
+            · <a href="/incident/aqua-rug-sep-2025">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Four SOL outflows from presale wallet
+              <a href="https://solscan.io/account/4Ea23VxEGAgfbtauQZz11aKNtzHJwb84ppsg3Cz14u6q"><code>4Ea23VxEGAgfbtauQZz11aKNtzHJwb84ppsg3Cz14u6q</code></a>
+              on 8 Sep 2025 sum to <strong>21,770.857060 SOL</strong>. Analysts
+              described a rug; funds were split through instant exchanges.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Outflow</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr><td>10:21:42</td><td>−4750 SOL</td><td><a href="https://solscan.io/tx/3XWFPGDpEZGCgaXo52sDtei3xqJKsWgYps9SobTAgwca9hwt94nD1jwKpK5kDdKYzccTahuSPB9tXyAP32VBXXHW"><code>3XWFPGDpEZGCgaXo52sDtei3xqJKsWgYps9SobTAgwca9hwt94nD1jwKpK5kDdKYzccTahuSPB9tXyAP32VBXXHW</code></a></td></tr>
+                <tr><td>12:42:04</td><td>−5000 SOL</td><td><a href="https://solscan.io/tx/R9oArDeEUsAKXU3kHmNRL9uBGczqQ1SaQmAeZDDRyCgTSSo1UkPmPvuPL1mxBFwiEAd9zvhsggBHunFkiNsxuzr"><code>R9oArDeEUsAKXU3kHmNRL9uBGczqQ1SaQmAeZDDRyCgTSSo1UkPmPvuPL1mxBFwiEAd9zvhsggBHunFkiNsxuzr</code></a></td></tr>
+                <tr><td>14:25:17</td><td>−4940 SOL</td><td><a href="https://solscan.io/tx/2p31bFbZBhTg1WhBpvQitCtiK8jDPdSouytqf4nJEhgw2TvWZd725Z1464Cne15J3YrvUmrskiZ5TQGzCzm6Gaa3"><code>2p31bFbZBhTg1WhBpvQitCtiK8jDPdSouytqf4nJEhgw2TvWZd725Z1464Cne15J3YrvUmrskiZ5TQGzCzm6Gaa3</code></a></td></tr>
+                <tr><td>15:07:44</td><td>−7080.857060 SOL</td><td><a href="https://solscan.io/tx/5tdA6ygt85kZVhULotYQmspJBecxUBV66QHt6s1SAuFNFbhDfNiCukncjZKU1AQkYTRj84V8uP4683eE88gxpikX"><code>5tdA6ygt85kZVhULotYQmspJBecxUBV66QHt6s1SAuFNFbhDfNiCukncjZKU1AQkYTRj84V8uP4683eE88gxpikX</code></a></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Project-controlled presale custody with no time-lock or independent
+              multisig. This is an exit of keys the team already held, not an
+              external program bug.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>No reimbursement hashed in this draft.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Downstream instant-exchange hops after the four outflows are not fully hashed here.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://www.odaily.news/zh-CN/newsflash/447163">Odaily / ZachXBT report</a></li>
+              <li><a href="https://hacked.slowmist.io/?c=Solana">SlowMist hacked DB</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

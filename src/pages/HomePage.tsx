@@ -9,6 +9,7 @@ import {
   formatUsd,
 } from "../lib/format";
 import type { IncidentCategory } from "../types";
+import { getInvestigationDraft } from "../data/investigationDrafts";
 
 function severityClass(s: string): string {
   return `pill pill-severity-${s}`;
@@ -205,6 +206,12 @@ export function HomePage() {
                   <span className="pill" style={{ borderColor: "var(--ok)", color: "var(--ok)" }}>
                     mitigated / recovered
                   </span>
+                )}
+                {getInvestigationDraft(inc.id) && (
+                  <>
+                    <span className="pill">draft</span>
+                    <span className="pill">not published</span>
+                  </>
                 )}
               </div>
               <h3>

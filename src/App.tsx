@@ -7,6 +7,7 @@ import { ChecklistPage } from "./pages/ChecklistPage";
 import { VideosPage } from "./pages/VideosPage";
 import { MiscResourcesPage } from "./pages/MiscResourcesPage";
 import { SimdsPage } from "./pages/SimdsPage";
+import { InvestigationsPage } from "./pages/InvestigationsPage";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/incident/:id" element={<IncidentPage />} />
+          <Route path="/investigations" element={<InvestigationsPage />} />
           <Route path="/trends" element={<TrendsPage />} />
           <Route path="/checklist" element={<ChecklistPage />} />
           <Route path="/videos" element={<VideosPage />} />

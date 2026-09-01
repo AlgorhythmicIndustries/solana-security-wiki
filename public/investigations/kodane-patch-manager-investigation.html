@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for @kodane/patch-manager." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>@kodane/patch-manager — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">28 Jul 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>@kodane/patch-manager</h1>
+          <p class="muted">
+            Wiki id <code>kodane-patch-manager-npm-jul-2025</code>
+            · <a href="/incident/kodane-patch-manager-npm-jul-2025">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Malicious npm package <code>@kodane/patch-manager</code> (~1,500
+              downloads, AI-styled docs) drained Solana wallets to collector
+              <a href="https://solscan.io/account/B2XwbrGSXs3LAAcqFqKqGUug5TFA1Bug2NNGH3F3mWNK"><code>B2XwbrGSXs3LAAcqFqKqGUug5TFA1Bug2NNGH3F3mWNK</code></a>.
+              Reporting tied C2 to <code>sweeper-monitor-production.up.railway.app</code>.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Collector <a href="https://solscan.io/account/B2XwbrGSXs3LAAcqFqKqGUug5TFA1Bug2NNGH3F3mWNK"><code>B2XwbrGSXs3LAAcqFqKqGUug5TFA1Bug2NNGH3F3mWNK</code></a>.
+              RPC replay of 28 Jul–5 Aug 2025 shows 57 positive lamport changes
+              totaling <strong>+4.467735973 SOL</strong> (example credit
+              <a href="https://solscan.io/tx/5CWVtopGc7Hi3WnpHRc89UuhjvchVNFB5k9VRJL6ZHNAf7TbLs7vuPPwVXQRQeEzxseLPaPx8RjpsFSDD4fNABVF"><code>5CWVtopGc7Hi3WnpHRc89UuhjvchVNFB5k9VRJL6ZHNAf7TbLs7vuPPwVXQRQeEzxseLPaPx8RjpsFSDD4fNABVF</code></a>
+              +1.11779643 SOL). The listed window figure +4.652 SOL is not reproduced
+              from this collector in that window.
+            </p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> ~0.184 SOL between observed
+                +4.467735973 SOL and the +4.652 SOL window figure. Do not invent
+                extra inflow signatures to close it. Some collector credits are
+                immediately forwarded (churn), so unique victim SOL is lower than
+                gross credits.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Typosquat / malicious dependency executed in developer or bot
+              environments that held keys. Package has since been removed from npm.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>npm takedown and public write-ups. No protocol pause.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>+4.652 SOL listed window vs +4.467735973 SOL observed on this collector.</li>
+              <li>Not every victim inflow signature is enumerated in this draft.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://thehackernews.com/2025/08/ai-generated-malicious-npm-package.html">The Hacker News</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

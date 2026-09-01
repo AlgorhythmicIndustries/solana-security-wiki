@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for CrediX (Sonic, not Solana CRDx)." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>CrediX (Sonic, not Solana CRDx) — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">4 Aug 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>CrediX (Sonic, not Solana CRDx)</h1>
+          <p class="muted">
+            Wiki id <code>credix-rug-aug-2025</code>
+            · <a href="/incident/credix-rug-aug-2025">Live incident page</a>
+          </p>
+          
+          <div class="callout">
+            <p>
+              <strong>Chain correction.</strong> This incident is
+              <strong>Sonic CrediX_fi</strong>, not the Solana Credix program
+              <a href="https://solscan.io/account/CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX"><code>CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX</code></a>.
+              Wiki pages that file the $4.5M drain under Solana application
+              exploits mix two different products. Omit this drain from Solana
+              program-loss totals.
+            </p>
+          </div>
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              On Sonic, admin EOA <a href="https://sonicscan.org/address/0x0dd010513F7abB8F9c628dC164a24D953BCA09Cf"><code>0x0dd010513F7abB8F9c628dC164a24D953BCA09Cf</code></a>
+              granted attacker <a href="https://sonicscan.org/address/0xF321683831Be16eeD74dfA58b02a37483cEC662e"><code>0xF321683831Be16eeD74dfA58b02a37483cEC662e</code></a>
+              POOL_ADMIN, BRIDGE, ASSET_LISTING_ADMIN, EMERGENCY_ADMIN, and RISK_ADMIN
+              via ACLManager on 29 Jul 2025. On 4 Aug 2025 the attacker called
+              <code>mintUnbacked</code> and borrowed pool liquidity (~$4.5M reporting).
+              The team later vanished after promising reimbursement (exit-scam reporting).
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              ACL role grant (29 Jul 2025):
+              <a href="https://sonicscan.org/tx/0x0cc3520951a2b41281dcc9a0d37ef3f7f139b75675d83ae72e3b8e903334f35e"><code>0x0cc3520951a2b41281dcc9a0d37ef3f7f139b75675d83ae72e3b8e903334f35e</code></a>.
+            </p>
+            <p>
+              <code>mintUnbacked</code> (4 Aug 2025 02:27 UTC, Sonic):
+              <a href="https://sonicscan.org/tx/0xe2501b4bb580b2ff6e59e68c0de50fd716bf2d096e1647c70f826bbd1352624d"><code>0xe2501b4bb580b2ff6e59e68c0de50fd716bf2d096e1647c70f826bbd1352624d</code></a>
+              — attacker <a href="https://sonicscan.org/address/0xF321683831Be16eeD74dfA58b02a37483cEC662e"><code>0xF321683831Be16eeD74dfA58b02a37483cEC662e</code></a>.
+            </p>
+            <p>
+              Victim pools cited by QuillAudits:
+              <a href="https://sonicscan.org/address/0x0850A9759165B25832E2cAa3dB3f2d04dc583D4E"><code>0x0850A9759165B25832E2cAa3dB3f2d04dc583D4E</code></a>,
+              <a href="https://sonicscan.org/address/0x56eb1bcB2aA011517fD7bf32641E79Bd8471770e"><code>0x56eb1bcB2aA011517fD7bf32641E79Bd8471770e</code></a>.
+            </p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> The borrow cited as
+                <code>0x71301581…</code> for 225,000.000164 USDC is not expanded to a
+                full hash in this draft. Do not invent the remaining hex. QuillAudits
+                lists borrowed notionals (USDC ~$2.04M, scUSD ~$1.16M, wS ~$1.34M,
+                stS ~$56k, WETH ~$46k) without that specific 225,000.000164 USDC
+                signature.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Concentrated ACL roles, including BRIDGE <code>mintUnbacked</code>, on
+              an EOA. Not a Solana program bug and not Credix Finance
+              <code>CRDx2Ykd…</code>.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Front end taken down; reimbursement promised then abandoned. Team
+              socials went dark around 8 Aug 2025. Stability DAO later coordinated
+              legal follow-up.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Borrow tx prefix <code>0x71301581…</code> (225,000.000164 USDC) — full hash missing.</li>
+              <li>Wiki incident still titled as if it were Solana Credix; this draft is the correction.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://www.quillaudits.com/blog/hack-analysis/credix-finance-4.5m-exploit">QuillAudits — CrediX Finance 4.5M (Sonic)</a></li>
+              <li><a href="https://www.halborn.com/blog/post/explained-the-credix-hack-august-2025">Halborn — CrediX on Sonic</a></li>
+              <li><a href="https://www.theblock.co/post/365458/solana-lender-credix-defi-exploit">The Block (headline still says Solana lender — treat as mislabel)</a></li>
+              <li><a href="https://docs.rs/credix_client/latest/credix_client/">Solana Credix program CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX (unrelated)</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

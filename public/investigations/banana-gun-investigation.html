@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Banana Gun." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Banana Gun — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">19 Sep 2024</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Banana Gun</h1>
+          <p class="muted">
+            Wiki id <code>banana-gun-sep-2024</code>
+            · <a href="/incident/banana-gun-sep-2024">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Banana Gun Telegram bot incident on Ethereum. Public figures include
+              ~715.5 ETH across a collector set (QuillAudits 11 wallets plus two
+              early Quadriga-linked addresses = 13). <strong>No Solana collector</strong>
+              is attached. Users were later refunded.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>Thirteen ETH collectors (full addresses):</p>
+            <ul><li><a href="https://etherscan.io/address/0xe451241389b80a980c44dd55805eb05276cd141c"><code>0xe451241389b80a980c44dd55805eb05276cd141c</code></a></li>
+<li><a href="https://etherscan.io/address/0xd073f28400be60aae6691d6131b5f7f45e91d999"><code>0xd073f28400be60aae6691d6131b5f7f45e91d999</code></a></li>
+<li><a href="https://etherscan.io/address/0xBe31Fd089De178be74E12e49360a5Fa6E3867BDB"><code>0xBe31Fd089De178be74E12e49360a5Fa6E3867BDB</code></a></li>
+<li><a href="https://etherscan.io/address/0x25B7580CECCDcCB04e86FD616fcA732EE0aeBc25"><code>0x25B7580CECCDcCB04e86FD616fcA732EE0aeBc25</code></a></li>
+<li><a href="https://etherscan.io/address/0x4293652e71023D48fbE2C6122b55780FAA940980"><code>0x4293652e71023D48fbE2C6122b55780FAA940980</code></a></li>
+<li><a href="https://etherscan.io/address/0x0939F5ba7A3d210dd2694d7ee72Cf78959154820"><code>0x0939F5ba7A3d210dd2694d7ee72Cf78959154820</code></a></li>
+<li><a href="https://etherscan.io/address/0xa999171a1432c18ce403365acC2AdFA5c2Ec6091"><code>0xa999171a1432c18ce403365acC2AdFA5c2Ec6091</code></a></li>
+<li><a href="https://etherscan.io/address/0x4FdDC26aC7230d5104b5F87f4751F76d3aBea1Ec"><code>0x4FdDC26aC7230d5104b5F87f4751F76d3aBea1Ec</code></a></li>
+<li><a href="https://etherscan.io/address/0xfCb81E26C447426f7903bCC211c6D082D0a26024"><code>0xfCb81E26C447426f7903bCC211c6D082D0a26024</code></a></li>
+<li><a href="https://etherscan.io/address/0x85E6214067115C9283Ad90d174BB6C3CA4fc3D76"><code>0x85E6214067115C9283Ad90d174BB6C3CA4fc3D76</code></a></li>
+<li><a href="https://etherscan.io/address/0xa60740ee7C08E2162c0FE0e1039E7c9a5Ec28eA3"><code>0xa60740ee7C08E2162c0FE0e1039E7c9a5Ec28eA3</code></a></li>
+<li><a href="https://etherscan.io/address/0x5f9D7770A66F1D97e8844F834599F4604643e1A2"><code>0x5f9D7770A66F1D97e8844F834599F4604643e1A2</code></a></li>
+<li><a href="https://etherscan.io/address/0x3a8CdaE3F66bE07ae69175224E4282f9622D5d40"><code>0x3a8CdaE3F66bE07ae69175224E4282f9622D5d40</code></a></li></ul>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Individual ETH drain transaction
+                hashes that prove 715.5 ETH are not listed. There is no Solana
+                collector to hash. Do not add this incident to Solana drain totals.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Telegram message-routing / treasury-transfer auth flaw on the Ethereum bot stack.</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>Bots paused; treasury refunds (Cointelegraph: ~$3M refund reporting).</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>No Solana collector (expected: none).</li>
+              <li>715.5 ETH not proven tx-by-tx here.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://cointelegraph.com/news/banana-gun-crypto-bot-refunds-3m">Cointelegraph</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>
