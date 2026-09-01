@@ -412,6 +412,12 @@ code {
   color: var(--accent);
 }
 
+.article-section h3 {
+  font-size: 1rem;
+  margin: 1.15rem 0 0.4rem;
+  color: var(--text);
+}
+
 .callout {
   margin: 1.5rem 0;
   padding: 1rem 1.15rem;

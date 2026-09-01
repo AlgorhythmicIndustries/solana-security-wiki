@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for Aquifer AMM." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Aquifer AMM — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">31 Aug 2026</span>
+            <span class="pill">Draft</span>
+            <span class="pill">Not published</span>
+          </div>
+          <h1>Aquifer AMM</h1>
+          <p class="muted">
+            Wiki id <code>aquifer-amm-aug-2026</code>
+            — not in the live catalog yet
+          </p>
+
+          <div class="callout">
+            <p>
+              <strong>No live incident page.</strong> This id is an IR placeholder
+              so the draft can be listed. It is not a published wiki article.
+              Hashes below are from Helius RPC. Do not treat write-up ETH dests
+              as Solana hops.
+            </p>
+          </div>
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              On 31 Aug 2026 a live signer drained Aquifer AMM pools by invoking
+              the victim program together with Tokenkeg and a malicious CPI /
+              named token program. Setup starts 01:21 UTC; the drain window is
+              <strong>03:41–04:21 UTC</strong>. Helius RPC counted
+              <strong>210</strong> signatures on the malicious program in-window.
+              Native SOL exit is <strong>2930.597 SOL</strong> via Rango at
+              04:21:50 UTC. Public write-ups cite ~$2.47M; that USD figure is a
+              pointer, not a hashed valuation.
+            </p>
+            <p>
+              Victim program
+              <a href="https://solscan.io/account/AQU1FRd7papthgdrwPTTq5JacJh8YtwEXaBfKU3bTz45"><code>AQU1FRd7papthgdrwPTTq5JacJh8YtwEXaBfKU3bTz45</code></a>.
+              Malicious program (CPI / named token program,
+              <strong>not</strong> the signer)
+              <a href="https://solscan.io/account/DMBpPMaMpGM2mWiUMaqcHx9FwhPg9Ys7qg1X59NRgb68"><code>DMBpPMaMpGM2mWiUMaqcHx9FwhPg9Ys7qg1X59NRgb68</code></a>.
+              Live signer
+              <a href="https://solscan.io/account/7fTe9pvrwXJRBHq9MaSyVPR4PgEuhqLiA93Dxf4gRk7J"><code>7fTe9pvrwXJRBHq9MaSyVPR4PgEuhqLiA93Dxf4gRk7J</code></a>.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <h3>Funding</h3>
+            <p>
+              01:21:22 UTC — <strong>2.36490231 SOL</strong> from
+              <a href="https://solscan.io/account/83yG2brNvatTzARWj2JpQyUL7RR6Wr33s7pWtwLrEwsw"><code>83yG2brNvatTzARWj2JpQyUL7RR6Wr33s7pWtwLrEwsw</code></a>
+              to the live signer. Fee payer
+              <a href="https://solscan.io/account/HKoDoV8Wv1zYAZZEhDyMnZBGat8Pnk3LhB2x4NveFSRR"><code>HKoDoV8Wv1zYAZZEhDyMnZBGat8Pnk3LhB2x4NveFSRR</code></a>.
+              Memo <code>087b7ae2</code>.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>01:21:22</td>
+                  <td>Signer funding</td>
+                  <td><a href="https://solscan.io/tx/4GCgjHTUtyczxsxSHZdqH35xKwD3vDpiKqdzzgWkuVMQTyY2bGdGwREuxSnUL7w5ASkV5mnjrJLJaAARyj686ecB"><code>4GCgjHTUtyczxsxSHZdqH35xKwD3vDpiKqdzzgWkuVMQTyY2bGdGwREuxSnUL7w5ASkV5mnjrJLJaAARyj686ecB</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Program load</h3>
+            <p>
+              BPF setup loaded program account
+              <a href="https://solscan.io/account/A2W2rEz47xSKvZKwdfMQQVam68SDg9vAoCdDct7xK7cU"><code>A2W2rEz47xSKvZKwdfMQQVam68SDg9vAoCdDct7xK7cU</code></a>.
+              That account is not treated here as the same pubkey as
+              <code>DMBpPMaM…</code>. One BPFLoader2 attempt failed.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>BPFLoader2 failed</td>
+                  <td><a href="https://solscan.io/tx/37N7WT7vQnN1hGiJuM3So18MbtSPmg1ekMxYfcTgabizqN2ntgnvRE2xqfhURCPULr5Bh1qskaKnvfFMf2VjBkJp"><code>37N7WT7vQnN1hGiJuM3So18MbtSPmg1ekMxYfcTgabizqN2ntgnvRE2xqfhURCPULr5Bh1qskaKnvfFMf2VjBkJp</code></a></td>
+                </tr>
+                <tr>
+                  <td>Load <code>A2W2rEz4…</code></td>
+                  <td><a href="https://solscan.io/tx/2dwzPiPLwviMpnwzMen3NhoutbwWZXvSngA29dKAKCZpsj7AsHLJCn6ASy5Xr57mCUA5DzvUYKZDEHGe6saHiwsG"><code>2dwzPiPLwviMpnwzMen3NhoutbwWZXvSngA29dKAKCZpsj7AsHLJCn6ASy5Xr57mCUA5DzvUYKZDEHGe6saHiwsG</code></a></td>
+                </tr>
+                <tr>
+                  <td>Load <code>A2W2rEz4…</code></td>
+                  <td><a href="https://solscan.io/tx/36E124hYpjWH6ZU2C7JV1C1djc3xCWXt4BGAbMnBbdRqqSjYXyk7Rq7gQcyMRnTQNy3JDSPqvvJ6HFMYuHufgGNp"><code>36E124hYpjWH6ZU2C7JV1C1djc3xCWXt4BGAbMnBbdRqqSjYXyk7Rq7gQcyMRnTQNy3JDSPqvvJ6HFMYuHufgGNp</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Drain window</h3>
+            <p>
+              First hashed drain 03:41:27 UTC: <strong>195849.433667 KMNO</strong>
+              mint
+              <a href="https://solscan.io/account/KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS"><code>KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS</code></a>
+              from pool
+              <a href="https://solscan.io/account/Fy7UPN9NkHWroiF4G1r6VCmDn6f57VLTrdEp7YA5YhGP"><code>Fy7UPN9NkHWroiF4G1r6VCmDn6f57VLTrdEp7YA5YhGP</code></a>
+              to the live signer. Programs: Aquifer +
+              <a href="https://solscan.io/account/TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"><code>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</code></a>
+              + <code>DMBpPMaM…</code>.
+            </p>
+            <p>
+              RAY sample: <strong>6401.35972 RAY</strong>
+              mint
+              <a href="https://solscan.io/account/4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"><code>4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R</code></a>
+              from
+              <a href="https://solscan.io/account/GeV3EGTVRFWg6hUtwLUUfRRAeHNH4NGrSqdHtmS4app"><code>GeV3EGTVRFWg6hUtwLUUfRRAeHNH4NGrSqdHtmS4app</code></a>.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>03:41:27</td>
+                  <td>First drain (KMNO)</td>
+                  <td><a href="https://solscan.io/tx/4pBV1GSbzNJLFtCEDeTEjZFxQhd3k6YUqto4Hw6Q4cw1Xz3yeivqGZyoyHVpxVLzLx9zXXQHf6jYPQvCS2QCT3bf"><code>4pBV1GSbzNJLFtCEDeTEjZFxQhd3k6YUqto4Hw6Q4cw1Xz3yeivqGZyoyHVpxVLzLx9zXXQHf6jYPQvCS2QCT3bf</code></a></td>
+                </tr>
+                <tr>
+                  <td>In-window</td>
+                  <td>RAY sample</td>
+                  <td><a href="https://solscan.io/tx/2kfsz91nmTmvf9YQhA55HKDsmfechdJ6XarjXMjgkRMrKAjY9vsU8WPfSQBWykSiDbPWbijBgRmqXFRMQdcD5Xh8"><code>2kfsz91nmTmvf9YQhA55HKDsmfechdJ6XarjXMjgkRMrKAjY9vsU8WPfSQBWykSiDbPWbijBgRmqXFRMQdcD5Xh8</code></a></td>
+                </tr>
+                <tr>
+                  <td>In-window</td>
+                  <td>Last failed (<code>InstructionError Custom 4294967295</code>)</td>
+                  <td><a href="https://solscan.io/tx/rEU6LB4g8gjiFvoek7vgJXa3egu2kjDpyhx5KAmY8ZukJGrrs4TiXJi6Zozo6g7vEWeW5MKZz97rTkLRkeZEYk6"><code>rEU6LB4g8gjiFvoek7vgJXa3egu2kjDpyhx5KAmY8ZukJGrrs4TiXJi6Zozo6g7vEWeW5MKZz97rTkLRkeZEYk6</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              RPC counted <strong>210</strong> signatures on
+              <code>DMBpPMaM…</code> in 03:41–04:21 UTC. Only the KMNO first
+              drain, one RAY sample, and the last in-window failure are hashed
+              above. The remaining in-window signatures are not listed here.
+            </p>
+            <h3>Native exit</h3>
+            <p>
+              04:21:50 UTC — <strong>2930.597 SOL</strong> to
+              <a href="https://solscan.io/account/JDrxQT6fcv1r8LsBjbTYRoY2MWVyghfoZyCajRbSvDai"><code>JDrxQT6fcv1r8LsBjbTYRoY2MWVyghfoZyCajRbSvDai</code></a>
+              via
+              <a href="https://solscan.io/account/RangohQxaWip6i1twAAnRVLmob9j88fid7sq2DMAATW"><code>RangohQxaWip6i1twAAnRVLmob9j88fid7sq2DMAATW</code></a>.
+              Memo <code>BJocv23iRhGf00lmfIgfNg1</code>.
+            </p>
+            <p>
+              04:31:51 UTC — <code>DepositNative</code> <strong>155.154 SOL</strong>
+              to
+              <a href="https://solscan.io/account/7uTT8Xi5RWXzy7h9XL244GRgEycDYDhLjr3ZyNdXi8pZ"><code>7uTT8Xi5RWXzy7h9XL244GRgEycDYDhLjr3ZyNdXi8pZ</code></a>
+              program
+              <a href="https://solscan.io/account/99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2"><code>99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2</code></a>.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>04:21:50</td>
+                  <td>Rango 2930.597 SOL</td>
+                  <td><a href="https://solscan.io/tx/2zUhyBH7X6bbfcY9Vnw6Tq2SG9qJpypBwyUKKoX4LgrNo982ovDFohxcNTLgnS5b1mwrAPEHtUrb2nzE2Zj4WW7f"><code>2zUhyBH7X6bbfcY9Vnw6Tq2SG9qJpypBwyUKKoX4LgrNo982ovDFohxcNTLgnS5b1mwrAPEHtUrb2nzE2Zj4WW7f</code></a></td>
+                </tr>
+                <tr>
+                  <td>04:31:51</td>
+                  <td><code>DepositNative</code> 155.154 SOL</td>
+                  <td><a href="https://solscan.io/tx/4GPfx173CKjUBmiNmeLsDKmZiPzdSVCHjZRWKLJLHKVXPveiSu94D7UZp1wtBbUWYz6vHyQuN9QgAoneiqktLaXE"><code>4GPfx173CKjUBmiNmeLsDKmZiPzdSVCHjZRWKLJLHKVXPveiSu94D7UZp1wtBbUWYz6vHyQuN9QgAoneiqktLaXE</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Write-up ETH
+                <a href="https://etherscan.io/address/0x2Dfe9e969796e2797278b02761dd9Ad6aE922746"><code>0x2Dfe9e969796e2797278b02761dd9Ad6aE922746</code></a>
+                is <strong>not</strong> hashed from the Rango tx in this pass.
+                Do not treat it as a confirmed hop. Bitquery’s 212 swap count is
+                a pointer only; RPC counted 210 on the malicious program
+                in-window.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Drain transactions invoke Aquifer, Tokenkeg, and
+              <code>DMBpPMaM…</code> as a CPI / named token program. The
+              malicious program is not the fee payer or live signer
+              (<code>7fTe9pvr…</code>). Instruction-level source proof (exact
+              remaining-accounts / token-program substitution) is not hashed in
+              this draft.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              16:43:27 UTC — Squads <code>VaultTransactionExecute</code> with
+              memo starting <code>AQUIFER WHITEHAT OFFER</code>, from the upgrade
+              authority of <code>AQU1FRd7…</code> to the controller of
+              <code>7fTe9pvr…</code>. Signed by
+              <a href="https://solscan.io/account/8pJhHxPQRiUGdtVSCNPyP9AH994zeyYEBGb5yZRzheSA"><code>8pJhHxPQRiUGdtVSCNPyP9AH994zeyYEBGb5yZRzheSA</code></a>.
+              Recovery of the 2930.597 SOL Rango exit is not hashed here.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>16:43:27</td>
+                  <td>Whitehat Squads execute</td>
+                  <td><a href="https://solscan.io/tx/u1hoSUTzhe3hhnGiUiwvjtzd9Ji8EQPxjnTSKtW2hHDqY9ukYySftNp9eMHsBHsYezBKFcNyoZapYHYu4XaaZbQ"><code>u1hoSUTzhe3hhnGiUiwvjtzd9Ji8EQPxjnTSKtW2hHDqY9ukYySftNp9eMHsBHsYezBKFcNyoZapYHYu4XaaZbQ</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Remaining in-window <code>DMBpPMaM…</code> signatures beyond the KMNO first drain, RAY sample, and last failure (RPC 210 total).</li>
+              <li>Write-up ETH <code>0x2Dfe9e969796e2797278b02761dd9Ad6aE922746</code> is not a hashed Rango hop in this pass.</li>
+              <li>Bitquery 212 swap count is a pointer; this draft uses RPC 210 on the malicious program in-window.</li>
+              <li>No live wiki incident id yet; ~$2.47M is a write-up pointer, not a hashed USD total.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li>
+                <a href="https://x.com/Bitquery_io/status/2094698869292761487">Bitquery X (pointer only — not a hop list)</a>
+              </li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>

@@ -10,6 +10,14 @@ export interface InvestigationDraft {
 /** Static HTML IR notes served from /investigations/. Not live wiki articles. */
 export const investigationDrafts: InvestigationDraft[] = [
   {
+    incidentId: "aquifer-amm-aug-2026",
+    title: "Aquifer AMM",
+    date: "2026-08-31",
+    href: "/investigations/aquifer-amm-investigation.html",
+    status: "draft",
+    published: false,
+  },
+  {
     incidentId: "avici-rain-card-contract-aug-2026",
     title: "Avici / Rain card-contract drain",
     date: "2026-08-28",
