@@ -1,2 +1,5 @@
+# Static HTML drafts must win over the SPA fallback.
+/investigations/*    /investigations/:splat    200
+
 # Client-side routes (React Router) — rewrite to the SPA shell
 /*    /index.html   200

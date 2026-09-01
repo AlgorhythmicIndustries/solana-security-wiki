@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Cetus cross-chain note (Sui)." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Cetus cross-chain note (Sui) — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">22 May 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Cetus cross-chain note (Sui)</h1>
+          <p class="muted">
+            Wiki id <code>cetus-sui-exploit-may-2025-see-also</code>
+            · <a href="/incident/cetus-sui-exploit-may-2025-see-also">Live incident page</a>
+          </p>
+          
+          <div class="callout">
+            <p>
+              <strong>Omit from Solana totals.</strong> Cetus is a Sui (and Aptos)
+              CLMM exploit. There is no Solana drain hashed here. Do not add ~$223M
+              to Solana loss rollups.
+            </p>
+          </div>
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Cetus on Sui lost on the order of $223M. This wiki entry exists as a
+              see-also (Crema team lineage / CLMM patterns), not as a Solana incident.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap / no Solana drain.</strong> No Solana collector,
+                program, or signature. Sui hashes are out of scope for this Solana
+                draft set.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Sui CLMM overflow / check issues as reported by Sui-side post-mortems. Not a Solana runtime or program bug.</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>Cetus paused and later restarted on Sui after recovery work. Irrelevant to Solana validators.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>No Solana on-chain objects by design.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://www.theblock.co/post/357386/sui-dex-cetus-protocol-restarts-platform-after-recovering-from-223-million-exploit">The Block — Cetus restart</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

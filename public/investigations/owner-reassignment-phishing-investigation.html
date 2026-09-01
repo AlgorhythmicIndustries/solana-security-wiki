@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Owner-field phishing." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Owner-field phishing — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">1 Oct 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Owner-field phishing</h1>
+          <p class="muted">
+            Wiki id <code>solana-owner-field-phishing-late-2025</code>
+            · <a href="/incident/solana-owner-field-phishing-late-2025">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Late-2025 phishing on Solana used transactions that look harmless in
+              simulation but reassign SPL / token-account owners (or other
+              authorities). This is a pattern campaign, not a single protocol drain.
+              Public reporting cites individual victims above $3M; there is no one
+              collector or program that sums the class.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> No single drain signature, collector,
+                or program is hashed here. The class is many victim-signed
+                <code>Assign</code> / <code>SetAuthority</code> transactions, so a
+                rollup hash would be invented. Do not add this wave to a Solana
+                protocol-loss total without a per-victim signature list.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Wallet simulation often previews net token movement and misses owner
+              or authority changes. Users signed txs that transferred control of
+              existing accounts rather than transferring tokens in the preview.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Wallet vendors and researchers published pattern warnings. There is
+              no protocol pause or treasury reimbursement for the class as a whole.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>No canonical drain tx or collector for the Oct 2025 wave.</li>
+              <li>Aggregate USD remains unhashed; wiki lists loss as unclear.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://cyberpress.org/solana-phishing-attacks/">CyberPress — SlowMist-cited analysis</a></li>
+              <li><a href="/incident/solana-owner-field-phishing-late-2025">Live wiki incident</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

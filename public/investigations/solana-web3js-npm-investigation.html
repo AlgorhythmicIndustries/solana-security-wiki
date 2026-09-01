@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for @solana/web3.js npm." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>@solana/web3.js npm — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">3 Dec 2024</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>@solana/web3.js npm</h1>
+          <p class="muted">
+            Wiki id <code>solana-web3js-supply-chain-dec-2024</code>
+            · <a href="/incident/solana-web3js-supply-chain-dec-2024">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Compromised npm publish token shipped backdoored
+              <code>@solana/web3.js</code> <strong>1.95.6</strong> and
+              <strong>1.95.7</strong>. Malware exfiltrated key material. Collector
+              <a href="https://solscan.io/account/FnvLGtucz4E1ppJHRTev6Qv4X7g8Pw6WPStHCcbAKbfx"><code>FnvLGtucz4E1ppJHRTev6Qv4X7g8Pw6WPStHCcbAKbfx</code></a>
+              is cited with 676.38 SOL across 46 inflows. Those 46 signatures are
+              not enumerated in this draft.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>Collector <a href="https://solscan.io/account/FnvLGtucz4E1ppJHRTev6Qv4X7g8Pw6WPStHCcbAKbfx"><code>FnvLGtucz4E1ppJHRTev6Qv4X7g8Pw6WPStHCcbAKbfx</code></a>. Advisory GHSA-jcxm-7wvp-g6p5. C2 domain reported as <code>sol-rpc.xyz</code>.</p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> The 46 inflow signatures that sum to
+                676.38 SOL are not listed. RPC history for this collector is larger
+                than 46 in a Dec 3–6 window; do not substitute an unverified subset.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Phished npm publish token; malicious postinstall / injected code in 1.95.6/1.95.7.</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>Versions yanked; GHSA published; downstream lockfile upgrades.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>46 inflow signatures not hashed here.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://github.com/advisories/GHSA-jcxm-7wvp-g6p5">GHSA-jcxm-7wvp-g6p5</a></li>
+              <li><a href="https://www.securityweek.com/solana-web3-js-library-backdoored-in-supply-chain-attack/">SecurityWeek</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

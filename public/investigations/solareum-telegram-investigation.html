@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Solareum Telegram." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Solareum Telegram — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">29 Mar 2024</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Solareum Telegram</h1>
+          <p class="muted">
+            Wiki id <code>solareum-telegram-mar-2024</code>
+            · <a href="/incident/solareum-telegram-mar-2024">Live incident page</a>
+          </p>
+          
+          <div class="callout">
+            <p>
+              <strong>Not Solar X 2026.</strong> This is the March 2024 Solareum
+              Telegram-bot key incident. Do not merge it with
+              <a href="/incident/solar-solana-zh-x-jan-2026"><code>solar-solana-zh-x-jan-2026</code></a>.
+            </p>
+          </div>
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Users who imported keys into Solareum (including keys exported from
+              BONKbot) were drained on 29 Mar 2024. Collector
+              <a href="https://solscan.io/account/6AZpMspmfdpA7jKCzHpypy18szmgh9sPTvxz6vcPY22a"><code>6AZpMspmfdpA7jKCzHpypy18szmgh9sPTvxz6vcPY22a</code></a>
+              received <strong>+98.642084385 SOL</strong> from 29 wallets between
+              08:34–08:37 UTC. This is one of several 29 Mar collector clusters
+              (tayvano list); later US reporting attributed a related intrusion to
+              DPRK IT workers.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>Collector <a href="https://solscan.io/account/6AZpMspmfdpA7jKCzHpypy18szmgh9sPTvxz6vcPY22a"><code>6AZpMspmfdpA7jKCzHpypy18szmgh9sPTvxz6vcPY22a</code></a>. 29 positive inflows, sum +98.642084385 SOL (matches +98.64 SOL / 29 wallets).</p>
+            <table class="hash-table">
+              <thead><tr><th>UTC 29 Mar 2024</th><th>Credit</th><th>From</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr><td>08:34:35</td><td>+1.856968373 SOL</td><td><a href="https://solscan.io/account/HWJKdrkKJjEyHwromjaHiNKS3oAykg6dhZ7mhkuKpZ5L"><code>HWJKdrkKJjEyHwromjaHiNKS3oAykg6dhZ7mhkuKpZ5L</code></a></td><td><a href="https://solscan.io/tx/2LXdxTgPUdgnH7aB6HstHRbqRkmSKcm2FjD2Y3tfSYoLwoq8HtvWcqdR7QaWhcma2u38G73C5RVaRP9yqMPR9L4p"><code>2LXdxTgPUdgnH7aB6HstHRbqRkmSKcm2FjD2Y3tfSYoLwoq8HtvWcqdR7QaWhcma2u38G73C5RVaRP9yqMPR9L4p</code></a></td></tr>
+<tr><td>08:34:35</td><td>+1.034303938 SOL</td><td><a href="https://solscan.io/account/7PNU4wNQa2eWTyB7PW93f2bT3qoqXvdAT2bmQKj1xWmG"><code>7PNU4wNQa2eWTyB7PW93f2bT3qoqXvdAT2bmQKj1xWmG</code></a></td><td><a href="https://solscan.io/tx/3BMwCXEXdb3d3ugCTEwjL6Pbdptn87XhjNBWQ6VKbzc1M9trETW5EFajWujbbpjHicsUYw6pJMo7YZwM2tKvVut1"><code>3BMwCXEXdb3d3ugCTEwjL6Pbdptn87XhjNBWQ6VKbzc1M9trETW5EFajWujbbpjHicsUYw6pJMo7YZwM2tKvVut1</code></a></td></tr>
+<tr><td>08:34:35</td><td>+2.245129713 SOL</td><td><a href="https://solscan.io/account/2HG9KhoH5ivuTEsXF3J2aSSx1kQyDUVsd28Mz16BtYAx"><code>2HG9KhoH5ivuTEsXF3J2aSSx1kQyDUVsd28Mz16BtYAx</code></a></td><td><a href="https://solscan.io/tx/3EpkANwJRkQgAPzPXvmwhxwcMwaj7tXLbPP2rxaJWzxhuUbGNjeUBPL5x3DBZbA7ATzax5LDLpeXkfJ8GJLgYSad"><code>3EpkANwJRkQgAPzPXvmwhxwcMwaj7tXLbPP2rxaJWzxhuUbGNjeUBPL5x3DBZbA7ATzax5LDLpeXkfJ8GJLgYSad</code></a></td></tr>
+<tr><td>08:34:35</td><td>+1.990000000 SOL</td><td><a href="https://solscan.io/account/FtoN7pi176MMKDXqkh9Vw2CScpimyj6pTHRWx78AWwug"><code>FtoN7pi176MMKDXqkh9Vw2CScpimyj6pTHRWx78AWwug</code></a></td><td><a href="https://solscan.io/tx/3LhBQTxDEu1Kut8oAPyEVZCGwsCqcKTSnvENJS9HFfAf2m9wtGf4ph6RmeRMywak89C6DVxhkBbESJE5iZZT1j9k"><code>3LhBQTxDEu1Kut8oAPyEVZCGwsCqcKTSnvENJS9HFfAf2m9wtGf4ph6RmeRMywak89C6DVxhkBbESJE5iZZT1j9k</code></a></td></tr>
+<tr><td>08:34:35</td><td>+1.990000000 SOL</td><td><a href="https://solscan.io/account/H86vMTKMmd7hZ3C81mLbFVTJfVtEoQEDw3SRoQq39C81"><code>H86vMTKMmd7hZ3C81mLbFVTJfVtEoQEDw3SRoQq39C81</code></a></td><td><a href="https://solscan.io/tx/3MaHLWZtzT8RX8MUrjo1gTbCaMyJCBh9hj7zxPb6XsWTmcMvG5nLy4o7ePdveH7BPgiv8ouSENYZjAW7F24i6uAy"><code>3MaHLWZtzT8RX8MUrjo1gTbCaMyJCBh9hj7zxPb6XsWTmcMvG5nLy4o7ePdveH7BPgiv8ouSENYZjAW7F24i6uAy</code></a></td></tr>
+<tr><td>08:34:35</td><td>+1.589967000 SOL</td><td><a href="https://solscan.io/account/5mBkknRyraV7HqF5JEgTuows5qr8TJaZUcDiduHQvUGc"><code>5mBkknRyraV7HqF5JEgTuows5qr8TJaZUcDiduHQvUGc</code></a></td><td><a href="https://solscan.io/tx/5ZSD1wEx92734QkBiS87SHUk1RNUk4QeExUcX9pBg92U4DGC7CeFkj6ZF5VEgPCSkVWsenek5uts1dkHAmHwCVj2"><code>5ZSD1wEx92734QkBiS87SHUk1RNUk4QeExUcX9pBg92U4DGC7CeFkj6ZF5VEgPCSkVWsenek5uts1dkHAmHwCVj2</code></a></td></tr>
+<tr><td>08:34:35</td><td>+3.014964000 SOL</td><td><a href="https://solscan.io/account/5VMkc6GWGDNfHYxA3uYtbHGyAwAUsfy83cETGPjD5kDw"><code>5VMkc6GWGDNfHYxA3uYtbHGyAwAUsfy83cETGPjD5kDw</code></a></td><td><a href="https://solscan.io/tx/5amrvLuiACw2eiDcuR4HFPrJLepUgH961Z622sZvYWrMubok5mNqjVBDFvxK6mxQYkAVA33D8vjcX78dKE8UwE34"><code>5amrvLuiACw2eiDcuR4HFPrJLepUgH961Z622sZvYWrMubok5mNqjVBDFvxK6mxQYkAVA33D8vjcX78dKE8UwE34</code></a></td></tr>
+<tr><td>08:34:35</td><td>+0.992673441 SOL</td><td><a href="https://solscan.io/account/CYxoMRqjY1JQwqMcXAd7vBHrJwRkJyo6MioNrG4cUzcq"><code>CYxoMRqjY1JQwqMcXAd7vBHrJwRkJyo6MioNrG4cUzcq</code></a></td><td><a href="https://solscan.io/tx/5kncTJePq4zuaEBKzWdbKHPwmvAeDpMGpQNyDYuYFT1ZXjKNib25S1UbAVSL55LhFpebfGwdafhv6WEy5iVG31zQ"><code>5kncTJePq4zuaEBKzWdbKHPwmvAeDpMGpQNyDYuYFT1ZXjKNib25S1UbAVSL55LhFpebfGwdafhv6WEy5iVG31zQ</code></a></td></tr>
+<tr><td>08:34:35</td><td>+3.310637566 SOL</td><td><a href="https://solscan.io/account/131DRufDtqLjTfrbtvcPDCYJv7N5ECpfC6dCtRxYhUdn"><code>131DRufDtqLjTfrbtvcPDCYJv7N5ECpfC6dCtRxYhUdn</code></a></td><td><a href="https://solscan.io/tx/JQCEGncxW1QzQFMyJJFv7LXW6Xf5RcofCfderyXAZkJspCRseM3njMUTYGg1WFaT3ErZwPL4Y26XhouoVYhygq5"><code>JQCEGncxW1QzQFMyJJFv7LXW6Xf5RcofCfderyXAZkJspCRseM3njMUTYGg1WFaT3ErZwPL4Y26XhouoVYhygq5</code></a></td></tr>
+<tr><td>08:34:35</td><td>+6.017481468 SOL</td><td><a href="https://solscan.io/account/285WqmNnZ7SjLKu3DUyo5vbaQ52SuxcaTp2hYszarjGq"><code>285WqmNnZ7SjLKu3DUyo5vbaQ52SuxcaTp2hYszarjGq</code></a></td><td><a href="https://solscan.io/tx/kbAnU5VRbJwmvgCwMxs3gAh1x9qnWivnAAtqQHrZ7Ao8EBNXJd5B8AZu5Vi3qFHdzJP8tCHTjTRLw4oenzNHNbq"><code>kbAnU5VRbJwmvgCwMxs3gAh1x9qnWivnAAtqQHrZ7Ao8EBNXJd5B8AZu5Vi3qFHdzJP8tCHTjTRLw4oenzNHNbq</code></a></td></tr>
+<tr><td>08:35:24</td><td>+2.573386502 SOL</td><td><a href="https://solscan.io/account/FVMF56JJQBoJA7wDcCbrZdLgdbPnajhgt2PG1hrULGqc"><code>FVMF56JJQBoJA7wDcCbrZdLgdbPnajhgt2PG1hrULGqc</code></a></td><td><a href="https://solscan.io/tx/2CspxYaQWUfC5DrJc7gec7YrFBjdGpKoEVztNF1M8S5LdthC7u7RXPp5FN9vkeYCceLsSfBWVYv9B8ymVbYJ8KGL"><code>2CspxYaQWUfC5DrJc7gec7YrFBjdGpKoEVztNF1M8S5LdthC7u7RXPp5FN9vkeYCceLsSfBWVYv9B8ymVbYJ8KGL</code></a></td></tr>
+<tr><td>08:35:24</td><td>+1.391466602 SOL</td><td><a href="https://solscan.io/account/HUuGvCLteELPBEynjqbvAFb9rnCACYNDnvwySSq5kfmn"><code>HUuGvCLteELPBEynjqbvAFb9rnCACYNDnvwySSq5kfmn</code></a></td><td><a href="https://solscan.io/tx/33pCHHZSV7hA8zqvjiyEJCWqyzyAApVZQQNNRn6ZE4zN4qCsEcrpdoRgNrdUHx4ALcP4ZcskFSMw4hqzzsU9F78B"><code>33pCHHZSV7hA8zqvjiyEJCWqyzyAApVZQQNNRn6ZE4zN4qCsEcrpdoRgNrdUHx4ALcP4ZcskFSMw4hqzzsU9F78B</code></a></td></tr>
+<tr><td>08:35:24</td><td>+8.683800310 SOL</td><td><a href="https://solscan.io/account/v8A78FNtSSMyfepbhnzoW9KtebcELM2ZBz8vPBqGbxC"><code>v8A78FNtSSMyfepbhnzoW9KtebcELM2ZBz8vPBqGbxC</code></a></td><td><a href="https://solscan.io/tx/kdpdJ1e1nLixaK6q9P5Vc5PgFBq9Utm5aGxjAHdgXnMfjwPo5znJQQXBPLmmDBseRoQ7bQoWgqWbD5HUne8GoNj"><code>kdpdJ1e1nLixaK6q9P5Vc5PgFBq9Utm5aGxjAHdgXnMfjwPo5znJQQXBPLmmDBseRoQ7bQoWgqWbD5HUne8GoNj</code></a></td></tr>
+<tr><td>08:35:24</td><td>+2.847354256 SOL</td><td><a href="https://solscan.io/account/HGtodkNdbAV3LPnoKgzMPPULdDDApagQebNiAeMH8hET"><code>HGtodkNdbAV3LPnoKgzMPPULdDDApagQebNiAeMH8hET</code></a></td><td><a href="https://solscan.io/tx/oyC7LZyUTgEpzK33nbZyXwngLMEMsE7spsjcoQgcHAN3Y5FWNWuEvL9RJwVf1HwJcTuExsYeDXCYtPheGwkK4hC"><code>oyC7LZyUTgEpzK33nbZyXwngLMEMsE7spsjcoQgcHAN3Y5FWNWuEvL9RJwVf1HwJcTuExsYeDXCYtPheGwkK4hC</code></a></td></tr>
+<tr><td>08:35:26</td><td>+1.989994800 SOL</td><td><a href="https://solscan.io/account/9y58rQ2Xj6oAwXDXTyGP1w2W3zJmAromyEypP41YTQ95"><code>9y58rQ2Xj6oAwXDXTyGP1w2W3zJmAromyEypP41YTQ95</code></a></td><td><a href="https://solscan.io/tx/3MLHd4TY8DjtxR9X6BMMWcABaXBc4G25CeXm6pFQsJPFupgnFSV4knjP4Mtt5uknpWu81iaVtSWvQ5FxKZk5MgUm"><code>3MLHd4TY8DjtxR9X6BMMWcABaXBc4G25CeXm6pFQsJPFupgnFSV4knjP4Mtt5uknpWu81iaVtSWvQ5FxKZk5MgUm</code></a></td></tr>
+<tr><td>08:35:27</td><td>+3.324077207 SOL</td><td><a href="https://solscan.io/account/CZcTebM6iejKxuWmytmNVywnQpP7zPcKV3oV3QUcELpn"><code>CZcTebM6iejKxuWmytmNVywnQpP7zPcKV3oV3QUcELpn</code></a></td><td><a href="https://solscan.io/tx/61yMGmkzq9KG7vbaCT6BaTmADNiJkoTcc24iqb1Yui6NZMAqTmYdSSTR9CJ3dsAFhb6HbXkgtAHa6t24Cw8S4ac9"><code>61yMGmkzq9KG7vbaCT6BaTmADNiJkoTcc24iqb1Yui6NZMAqTmYdSSTR9CJ3dsAFhb6HbXkgtAHa6t24Cw8S4ac9</code></a></td></tr>
+<tr><td>08:35:28</td><td>+6.114057171 SOL</td><td><a href="https://solscan.io/account/DGpdGGyZ9sSWJegHxh9sVABs5ZUxn3wK4xsD3dFFMLgC"><code>DGpdGGyZ9sSWJegHxh9sVABs5ZUxn3wK4xsD3dFFMLgC</code></a></td><td><a href="https://solscan.io/tx/3qjsKQjD3mHwYuXhngtuE3zoNYhmGrANu29Lh3hKU5bpE895Vy4xPrjC4rU6gauRE3uA2JM2CXh7PMzFAKMGQsP3"><code>3qjsKQjD3mHwYuXhngtuE3zoNYhmGrANu29Lh3hKU5bpE895Vy4xPrjC4rU6gauRE3uA2JM2CXh7PMzFAKMGQsP3</code></a></td></tr>
+<tr><td>08:35:28</td><td>+3.938754719 SOL</td><td><a href="https://solscan.io/account/8t6XxP6FNQRoADCFFeL8EipjEMwDLVARmWZrexRZcmSK"><code>8t6XxP6FNQRoADCFFeL8EipjEMwDLVARmWZrexRZcmSK</code></a></td><td><a href="https://solscan.io/tx/4MNBQAhyvxb37ztDhNB1sKPwdse5Mdnw3G3mMmfiQdsCAk7QgMrhJvd4Jn5JQX8Lfz87o2tHvR9sELpdLSk6VYiG"><code>4MNBQAhyvxb37ztDhNB1sKPwdse5Mdnw3G3mMmfiQdsCAk7QgMrhJvd4Jn5JQX8Lfz87o2tHvR9sELpdLSk6VYiG</code></a></td></tr>
+<tr><td>08:35:28</td><td>+1.232725902 SOL</td><td><a href="https://solscan.io/account/FJGFWLuRYeNDL4YdXk4ExmyrjWtmjsm8cwurG2zERPyk"><code>FJGFWLuRYeNDL4YdXk4ExmyrjWtmjsm8cwurG2zERPyk</code></a></td><td><a href="https://solscan.io/tx/JxGtJgLb1gwDwijs67kXEUZ1xLz4ExDXLMx6zdjDJtXc6jckpb1mHi4pZUn95Ei4mfAcAmEaatbx6ejffd1qw56"><code>JxGtJgLb1gwDwijs67kXEUZ1xLz4ExDXLMx6zdjDJtXc6jckpb1mHi4pZUn95Ei4mfAcAmEaatbx6ejffd1qw56</code></a></td></tr>
+<tr><td>08:35:48</td><td>+1.602461666 SOL</td><td><a href="https://solscan.io/account/FTKEayrYkNGMu3F7a3jnUz49xptJVV3Qd4jKUKmjx94q"><code>FTKEayrYkNGMu3F7a3jnUz49xptJVV3Qd4jKUKmjx94q</code></a></td><td><a href="https://solscan.io/tx/2TBsnkCzn8KMZFnGAU5kTAQcgFGqega8CrVMxBZC9VPnPnEezUWdwRGuPvUypTc43F1omoUUMvnVTHVZ9oYzxNv8"><code>2TBsnkCzn8KMZFnGAU5kTAQcgFGqega8CrVMxBZC9VPnPnEezUWdwRGuPvUypTc43F1omoUUMvnVTHVZ9oYzxNv8</code></a></td></tr>
+<tr><td>08:35:48</td><td>+3.991988987 SOL</td><td><a href="https://solscan.io/account/BwsmdLVaTFYsPNmknpaPT2yKFDZpzvJPM3WWmCRCeWd9"><code>BwsmdLVaTFYsPNmknpaPT2yKFDZpzvJPM3WWmCRCeWd9</code></a></td><td><a href="https://solscan.io/tx/3qzfoxs2PYbQ57QvriCBwCh3Gd6WQ6iv3MWxKpZhaXJTkQPjE14eUaYEDB4gHnK5JCxcUjx3GYfWoGQBNH6AXPqj"><code>3qzfoxs2PYbQ57QvriCBwCh3Gd6WQ6iv3MWxKpZhaXJTkQPjE14eUaYEDB4gHnK5JCxcUjx3GYfWoGQBNH6AXPqj</code></a></td></tr>
+<tr><td>08:35:50</td><td>+1.989994500 SOL</td><td><a href="https://solscan.io/account/EWsehu1RmNsvbVgPrtWVWnoQ7r8apcfgCJj751tpiMSk"><code>EWsehu1RmNsvbVgPrtWVWnoQ7r8apcfgCJj751tpiMSk</code></a></td><td><a href="https://solscan.io/tx/2GYYqhzaU9j34MA9r6ZYzMKrqW7iUHJ7BwNER3tXSLAQ8TyWheFWBcjTz81TphwbBS2zK6YErXKwC2wjYCPkhXXE"><code>2GYYqhzaU9j34MA9r6ZYzMKrqW7iUHJ7BwNER3tXSLAQ8TyWheFWBcjTz81TphwbBS2zK6YErXKwC2wjYCPkhXXE</code></a></td></tr>
+<tr><td>08:35:50</td><td>+1.267197878 SOL</td><td><a href="https://solscan.io/account/HWAGeRyv5Lk5SaBHB4q1Fw4PX8GswUokh8HgaifpsjeY"><code>HWAGeRyv5Lk5SaBHB4q1Fw4PX8GswUokh8HgaifpsjeY</code></a></td><td><a href="https://solscan.io/tx/3bW8a6zbEWfR4pV8LmvBGE7KbypvGgzxNUyFBoVbLFjwScXCFLnvnDwqqwXXM3W8Yk4Rk8JTuqGYRJv1JxwYWJvc"><code>3bW8a6zbEWfR4pV8LmvBGE7KbypvGgzxNUyFBoVbLFjwScXCFLnvnDwqqwXXM3W8Yk4Rk8JTuqGYRJv1JxwYWJvc</code></a></td></tr>
+<tr><td>08:35:50</td><td>+5.911098054 SOL</td><td><a href="https://solscan.io/account/Yz26hjdTEDyzibs5HZsCfE6bYBtxRsVCaUDHFmNtg38"><code>Yz26hjdTEDyzibs5HZsCfE6bYBtxRsVCaUDHFmNtg38</code></a></td><td><a href="https://solscan.io/tx/41kvE9J6EYGmyaQJMaFKT5C23NU3jC1EfaysoyReZgQ8mf83yAt7ThCfCaXgdEVqUEMdfXf5ZnPH7fZTHtKoPpU5"><code>41kvE9J6EYGmyaQJMaFKT5C23NU3jC1EfaysoyReZgQ8mf83yAt7ThCfCaXgdEVqUEMdfXf5ZnPH7fZTHtKoPpU5</code></a></td></tr>
+<tr><td>08:35:50</td><td>+1.257836806 SOL</td><td><a href="https://solscan.io/account/StRvUPheiUVXhxSguwqRcNyJ2hrXy88YiC2grnyDYPk"><code>StRvUPheiUVXhxSguwqRcNyJ2hrXy88YiC2grnyDYPk</code></a></td><td><a href="https://solscan.io/tx/49XPLh8bkJE4U3XkVDer1mMWwPf9WCokA9gypnj84GDtcme9CJpR7PkJuvGk8VPWiNq8cmPzHfoJgRYsfygiwAG1"><code>49XPLh8bkJE4U3XkVDer1mMWwPf9WCokA9gypnj84GDtcme9CJpR7PkJuvGk8VPWiNq8cmPzHfoJgRYsfygiwAG1</code></a></td></tr>
+<tr><td>08:35:50</td><td>+2.918162790 SOL</td><td><a href="https://solscan.io/account/CX67spy3sAj8sg6zK8cBn9xnf35tpdevWD1LipXRQCUC"><code>CX67spy3sAj8sg6zK8cBn9xnf35tpdevWD1LipXRQCUC</code></a></td><td><a href="https://solscan.io/tx/4oiR1GoM3GAwpChx1raJ48dCbj4t96FX9PD5sRLPD6B7TH3cXxtChL5K7EECQpsXJuHYqRXnJRXGv6HSBFLk2G4E"><code>4oiR1GoM3GAwpChx1raJ48dCbj4t96FX9PD5sRLPD6B7TH3cXxtChL5K7EECQpsXJuHYqRXnJRXGv6HSBFLk2G4E</code></a></td></tr>
+<tr><td>08:35:50</td><td>+11.072222160 SOL</td><td><a href="https://solscan.io/account/E7iSkc5S1CQcC2GoifbZ1DwXdqe7JF9pfqBWTUBNt7qx"><code>E7iSkc5S1CQcC2GoifbZ1DwXdqe7JF9pfqBWTUBNt7qx</code></a></td><td><a href="https://solscan.io/tx/96h4Js2ZL6nDfUcvLHVkiiUYHLncjXHZ4aoYJJJZQg37RdpDnRPgiKcEjtX4Z2vWBHXQBtNUiwpVn3vw1VMd1Me"><code>96h4Js2ZL6nDfUcvLHVkiiUYHLncjXHZ4aoYJJJZQg37RdpDnRPgiKcEjtX4Z2vWBHXQBtNUiwpVn3vw1VMd1Me</code></a></td></tr>
+<tr><td>08:35:50</td><td>+2.730490846 SOL</td><td><a href="https://solscan.io/account/39Ed2x2xGhS5QTPY1ULKFRHWCuCAbmCcuDtuPuaeaYjj"><code>39Ed2x2xGhS5QTPY1ULKFRHWCuCAbmCcuDtuPuaeaYjj</code></a></td><td><a href="https://solscan.io/tx/cNKsgWwgyp4vbGJi8HczyD3oQNTZQ4KYeVsrzLhSxpgTPspPH4rjwWDAdYpThVq1J3epXFUKbjxiGHj43SRmjvW"><code>cNKsgWwgyp4vbGJi8HczyD3oQNTZQ4KYeVsrzLhSxpgTPspPH4rjwWDAdYpThVq1J3epXFUKbjxiGHj43SRmjvW</code></a></td></tr>
+<tr><td>08:37:24</td><td>+9.762887730 SOL</td><td><a href="https://solscan.io/account/H5uY1jn4GyuVeMGX12D7NqKmnxo3MD5GWW7acECrha2L"><code>H5uY1jn4GyuVeMGX12D7NqKmnxo3MD5GWW7acECrha2L</code></a></td><td><a href="https://solscan.io/tx/4NZ6tFLkTsmW3EwgVxs1RgM2s7UM8GHQfdL89uAcbNb9Dm9Sb6HhCnv4m3wLjcQkCSodFCNR55SEeFDLmyTQeUtx"><code>4NZ6tFLkTsmW3EwgVxs1RgM2s7UM8GHQfdL89uAcbNb9Dm9Sb6HhCnv4m3wLjcQkCSodFCNR55SEeFDLmyTQeUtx</code></a></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Telegram-bot custody of imported private keys. Investigators correlated victims with Solareum import, not BONKbot itself.</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>Project shut down. BONKbot published correlation notes. FBI forfeiture later described a related USDT haul.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Other 29 Mar collectors on the tayvano list are not fully hashed here (this draft is the 6AZpMspm cluster only).</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://decrypt.co/224371/solana-telegram-trading-bot-shut-down-users-drained-523k">Decrypt</a></li>
+              <li><a href="https://github.com/tayvano/lazarus-bluenoroff-research/blob/main/hacks-and-thefts/solareum.md">tayvano Solareum notes</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

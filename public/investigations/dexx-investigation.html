@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for DEXX." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>DEXX — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">16 Nov 2024</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>DEXX</h1>
+          <p class="muted">
+            Wiki id <code>dexx-key-leak-nov-2024</code>
+            · <a href="/incident/dexx-key-leak-nov-2024">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              DEXX custodial key mishandling led to mass wallet drains (Solana and
+              other chains), later laundered in part via Tornado Cash and
+              cross-chain hops including Layerswap in community tracing. MistTrack
+              named EVM consolidator <a href="https://etherscan.io/address/0xFFB9926310b291E17D7Df846cdED66cDA2C68228"><code>0xFFB9926310b291E17D7Df846cdED66cDA2C68228</code></a>
+              and a Solana collector prefix <code>4smi8TTE…CHLd</code>.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>EVM consolidator <a href="https://etherscan.io/address/0xFFB9926310b291E17D7Df846cdED66cDA2C68228"><code>0xFFB9926310b291E17D7Df846cdED66cDA2C68228</code></a> (full). MistTrack also cited a second Solana prefix <code>GPuNX…RKgt</code>.</p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Solana collector
+                <code>4smi8TTE…</code> is not recovered as a full pubkey. ETH Tornado
+                deposit hashes and Layerswap stop hashes are not listed. Do not invent
+                them.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Centralized storage of user private keys for a Telegram-style trading product; operator admitted the leak was their responsibility.</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>Service warnings, SlowMist/MistTrack tracing, promised compensation program. Recovery of stolen principal is not hashed here.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Full Solana collector <code>4smi8TTE…CHLd</code>.</li>
+              <li>Tornado / Layerswap stop transaction hashes.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://cointelegraph.com/news/solana-dexx-hack-november-2024-suspicious-wallets">Cointelegraph</a></li>
+              <li><a href="https://unocrypto.com/dexx-hackers-launder-6432-eth-worth-over-10-million-through-tornado-cash-protocol/">UnoCrypto / MistTrack update</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

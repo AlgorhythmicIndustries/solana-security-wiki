@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for NoOnes bridge." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>NoOnes bridge — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">1 Jan 2025</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>NoOnes bridge</h1>
+          <p class="muted">
+            Wiki id <code>noones-bridge-jan-2025</code>
+            · <a href="/incident/noones-bridge-jan-2025">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              P2P marketplace NoOnes: Solana bridge / hot-wallet logic abused from
+              1 Jan 2025 with many sub-$7k outflows across ETH, TRON, Solana, and BSC
+              (~$7.9–8M reporting). CEO later confirmed a Solana-bridge exploit.
+              Listed Solana hot prefix <code>AdNFLxrs…</code> with 371,874 USDT is
+              not expanded to a full address in this draft. Tornado Cash activity
+              continued into early January; a 5 Jan “stop” is not hashed here.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Merkle Science consolidators (full):
+              <a href="https://etherscan.io/address/0x72c1eabafc42a2ac6d0447b02c657b96f07402e6"><code>0x72c1eabafc42a2ac6d0447b02c657b96f07402e6</code></a> (ETH and BSC),
+              <a href="https://etherscan.io/address/0x4b0edd27196063476d91b634333be289beca9202"><code>0x4b0edd27196063476d91b634333be289beca9202</code></a>,
+              <a href="https://etherscan.io/address/0x6c9b55b50e6a42fd7a14b49ba7747096090b0465"><code>0x6c9b55b50e6a42fd7a14b49ba7747096090b0465</code></a>.
+            </p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Solana hot wallet
+                <code>AdNFLxrs…</code> is not recovered as a full pubkey. The 371,874
+                USDT Solana outflow set and a 5 Jan Tornado stop transaction are not
+                hashed. Do not invent them.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Solana bridge / hot-wallet withdrawal rules that allowed many small exits (smurfing) without an aggregate velocity halt.</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>Delayed public admission (ZachXBT 24 Jan). Solana support paused, restored 11 Feb 2025 after pen-test claims. Hot-wallet float reduced.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Full Solana hot address <code>AdNFLxrs…</code>.</li>
+              <li>371,874 USDT transfer signatures.</li>
+              <li>5 Jan Tornado stop hash.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://cryptoslate.com/noones-acknowledges-8-million-exploit-after-zachxbt-raises-concerns/">CryptoSlate</a></li>
+              <li><a href="https://www.merklescience.com/blog/hack-track-noones-flow-of-funds-analysis">Merkle Science flow of funds</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

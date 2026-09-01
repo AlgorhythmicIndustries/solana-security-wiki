@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Draft investigation notes for Pump.fun insider." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Pump.fun insider — investigation draft</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="brand"><a href="/">Solana Security Wiki</a></h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigation drafts</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigation drafts</a></p>
+          <div class="incident-meta">
+            <span class="pill">16 May 2024</span>
+            <span class="pill">draft</span>
+            <span class="pill">not published</span>
+          </div>
+          <h1>Pump.fun insider</h1>
+          <p class="muted">
+            Wiki id <code>pumpfun-insider-may-2024</code>
+            · <a href="/incident/pumpfun-insider-may-2024">Live incident page</a>
+          </p>
+          
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Former employee used withdraw authority plus MarginFi flash loans to
+              complete bonding curves and take ~12.3k SOL (~$1.9M) between 15:21 and
+              17:00 UTC on 16 May 2024. Co-signer
+              <a href="https://solscan.io/account/7ihN8QaTfNoDTRTQGULCzbUT3PHwPDTu5Brcu4iT2paP"><code>7ihN8QaTfNoDTRTQGULCzbUT3PHwPDTu5Brcu4iT2paP</code></a>;
+              program <a href="https://solscan.io/account/6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"><code>6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P</code></a>.
+              Team halted trading and said it would replenish LPs to the 15:21 UTC
+              mark.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Program <a href="https://solscan.io/account/6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"><code>6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P</code></a>.
+              Co-signer / attacker <a href="https://solscan.io/account/7ihN8QaTfNoDTRTQGULCzbUT3PHwPDTu5Brcu4iT2paP"><code>7ihN8QaTfNoDTRTQGULCzbUT3PHwPDTu5Brcu4iT2paP</code></a>.
+              Current on-chain <code>withdraw_authority</code>
+              <a href="https://solscan.io/account/39azUYFWPz3VHgKCf3VChUwbpURdCHRxjWVowf5jUJjg"><code>39azUYFWPz3VHgKCf3VChUwbpURdCHRxjWVowf5jUJjg</code></a>
+              is post-incident and is <em>not</em> substituted for the May 2024 key.
+            </p>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> Withdraw authority prefix
+                <code>5PXxuZkv…</code> is not recovered as a full pubkey. Replenish /
+                seed-LP transaction hashes after the halt are not listed. Do not use
+                the current withdraw authority as the insider key.
+              </p>
+            </div>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>Single-employee control of withdraw authority plus flash-loan completable bonding curves (insider, not an external 0-day in the program math alone).</p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>Trading halt ~17:00 UTC, contract upgrade, 0% fees for seven days, team-seeded LPs. Later UK prosecution of Jarett Dunn.</p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Full withdraw-authority pubkey <code>5PXxuZkv…</code>.</li>
+              <li>Replenish seed transaction hashes.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://www.theblock.co/post/295029/pump-fun-post-mortem">The Block post-mortem</a></li>
+              <li><a href="https://www.newsbtc.com/news/crypto-post-mortem-heres-how-pump-fun-was-exploited-for-2-million/">NewsBTC</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            Draft / not published. On-chain claims without a full hash are labeled
+            as coverage gaps. This page has no scripts.
+          </p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>
