@@ -7,7 +7,7 @@ export interface InvestigationDraft {
   published: false;
 }
 
-/** Static HTML IR drafts served from /investigations/. Not live wiki articles. */
+/** Static HTML IR notes served from /investigations/. Not live wiki articles. */
 export const investigationDrafts: InvestigationDraft[] = [
   {
     incidentId: "avici-rain-card-contract-aug-2026",
