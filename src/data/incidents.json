@@ -1,5 +1,56 @@
 [
   {
+    "id": "aquifer-amm-aug-2026",
+    "title": "Aquifer AMM privileged-wallet drain",
+    "date": "2026-08-31",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 2500000,
+    "lossDescription": "Public figures cluster around ~$2.5M (SlowMist lists $2,500,000; crypto.news ~$2.5M; on-chain IR notes cite ~$2.47M as a write-up pointer, not a hashed USD total). Loss was inventory from Aquifer's Solana prop-AMM pools (including KMNO and RAY samples plus a 2,930.597 SOL native exit via Rango). Recovery via a same-day 20% white-hat bounty (80% return by 2026-09-03 14:00 UTC) was offered on-chain; return of the Rango SOL exit is not confirmed in public sources at cataloguing time.",
+    "summary": "On August 31, 2026 Solana proprietary AMM Aquifer was drained of roughly $2.5 million. Defimon and SlowMist identified attacker-controlled addresses on both Solana (7fTe9pvr…) and Ethereum (0x2Dfe9e96…); public reporting treats the incident as compromised protocol-linked wallets or admin credentials rather than a confirmed smart-contract logic bug. The same day, Aquifer's Solana upgrade authority published an on-chain white-hat offer via Squads: return at least 80% of stolen assets (or equivalent) by September 3, 2026 14:00 UTC to designated recovery addresses and keep up to 20% as a bounty, with the project forgoing civil claims if those terms are met.",
+    "details": "Independent IR notes hash a drain window of 03:41–04:21 UTC in which the live signer invoked Aquifer together with the SPL Token program and a malicious CPI / named token program (DMBpPMaM…; 210 in-window signatures on that program), then bridged 2,930.597 SOL out via Rango. No public technical post-mortem has established whether that program was the root cause, a stolen-key artifact, or both; SlowMist classifies the method as wallet credential compromise. DefiLlama listed Aquifer TVL around $2.8M at the time of reporting.",
+    "tags": [
+      "aquifer",
+      "amm",
+      "prop-amm",
+      "key-compromise",
+      "whitehat-bounty",
+      "cpi"
+    ],
+    "relatedIds": [
+      "raydium-pool-owner-key-dec-2022",
+      "step-finance-treasury-jan-2026"
+    ],
+    "sources": [
+      {
+        "label": "SlowMist Hacked DB (Solana)",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      },
+      {
+        "label": "Defimon Alerts (X)",
+        "url": "https://x.com/DefimonAlerts/status/2094467984030826622"
+      },
+      {
+        "label": "crypto.news",
+        "url": "https://crypto.news/solana-amm-aquifer-hit-by-2-5-million-exploit-offers-20-bounty/"
+      },
+      {
+        "label": "Bitquery (X)",
+        "url": "https://x.com/Bitquery_io/status/2094698869292761487"
+      }
+    ],
+    "lesson": "Prop-AMM inventory is only as safe as the wallets and remaining-accounts wiring that can move it: a stolen or attacker-supplied signing path can empty pools without a novel contract-math bug, so privileged keys and CPI token-program IDs must be treated as production-critical controls, not operational afterthoughts.",
+    "mitigations": [
+      "Treat any wallet that can withdraw AMM inventory or settle prop-AMM quotes as a privileged signer: hardware custody, no shared hot keys, and immediate rotation on suspicion.",
+      "Pin the canonical SPL Token and Token-2022 program IDs; never accept an attacker-supplied token program from remaining accounts for CPI.",
+      "Monitor for unexpected CPI to unknown programs alongside Aquifer/Tokenkeg in the same transaction, with an automatic pause when that pattern appears.",
+      "Keep upgrade authority on a multisig with a minimum timelock, and keep that ceremony independent of any hot wallet used for quoting or inventory management.",
+      "Pre-publish white-hat return addresses and bounty terms so recovery outreach can start the same day as a drain, including cross-chain destinations if inventory can leave via aggregators/bridges.",
+      "Inventory every live pool account and set per-pool outflow alerts before an attacker can complete a multi-hop native exit (e.g. Rango).",
+      "Do not treat the absence of a confirmed contract-logic CVE as a reason to skip post-incident key rotation, remaining-accounts review, and a public post-mortem."
+    ]
+  },
+  {
     "id": "avici-rain-card-contract-aug-2026",
     "title": "Avici / Rain card contract authorization exploit",
     "date": "2026-08-28",

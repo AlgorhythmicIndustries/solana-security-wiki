@@ -15,6 +15,7 @@ const sections: Section[] = [
       "These controls would have prevented or limited the contract-bug class of incidents (Wormhole, Cashio, Crema, Loopscale, Texture, Stake Nova).",
     items: [
       "Verify every account by canonical address or PDA derivation; never trust shape alone (especially sysvars).",
+      "Pin the canonical SPL Token and Token-2022 program IDs; never accept an attacker-supplied token program from remaining accounts for CPI (Aquifer-class drain path).",
       "Assert that program-owned accounts are owned by your program ID on every read.",
       "Enforce signer constraints on every privileged instruction; a passed-in 'authority' is not authentication.",
       "Use floor (not round) for outflows; assert no transaction can withdraw more value than it deposited at the same exchange rate.",
@@ -30,7 +31,7 @@ const sections: Section[] = [
     id: "authorities",
     title: "2. Authority and multisig configuration",
     intro:
-      "These controls would have prevented or limited Raydium, Saga DAO, Pump.fun, Credix, Step Finance, and Drift.",
+      "These controls would have prevented or limited Raydium, Saga DAO, Pump.fun, Credix, Step Finance, Drift, and Aquifer.",
     items: [
       "Move every program upgrade authority to a multisig (Squads or equivalent) from launch.",
       "Use a meaningful threshold (suggested minimum 3-of-5 for council, higher for treasury); never 1-of-N.",
@@ -119,7 +120,7 @@ const sections: Section[] = [
     id: "endpoint",
     title: "7. Endpoint and personal-device security",
     intro:
-      "Direct response to Step Finance, Drift, DEXX, Solareum, and the broader trend of executive-device compromise.",
+      "Direct response to Step Finance, Drift, DEXX, Solareum, Aquifer, and the broader trend of executive-device and privileged-wallet compromise.",
     items: [
       "Hardware wallets (Ledger / Trezor) for every privileged signer; never sign from a general-purpose laptop.",
       "EDR / managed-detection on every privileged endpoint.",
