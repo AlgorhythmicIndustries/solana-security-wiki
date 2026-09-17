@@ -1,5 +1,66 @@
 [
   {
+    "id": "aquifer-amm-aug-2026",
+    "title": "Aquifer AMM unverified token-program CPI drain",
+    "date": "2026-08-31",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 2500000,
+    "lossDescription": "Widely cited ~$2.5M (SlowMist $2,500,000; crypto.news ~$2.5M). Bitquery's 1 Sep 2026 on-chain reconstruction totals $2,469,729 across 18 vaults / 212 swaps (mostly USDC/USDT), then 24,082 SOL sold and bridged to 1,000.7956 ETH that remained unmoved at the attacker Ethereum address. A same-day 20% white-hat bounty (80% return by 2026-09-03 14:00 UTC) was offered on-chain; Bitquery found the named Solana recovery address still idle, and as of 2026-09-17 no public source has confirmed a return.",
+    "summary": "On August 31, 2026 Solana proprietary AMM Aquifer was drained of roughly $2.5 million in 40 minutes. The attacker deployed a tiny program (DMBpPMaM…) that accepted SPL-shaped transfer instructions, did nothing, and reported success, then handed Aquifer 165-byte lookalike token accounts owned by that program and claiming ~18 trillion USDC. Aquifer paid real vault inventory out through Tokenkeg, CPId the attacker-supplied program to collect the input leg, and never re-checked whether any tokens arrived. The same day, Aquifer's upgrade authority published an on-chain white-hat offer: return at least 80% by September 3, 2026 14:00 UTC and keep up to 20% as a bounty.",
+    "details": "Bitquery rebuilt 212 successful drain swaps between 03:41 and 04:21 UTC (first drain 03:41; last 04:21), with proceeds sold to SOL and bridged via Rango and a second cross-chain path while the drain was still running. Aquifer has not published source code; the defect is inferred from instruction/account evidence (caller-supplied token program, token-account owner not Tokenkeg, payout-before-collect, no post-CPI balance delta). SlowMist still classifies the method as wallet credential compromise, which early news coverage followed; that framing is not how the on-chain record reads. The white-hat deadline passed with no confirmed return, and Bitquery reported the program still unpatched with vaults essentially empty.",
+    "tags": [
+      "aquifer",
+      "amm",
+      "prop-amm",
+      "token-program",
+      "remaining-accounts",
+      "cpi",
+      "whitehat-bounty"
+    ],
+    "relatedIds": [
+      "raydium-pool-owner-key-dec-2022",
+      "step-finance-treasury-jan-2026"
+    ],
+    "sources": [
+      {
+        "label": "SlowMist Hacked DB (Solana)",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      },
+      {
+        "label": "Defimon Alerts (X)",
+        "url": "https://x.com/DefimonAlerts/status/2094467984030826622"
+      },
+      {
+        "label": "crypto.news",
+        "url": "https://crypto.news/solana-amm-aquifer-hit-by-2-5-million-exploit-offers-20-bounty/"
+      },
+      {
+        "label": "Bitquery investigation",
+        "url": "https://bitquery.io/investigations/aquifer-solana-hack-2-5-million"
+      },
+      {
+        "label": "shattered.io — post-deadline follow-up",
+        "url": "https://shattered.io/aquifer-solana-exploit-white-hat-bounty-2026/"
+      },
+      {
+        "label": "Bitquery (X)",
+        "url": "https://x.com/Bitquery_io/status/2094698869292761487"
+      }
+    ],
+    "lesson": "A swap that lets the caller name the token program, or that trusts a 165-byte account without checking its owner, is paying out against a forged balance: pin Tokenkeg/Token-2022, require token-account owner, and assert actual input-leg balance deltas after CPI rather than success status.",
+    "mitigations": [
+      "Pin the canonical SPL Token and Token-2022 program IDs; never accept an attacker-supplied token program from remaining accounts for CPI.",
+      "Reject token accounts whose owner is not the canonical token program; a 165-byte lookalike with an inflated amount is not a real SPL balance.",
+      "After the output leg is paid, assert that the input token-account balance actually decreased by the expected amount; do not treat CPI success as proof of payment.",
+      "Collect (or escrow) the input leg before releasing vault inventory, or atomically revert if either leg fails a post-state check.",
+      "Monitor for unexpected CPI to unknown programs alongside the venue program and Tokenkeg in the same transaction, with an automatic pause when that pattern appears.",
+      "Keep upgrade authority on a multisig with a minimum timelock, and pause quoting as soon as vault inventory or CPI destinations deviate from baseline.",
+      "Pre-publish white-hat return addresses and bounty terms so recovery outreach can start the same day as a drain, including cross-chain destinations if inventory can leave via aggregators/bridges.",
+      "Inventory every live pool account and set per-pool outflow alerts before an attacker can complete a multi-hop native exit (e.g. Rango)."
+    ]
+  },
+  {
     "id": "avici-rain-card-contract-aug-2026",
     "title": "Avici / Rain card contract authorization exploit",
     "date": "2026-08-28",

@@ -12,9 +12,12 @@ const sections: Section[] = [
     id: "program",
     title: "1. Program (smart contract) hygiene",
     intro:
-      "These controls would have prevented or limited the contract-bug class of incidents (Wormhole, Cashio, Crema, Loopscale, Texture, Stake Nova).",
+      "These controls would have prevented or limited the contract-bug class of incidents (Wormhole, Cashio, Crema, Loopscale, Texture, Stake Nova, Aquifer unverified token-program / fake token-account path).",
     items: [
       "Verify every account by canonical address or PDA derivation; never trust shape alone (especially sysvars).",
+      "Pin the canonical SPL Token and Token-2022 program IDs; never accept an attacker-supplied token program from remaining accounts for CPI (Aquifer-class drain path).",
+      "Reject token accounts whose owner is not Tokenkeg or Token-2022; a 165-byte lookalike is not a real balance.",
+      "After CPI, assert actual input-leg token-account balance deltas; do not treat CPI success as proof of payment.",
       "Assert that program-owned accounts are owned by your program ID on every read.",
       "Enforce signer constraints on every privileged instruction; a passed-in 'authority' is not authentication.",
       "Use floor (not round) for outflows; assert no transaction can withdraw more value than it deposited at the same exchange rate.",
