@@ -12,9 +12,12 @@ const sections: Section[] = [
     id: "program",
     title: "1. Program (smart contract) hygiene",
     intro:
-      "These controls would have prevented or limited the contract-bug class of incidents (Wormhole, Cashio, Crema, Loopscale, Texture, Stake Nova).",
+      "These controls would have prevented or limited the contract-bug class of incidents (Wormhole, Cashio, Crema, Loopscale, Texture, Stake Nova, Aquifer unverified token-program / fake token-account path).",
     items: [
       "Verify every account by canonical address or PDA derivation; never trust shape alone (especially sysvars).",
+      "Pin the canonical SPL Token and Token-2022 program IDs; never accept an attacker-supplied token program from remaining accounts for CPI (Aquifer-class drain path).",
+      "Reject token accounts whose owner is not Tokenkeg or Token-2022; a 165-byte lookalike is not a real balance.",
+      "After CPI, assert actual input-leg token-account balance deltas; do not treat CPI success as proof of payment.",
       "Assert that program-owned accounts are owned by your program ID on every read.",
       "Enforce signer constraints on every privileged instruction; a passed-in 'authority' is not authentication.",
       "Use floor (not round) for outflows; assert no transaction can withdraw more value than it deposited at the same exchange rate.",
@@ -30,11 +33,13 @@ const sections: Section[] = [
     id: "authorities",
     title: "2. Authority and multisig configuration",
     intro:
-      "These controls would have prevented or limited Raydium, Saga DAO, Pump.fun, Credix, Step Finance, and Drift.",
+      "These controls would have prevented or limited Raydium, Saga DAO, Pump.fun, Credix, Step Finance, Drift, and Dominion SILV (treasury / mint-authority keys).",
     items: [
       "Move every program upgrade authority to a multisig (Squads or equivalent) from launch.",
-      "Use a meaningful threshold (suggested minimum 3-of-5 for council, higher for treasury); never 1-of-N.",
+      "Use a meaningful threshold (suggested minimum 3-of-5 for council, higher for treasury); never 1-of-N. A 3-of-5 still failed at Dominion when mint/treasury keys leaked — isolate signers and alert on signer-set changes.",
       "Each signer on an independent, hardware-backed device, with separate trust domain.",
+      "Keep mint, freeze, and Token-2022 permanent-delegate authorities on separate signer sets; do not collocate freeze and clawback on one address (Dominion SILV).",
+      "Treat SetAuthority / mint signer-set changes as a circuit-breaker: pause minting and pull DEX liquidity when unexpected signers appear.",
       "Mandatory minimum timelock on changes to the multisig itself and to upgrade authority.",
       "Mandatory timelock on changes to the collateral whitelist, oracle configuration, fee parameters, and risk parameters.",
       "Eliminate or strictly bound admin instructions: no 'mint arbitrary supply' or 'withdraw arbitrary fee' single-call paths.",
@@ -119,7 +124,7 @@ const sections: Section[] = [
     id: "endpoint",
     title: "7. Endpoint and personal-device security",
     intro:
-      "Direct response to Step Finance, Drift, DEXX, Solareum, and the broader trend of executive-device compromise.",
+      "Direct response to Step Finance, Drift, DEXX, Solareum, Dominion SILV, and the broader trend of executive-device and privileged-wallet compromise.",
     items: [
       "Hardware wallets (Ledger / Trezor) for every privileged signer; never sign from a general-purpose laptop.",
       "EDR / managed-detection on every privileged endpoint.",
@@ -157,7 +162,7 @@ const sections: Section[] = [
       "Cuts response time when something does happen; improves detection coverage.",
     items: [
       "On-chain monitoring for authority changes, admin-only instructions, and parameter changes (Hypernative, Range, Sec3, Forta).",
-      "On-chain monitoring for unusual outflows, mint/redeem rates, and pool-ratio shifts.",
+      "On-chain monitoring for unusual outflows, mint/redeem rates, and pool-ratio shifts, including RWA treasury dumps into thin DEX pools (Dominion SILV).",
       "Off-chain monitoring for cert-transparency events, DNS changes, and reachability of canonical domain.",
       "Pager rotation with a documented escalation path; out-of-band reachable.",
       "Circuit-breaker / pause mechanism callable by on-call within minutes (Brick-style).",
@@ -188,8 +193,10 @@ const sections: Section[] = [
     id: "user-protection",
     title: "11. User-protection and disclosure",
     intro:
-      "Reduces user blast radius and aligns with current wallet/UX security expectations.",
+      "Reduces user blast radius and aligns with current wallet/UX security expectations. Tokenized RWAs (Dominion SILV) add freeze/clawback as an issuer control that must be disclosed, not discovered during an incident.",
     items: [
+      "Disclose freeze authority, mint authority, and Token-2022 permanent-delegate permissions in product UX before users buy an RWA or other issuer-controlled token.",
+      "Publish a refund / clawback path that verifies claims on-chain and never asks affected users to sign token approvals or follow DM links.",
       "Publish exact transaction shapes users will be asked to sign for claims, swaps, governance.",
       "Default token approvals to bounded amounts (not unlimited) wherever possible.",
       "Surface security guidance and bookmarkable canonical URLs in onboarding.",
