@@ -136,7 +136,7 @@ const sections: Section[] = [
     id: "backend",
     title: "8. Backend, custody, and key management",
     intro:
-      "Coverage for Thunder Terminal, Solareum, DEXX, Banana Gun, Time.fun, and exchange-class incidents like Upbit.",
+      "Coverage for Thunder Terminal, Solareum, DEXX, Banana Gun, Time.fun, TradeWiz, and exchange-class incidents like Upbit.",
     items: [
       "Store credentials and signing keys in HSM/KMS or MPC; never in env files, code, or logs.",
       "Use scoped, short-lived credentials with rotation; audit every issuance.",

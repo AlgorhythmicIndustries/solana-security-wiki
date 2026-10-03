@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for TradeWiz." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>TradeWiz — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">30 Sep 2026</span>
+          </div>
+          <h1>TradeWiz</h1>
+          <p class="muted">
+            Wiki id <code>tradewiz-key-export-sep-2026</code>
+            · <a href="/incident/tradewiz-key-export-sep-2026">Live incident page</a>
+          </p>
+
+          <div class="callout">
+            <p>
+              <strong>Bug class.</strong> Product/ops private-key exposure
+              (custodial signing) with multi-user fund loss on Solana. Official
+              posts and Bitquery treat this as key exposure, not a protocol
+              exploit and not one-off phishing. TradeWiz has not published how
+              keys left the SOL PVP export feature; this draft does not infer a
+              leak path.
+            </p>
+          </div>
+
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              TradeWiz (<a href="https://x.com/TradeWiz_Bot">@TradeWiz_Bot</a>)
+              posted on 30 Sep 2026 that a limited private-key exposure occurred
+              in the SOL PVP private-key export feature. Mass wallet drains
+              followed. The bot holds user keys so it can sign. Bitquery’s public
+              write-up says the on-chain artifact is ordinary transfers signed by
+              the drained wallets, with no exploit program and no token approval.
+            </p>
+            <p>
+              Multi-user impact remains a <strong>Bitquery claim</strong> except
+              where hashed below: Bitquery counts 20,933 wallets and about
+              <strong>$459,468</strong> at $120/SOL as of 1 Oct 2026 09:54 UTC.
+              TradeWiz has not published a refund or police dollar figure in the
+              posts reviewed here. RPC check of collector
+              <a href="https://solscan.io/account/6mmiAPpQmY6YFxecmAyHMi2P8B7CE92Y8E65saE388Hj"><code>6mmiAPpQmY6YFxecmAyHMi2P8B7CE92Y8E65saE388Hj</code></a>
+              on 3 Oct 2026 ~11:50 ET: <strong>1845.184891292 SOL</strong>, with
+              mass activity 30 Sep 09:00–13:00 ET and 1 Oct 06:00–11:00 ET.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Times below are <strong>America/New_York</strong>. Signatures are
+              Solana RPC–verified. A public-RPC recheck confirmed the holding
+              transfer, the first MEXC inflow, and the 100 SOL hop to the
+              forwarder. Bitquery dollar totals, wallet counts, and rent figures
+              stay Bitquery claims.
+            </p>
+            <h3>Wallets</h3>
+            <table class="hash-table">
+              <thead><tr><th>Role</th><th>Address</th><th>RPC note</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>Collector</td>
+                  <td><a href="https://solscan.io/account/6mmiAPpQmY6YFxecmAyHMi2P8B7CE92Y8E65saE388Hj"><code>6mmiAPpQmY6YFxecmAyHMi2P8B7CE92Y8E65saE388Hj</code></a></td>
+                  <td>First activity 28 Aug 2026. About 39,719 signatures through 3 Oct 2026 11:44 ET (32,168 successful). Balance 1845.184891292 SOL at ~11:50 ET that day.</td>
+                </tr>
+                <tr>
+                  <td>Trading wallet</td>
+                  <td><a href="https://solscan.io/account/5e92RDcRg1FiB8knfe1YNQGT7gqrkxnixGGiNoxujfaC"><code>5e92RDcRg1FiB8knfe1YNQGT7gqrkxnixGGiNoxujfaC</code></a></td>
+                  <td>Funded from the collector (not from MEXC directly). Balance 0 at check.</td>
+                </tr>
+                <tr>
+                  <td>Holding</td>
+                  <td><a href="https://solscan.io/account/7iFXCZAg9i54N4vNAEPKBaNB7xQc7SbceEQx75fqMHsc"><code>7iFXCZAg9i54N4vNAEPKBaNB7xQc7SbceEQx75fqMHsc</code></a></td>
+                  <td>One transaction only. Still 1599.008050340 SOL.</td>
+                </tr>
+                <tr>
+                  <td>Forwarder</td>
+                  <td><a href="https://solscan.io/account/9Jx1rDvCCGLCuyAvuc8MG9bsSE3RdSRajVY85Q54eKCj"><code>9Jx1rDvCCGLCuyAvuc8MG9bsSE3RdSRajVY85Q54eKCj</code></a></td>
+                  <td>History back to 2 Jun 2026; not created for this incident.</td>
+                </tr>
+                <tr>
+                  <td>Exchange-style deposit</td>
+                  <td><a href="https://solscan.io/account/Cmjwy18ShHxUrZ5ZLw5d1Hruz6yszR2kcXW4aTPMoxXs"><code>Cmjwy18ShHxUrZ5ZLw5d1Hruz6yszR2kcXW4aTPMoxXs</code></a></td>
+                  <td>Bitquery identifies this as KuCoin. Arkham labeling failed (402). Not chain-proven as KuCoin. Same deposit was used in 2024 with the same sweeper.</td>
+                </tr>
+                <tr>
+                  <td>Sweeper</td>
+                  <td><a href="https://solscan.io/account/BmFdpraQhkiDQE6SnfG5omcA1VwzqfXrwtNYBwWTymy6"><code>BmFdpraQhkiDQE6SnfG5omcA1VwzqfXrwtNYBwWTymy6</code></a></td>
+                  <td>Received the 100 SOL and 91 SOL sweeps from Cmjwy18.</td>
+                </tr>
+                <tr>
+                  <td>MEXC hot</td>
+                  <td><a href="https://solscan.io/account/ASTyfSima4LLAdDgoFGkgqoKowG1LZFDr9fAQrg7iaJZ"><code>ASTyfSima4LLAdDgoFGkgqoKowG1LZFDr9fAQrg7iaJZ</code></a></td>
+                  <td>Four withdrawals landed on the collector. Gross 1.005632 SOL.</td>
+                </tr>
+                <tr>
+                  <td>Gas</td>
+                  <td><a href="https://solscan.io/account/8Fae1SqAWf4isRk7jkZHYdQeiCYLQQMKBbazdnpaHzcY"><code>8Fae1SqAWf4isRk7jkZHYdQeiCYLQQMKBbazdnpaHzcY</code></a></td>
+                  <td>Fee-paid token transfers 1 Oct 2026 ~11:32–11:45 ET. Many neighboring attempts failed.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="callout">
+              <p>
+                <strong>Not an attacker IoC.</strong> Trading wallet
+                <code>5e92…jfaC</code> paid 0.005 SOL product fees to
+                <a href="https://solscan.io/account/Aes35rP7kHZepsXrLkLkFGvqporpkHMDe9DsVoMTwJST"><code>Aes35rP7kHZepsXrLkLkFGvqporpkHMDe9DsVoMTwJST</code></a>
+                on 29 Aug 2026 swaps. That address is a TradeWiz fee recipient.
+                Do not list it as an attacker indicator.
+              </p>
+            </div>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Do not merge.</strong>
+                <a href="https://solscan.io/account/9Jx1zUetbQXw95LWvJGckWw5WjSE9LJLxioQxieoeKCj"><code>9Jx1zUetbQXw95LWvJGckWw5WjSE9LJLxioQxieoeKCj</code></a>
+                later did a token transfer touching the Cmjwy18 deposit on 1 Oct
+                2026 20:01 ET. It is a different address from forwarder
+                <code>9Jx1rDvC…eKCj</code>.
+              </p>
+            </div>
+            <h3>MEXC funding onto the collector</h3>
+            <p>
+              Four withdrawals from
+              <a href="https://solscan.io/account/ASTyfSima4LLAdDgoFGkgqoKowG1LZFDr9fAQrg7iaJZ"><code>ASTyfSima4LLAdDgoFGkgqoKowG1LZFDr9fAQrg7iaJZ</code></a>
+              landed on the collector, not directly on the trading wallet. Gross
+              <strong>1.005632 SOL</strong>. The collector then forwarded
+              essentially those amounts to
+              <a href="https://solscan.io/account/5e92RDcRg1FiB8knfe1YNQGT7gqrkxnixGGiNoxujfaC"><code>5e92RDcRg1FiB8knfe1YNQGT7gqrkxnixGGiNoxujfaC</code></a>.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>ET</th><th>Amount</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>28 Aug 2026 03:26:02</td>
+                  <td>+0.262400 SOL</td>
+                  <td><a href="https://solscan.io/tx/zeUKx9wtagAUG9mvMjPLsZVNYYuakvaDDtM6Ufm2HCYNqdYBNVhTqAk2tVVJRenermyfbuB3ZCCPXmCzAf1HxL4"><code>zeUKx9wtagAUG9mvMjPLsZVNYYuakvaDDtM6Ufm2HCYNqdYBNVhTqAk2tVVJRenermyfbuB3ZCCPXmCzAf1HxL4</code></a></td>
+                </tr>
+                <tr>
+                  <td>28 Aug 2026 09:44:14</td>
+                  <td>+0.201200 SOL</td>
+                  <td><a href="https://solscan.io/tx/4LgwinwGBzmiqWxKKBk6Dri9up43iArpdfeNxkBXHZr464NWcHmPvavrWAVLS9PRwtPH19qWZvHrLfmvLerWg1pN"><code>4LgwinwGBzmiqWxKKBk6Dri9up43iArpdfeNxkBXHZr464NWcHmPvavrWAVLS9PRwtPH19qWZvHrLfmvLerWg1pN</code></a></td>
+                </tr>
+                <tr>
+                  <td>29 Aug 2026 03:28:03</td>
+                  <td>+0.268500 SOL</td>
+                  <td><a href="https://solscan.io/tx/38d2sQdHqDMrjkz771jz4E9B8eQUueqXUyfwrZEHAuceWzS4kcwGRtF1Zn27mcs5pZVp211aYvadBgGaq9KfbNPe"><code>38d2sQdHqDMrjkz771jz4E9B8eQUueqXUyfwrZEHAuceWzS4kcwGRtF1Zn27mcs5pZVp211aYvadBgGaq9KfbNPe</code></a></td>
+                </tr>
+                <tr>
+                  <td>3 Sep 2026 09:10:01</td>
+                  <td>+0.273500 SOL</td>
+                  <td><a href="https://solscan.io/tx/fdeB86C8VJx8cykLSN6DTzNCj5at7xkJyjsDn8L2nbZUoQcY56ZKvR8PhEog7dqaVMiVJDJXLT3u9jYB3Eapa73"><code>fdeB86C8VJx8cykLSN6DTzNCj5at7xkJyjsDn8L2nbZUoQcY56ZKvR8PhEog7dqaVMiVJDJXLT3u9jYB3Eapa73</code></a></td>
+                </tr>
+                <tr>
+                  <td>28 Aug 2026 03:41:38</td>
+                  <td>collector → trading (example)</td>
+                  <td><a href="https://solscan.io/tx/3j1gXYnYqZcfLrokEC4X2wQDXqeym5eQSbJDzoKBdFBq2n4uk3NgcfFxFEr3bdk83PGML9iUjNjmYTYXgNQLFwT9"><code>3j1gXYnYqZcfLrokEC4X2wQDXqeym5eQSbJDzoKBdFBq2n4uk3NgcfFxFEr3bdk83PGML9iUjNjmYTYXgNQLFwT9</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Holding wallet</h3>
+            <p>
+              One transaction only: 30 Sep 2026 11:46:00 ET, collector sent
+              <strong>1599.00805034 SOL</strong>. Balance still
+              1599.008050340 SOL.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>ET</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>30 Sep 2026 11:46:00</td>
+                  <td>collector → holding 1599.00805034 SOL</td>
+                  <td><a href="https://solscan.io/tx/5qJqWTPuwGeftWMRYGb7J5MLQro8Y7eZtrQraTVK5rqne4M3Rvogfbvq54g5JC4F3ZLiEwndJe9GQUWGtkrfCXDU"><code>5qJqWTPuwGeftWMRYGb7J5MLQro8Y7eZtrQraTVK5rqne4M3Rvogfbvq54g5JC4F3ZLiEwndJe9GQUWGtkrfCXDU</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Forwarder and exchange-style deposit</h3>
+            <table class="hash-table">
+              <thead><tr><th>ET</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>30 Sep 2026 21:19:08</td>
+                  <td>collector → forwarder 100 SOL</td>
+                  <td><a href="https://solscan.io/tx/4gyUBnorFdtXq4MtAQLXh3t11Zi1KLuw1zAT4wnFdEJQHpJrNWeLwumV8kYKK9MXErU23E9ZJU5b28KJDeHzaVEg"><code>4gyUBnorFdtXq4MtAQLXh3t11Zi1KLuw1zAT4wnFdEJQHpJrNWeLwumV8kYKK9MXErU23E9ZJU5b28KJDeHzaVEg</code></a></td>
+                </tr>
+                <tr>
+                  <td>30 Sep 2026 21:19:47</td>
+                  <td>forwarder → Cmjwy18 100 SOL</td>
+                  <td><a href="https://solscan.io/tx/61Ber7o9S2h4DziN9gGztJv2F44ut4ZwrXa31iGgSXALjMvwGjwyKGmVNSJzA1AdtuQwmXCKPncaffM7GuUC2K2G"><code>61Ber7o9S2h4DziN9gGztJv2F44ut4ZwrXa31iGgSXALjMvwGjwyKGmVNSJzA1AdtuQwmXCKPncaffM7GuUC2K2G</code></a></td>
+                </tr>
+                <tr>
+                  <td>1 Oct 2026 00:17:32</td>
+                  <td>collector → forwarder 91 SOL</td>
+                  <td><a href="https://solscan.io/tx/SSonyzrvpQWbXU42GhaSrTA3xzHmRacvVEERexEqzS7GLfrsbnSwFWAk1hFgVjfcevhL9dUpHsd8ygK76DZfA5d"><code>SSonyzrvpQWbXU42GhaSrTA3xzHmRacvVEERexEqzS7GLfrsbnSwFWAk1hFgVjfcevhL9dUpHsd8ygK76DZfA5d</code></a></td>
+                </tr>
+                <tr>
+                  <td>1 Oct 2026 01:08:12</td>
+                  <td>forwarder → Cmjwy18 91 SOL</td>
+                  <td><a href="https://solscan.io/tx/4EyFBDZ3k9fK7gNmuRmabzBwqPUUjnJGHVE8dzX4Q7vmgUR6XZPaRqZFjf6BToG7y9fGHQsacw5pnyG7SuKndHW8"><code>4EyFBDZ3k9fK7gNmuRmabzBwqPUUjnJGHVE8dzX4Q7vmgUR6XZPaRqZFjf6BToG7y9fGHQsacw5pnyG7SuKndHW8</code></a></td>
+                </tr>
+                <tr>
+                  <td>after 100 SOL</td>
+                  <td>Cmjwy18 → sweeper 100 SOL</td>
+                  <td><a href="https://solscan.io/tx/3HgiL9RqnMBW9RTyUMzhe5wS57DAFj9rE2qe65HrKwHfCk2ggUiRrkNHpgEzHAWNZuPMzv8oM6wdWT9K51Aiu2t9"><code>3HgiL9RqnMBW9RTyUMzhe5wS57DAFj9rE2qe65HrKwHfCk2ggUiRrkNHpgEzHAWNZuPMzv8oM6wdWT9K51Aiu2t9</code></a></td>
+                </tr>
+                <tr>
+                  <td>after 91 SOL</td>
+                  <td>Cmjwy18 → sweeper 91 SOL</td>
+                  <td><a href="https://solscan.io/tx/4WMcSzMMGXc4zsq5d8mqM4HMeFzmJuQCK7VpX7P5sBvqL8jV2TMQkDUX9WAZRaLQ458nUg7BQX1tLCSdBSdUNV2a"><code>4WMcSzMMGXc4zsq5d8mqM4HMeFzmJuQCK7VpX7P5sBvqL8jV2TMQkDUX9WAZRaLQ458nUg7BQX1tLCSdBSdUNV2a</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Gas / token pass</h3>
+            <p>
+              Gas wallet fee-paid token transfers on 1 Oct 2026 ~11:32–11:45 ET.
+              Example success 1 Oct 2026 11:43:40 ET: fee payer is that wallet,
+              ATA create + SPL token transfer.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>ET</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>1 Oct 2026 11:43:40</td>
+                  <td>gas fee-payer; ATA create + SPL transfer</td>
+                  <td><a href="https://solscan.io/tx/4jZ1sXrhKYd6SDGjke5dFe3pL2CUEGcMDxsLgKUU5MzKVTPzg3v2WMbsrug2hayKwQ3UWrYPvopiGAVuuKkpZ8jv"><code>4jZ1sXrhKYd6SDGjke5dFe3pL2CUEGcMDxsLgKUU5MzKVTPzg3v2WMbsrug2hayKwQ3UWrYPvopiGAVuuKkpZ8jv</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>28 Sep test window</h3>
+            <p>
+              28 Sep 2026 14:40–14:45 ET: collector inflows over 0.01 SOL from
+              at least 10 wallets summed <strong>33.68 SOL</strong>. Same window
+              as Bitquery’s 18-wallet ~34 SOL test. This pass does not assert
+              exactly 18 wallets.
+            </p>
+            <p>
+              <strong>Still Bitquery-only (not independently recounted here):</strong>
+              20,933 wallets; 20,776-wallet / 3,488.6 SOL four-run table; ~73% of
+              main-sweep SOL after the bot went quiet; ~93k token accounts /
+              ~189 SOL rent; two wallets emptied again within 4 seconds after new
+              deposits; 27 TradeWiz trades on the trading wallet; $459,468 book
+              at $120/SOL (3,523.29 SOL swept, 189.31 SOL rent, 7,373.40 USDC,
+              1,534.16 USDT, 15.59 WSOL, other tokens booked as 3,176.54 CASH);
+              median 63 cents; 69 wallets ≥10 SOL. Bitquery does not know who
+              signed the drains or how keys left the export feature.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Official claim: limited private-key exposure in the SOL PVP
+              private-key export feature. Product model: TradeWiz holds user keys
+              to sign. How those keys left the export feature is unpublished.
+              This draft does not speculate a leak path.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Official <a href="https://x.com/TradeWiz_Bot">@TradeWiz_Bot</a>
+              posts (X API timestamps; long text via <code>note_tweet</code>
+              where present):
+            </p>
+            <ul>
+              <li>
+                30 Sep 2026 14:41 UTC —
+                <a href="https://x.com/TradeWiz_Bot/status/2105307161907577159">security notice</a>:
+                limited SOL PVP export exposure; full compensation promised;
+                stop using existing SOL PVP addresses. SOL Bot, Robin PVP, and
+                BSC PVP said not affected and given additional upgrades.
+              </li>
+              <li>
+                30 Sep 2026 18:08 UTC —
+                <a href="https://x.com/TradeWiz_Bot/status/2105359189262598537">first-wave refunds</a>
+                sent; verified losses to be fully refunded; EVM services paused
+                as a precaution; claims need verification.
+              </li>
+              <li>
+                1 Oct 2026 07:34 UTC —
+                <a href="https://x.com/TradeWiz_Bot/status/2105561995290575183">police report</a>
+                and exchange tracing; identity/KYC steps claimed via authorities;
+                attacker return-and-drop-legal offer.
+              </li>
+              <li>
+                2 Oct 2026 02:16 UTC (1 Oct ~10:16 PM ET) —
+                <a href="https://x.com/TradeWiz_Bot/status/2105844364094357504">wallet-risk reminder</a>:
+                any wallet previously associated with TradeWiz may be at risk;
+                stop using old associated addresses; losses from continued use of
+                an old associated address after this announcement are not
+                eligible for compensation.
+              </li>
+              <li>
+                3 Oct 2026 03:13 UTC (2 Oct ~11:13 PM ET) —
+                <a href="https://x.com/TradeWiz_Bot/status/2106220990816792787">Robinhood/RBH notice</a>:
+                caption says Robinhood (RBH) users’ wallet addresses and funds
+                were not affected; they still reviewed and upgraded. Attached
+                graphic: additional security upgrade completed; service
+                restoration 02:30 UTC. The graphic does not print a calendar
+                date. Restoration is an official claim, not independently
+                confirmed here.
+              </li>
+            </ul>
+            <p>
+              SlowMist, PeckShield, ZachXBT, and DefimonAlerts: no TradeWiz posts
+              found in this public pass.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Victim-by-victim drain signatures are not listed (collector has tens of thousands of signatures).</li>
+              <li>28 Sep test is hashed only as a window: ≥10 wallets / 33.68 SOL over 0.01 SOL. Bitquery’s exact 18-wallet count is not independently recounted.</li>
+              <li>Bitquery dollar totals, full wallet counts, and rent figures are not independently recounted.</li>
+              <li>Cmjwy18 is an exchange-style deposit; KuCoin is Bitquery’s label, not chain-proven (Arkham 402).</li>
+              <li>How keys left the export feature is unpublished.</li>
+              <li>No official TradeWiz dollar total for refunds or police tracing.</li>
+              <li>Bitquery could not identify the service that took the ~34 SOL test-run outflow.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://x.com/TradeWiz_Bot/status/2105307161907577159">TradeWiz — security notice</a> — 30 Sep 2026 14:41 UTC.</li>
+              <li><a href="https://x.com/TradeWiz_Bot/status/2105359189262598537">TradeWiz — first-wave refunds</a> — 30 Sep 2026 18:08 UTC.</li>
+              <li><a href="https://x.com/TradeWiz_Bot/status/2105561995290575183">TradeWiz — police report</a> — 1 Oct 2026 07:34 UTC.</li>
+              <li><a href="https://x.com/TradeWiz_Bot/status/2105844364094357504">TradeWiz — replace old addresses</a> — 2 Oct 2026 02:16 UTC.</li>
+              <li><a href="https://x.com/TradeWiz_Bot/status/2106220990816792787">TradeWiz — Robinhood/RBH notice</a> — 3 Oct 2026 03:13 UTC.</li>
+              <li><a href="https://bitquery.io/investigations/tradewiz-hack">Bitquery — TradeWiz investigation</a> — figures as of 1 Oct 2026 09:54 UTC.</li>
+              <li><a href="https://x.com/Bitquery_io/status/2105567481503068346">Bitquery (X) — $459K / 20,933 wallets</a></li>
+              <li><a href="https://x.com/Bitquery_io/status/2105605331539923366">Bitquery (X) — customer-first thread</a></li>
+              <li><a href="https://news.bitcoin.com/security/the-459000-bot-hacker-was-a-customer-first-researchers-say/">Bitcoin.com — Bitquery recap</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>
