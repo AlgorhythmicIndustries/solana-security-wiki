@@ -10,6 +10,14 @@ export interface InvestigationDraft {
 /** Static HTML IR notes served from /investigations/. Not live wiki articles. */
 export const investigationDrafts: InvestigationDraft[] = [
   {
+    incidentId: "tradewiz-key-export-sep-2026",
+    title: "TradeWiz",
+    date: "2026-09-30",
+    href: "/investigations/tradewiz-investigation.html",
+    status: "draft",
+    published: false,
+  },
+  {
     incidentId: "aquifer-amm-aug-2026",
     title: "Aquifer AMM",
     date: "2026-08-31",
