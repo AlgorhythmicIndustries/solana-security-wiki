@@ -1,5 +1,62 @@
 [
   {
+    "id": "candy-digital-custodial-oct-2026",
+    "title": "Candy Digital custodial wallet drain",
+    "date": "2026-10-11",
+    "endDate": "2026-10-12",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "lossDescription": "RPC-verified collector inflows: 425.991874 SOL from 1,549 unique senders, of which 425.99186 SOL came from 1,543 real victim wallets and 0.000014 SOL from six address-poisoning dust transfers. Public reports that say 1,543 versus 1,549 wallets are counting real victims versus all senders. At 23:58:22 UTC on 12 Oct 2026 the collector sent 420 SOL to FvNJKwKcVJahVCbKE6JFuic59FRWGqZBt3xgeVp9TFcz. As of 14 Oct 2026 ~07:00 ET the receiver held 420.000001 SOL and the collector held 5.991868581 SOL. Candy has not published a reimbursement dollar figure in the 12 Oct community update. This entry does not convert SOL to USD.",
+    "mitigated": true,
+    "summary": "Candy Digital users' Phantom-based wallets sent 425.99186 SOL to collector HLwZCJB8YU6Yvq8HNMMNNrLCo1xammz95bCa3jm2k75c in two waves on 11–12 Oct 2026. This is product/ops custodial key exposure with multi-user fund loss, not a protocol exploit and not one-off phishing: every drain is an ordinary system transfer signed by the victim wallet, with no approval and no drainer program. Candy generated and held the keys. How those keys left Candy's custody is unpublished. Public reports that count 1,543 versus 1,549 wallets differ because the collector also received six address-poisoning dust transfers.",
+    "details": "RPC-verified collector HLwZCJB8YU6Yvq8HNMMNNrLCo1xammz95bCa3jm2k75c has 1,551 successful signatures from 11 Oct 2026 23:02:44 UTC through 13 Oct 2026 00:00:28 UTC. Its first transaction is a victim transfer (4nCxTDswDaz3kPRnCLPr7GsvYjngLCFuSdGfzjYqUKAvBwEDmUyUUciVVZLhESbfjjnWcTFYi1eVztEuBVx2wwM5, 34.46 SOL from EoFhti9oQccv37gqmfWi1dvfUYkD7uWTjrBqdq8hzEjY). The collector was never pre-funded; the attacker's own funding is unknown on chain. Each victim paid its own fee; the collector paid none of the drain fees. 1,549 inflows from 1,549 unique senders total 425.991874 SOL. Six are address-poisoning dust of 0.00001 SOL or less, mostly from lookalike vanity addresses. Real victims: 1,543 wallets, 425.99186 SOL. Wave 1 ran 23:02:44–23:10:31 UTC on 11 Oct (12 real victims, 149.39 SOL, plus one dust). Wave 2 ran 09:55:17–11:22:57 UTC on 12 Oct (1,531 real victims, 276.60 SOL). Median real transfer 0.001089 SOL; largest 34.46 SOL. Public reports place Candy's lockdown announcement at 00:22 UTC on 12 Oct, between the waves. At 23:58:22 UTC on 12 Oct, slot 456235850, signature 3giXDYdxn9QrfNV5gB7URkgRZCmCroPof7E9ZDmXvP82sq9WChZBXzVkwKf77bZFYuabQhBKndSEwiebkzCYcT6r, the collector sent 420 SOL to FvNJKwKcVJahVCbKE6JFuic59FRWGqZBt3xgeVp9TFcz. That receiver has only two transactions; the other is a 1-lamport poisoning dust from lookalike HLwZLYGH5XiwQy626eJSm63xKtGW6NyJx5bR87zs975c at 23:59:14 UTC (3GhsSH2Yqj2H3mr892DC3HRoEVNPQtkV43vgRHuR1ZFUU6e8G4rhWbqcK2uDrYnCCx4yVBY49ZvYg9mu4zdRKzZx). As of 14 Oct 2026 ~07:00 ET the receiver held 420.000001 SOL and the collector held 5.991868581 SOL. No CEX touch has been seen. No NFTs or USDC were taken in this collector flow.",
+    "rootCause": "Unconfirmed. Candy generated and held the keys for users' Phantom-based wallets, so the on-chain pattern looks like a bulk key leak. This entry does not infer how those keys left Candy's custody.",
+    "response": "Candy's 12 Oct 2026 community update said it initiated a security protocol that locks minted NFTs (no transfers or sales between wallets) until the platform and user control can be reestablished; two internal audits had given Candy no reason to believe NFTs were lost. Candy said it was preparing to reimburse customers for drained Solana and to communicate platform-reboot plans. Public reports place the lockdown announcement at 00:22 UTC on 12 Oct 2026, between the two drain waves. Reimbursement is an official promise and is not hashed here.",
+    "tags": [
+      "candy",
+      "candy-digital",
+      "custody",
+      "keys",
+      "phantom",
+      "custodial-wallet"
+    ],
+    "relatedIds": [
+      "tradewiz-key-export-sep-2026",
+      "dexx-key-leak-nov-2024",
+      "solareum-telegram-mar-2024",
+      "banana-gun-sep-2024",
+      "timefun-backend-signing-mar-2025"
+    ],
+    "sources": [
+      {
+        "label": "Candy — community update",
+        "url": "https://blog.candy.io/candy-community-update/"
+      },
+      {
+        "label": "0xkuncoro (X) — pointer",
+        "url": "https://x.com/0xkuncoro/status/2109987389120680043"
+      },
+      {
+        "label": "DiamondNFL (X) — pointer",
+        "url": "https://x.com/DiamondNFL/status/2109988951809527991"
+      },
+      {
+        "label": "SOLANA·HUB — reimbursement / 420 SOL write-up",
+        "url": "https://solanahub.de/en/news/candy-digital-erstattung-420-sol/"
+      }
+    ],
+    "lesson": "A marketplace that generates and holds keys for users' wallets is a custodian: once those keys are exposed, many user wallets can be emptied with ordinary signed transfers, and locking the website or NFT transfers does not revoke copies of the keys.",
+    "mitigations": [
+      "Avoid custodial private-key models; use session keys, MPC, or non-custodial signing so the operator never holds a full user key.",
+      "If keys must be held, store them in HSM/KMS with per-user envelopes; never expose raw key material to operators, logs, or export paths.",
+      "Monitor for mass simultaneous transfers from operator-issued wallets and circuit-break signing plus warn users within minutes.",
+      "Tell users that a drained hot wallet is burned; do not send new funds to an old operator-issued address.",
+      "Publish which products and address cohorts were in scope, and rotate users onto new keys before the next sweep window.",
+      "Treat a website or NFT-transfer lock as containment of remaining inventory, not as key revocation."
+    ]
+  },
+  {
     "id": "tradewiz-key-export-sep-2026",
     "title": "TradeWiz SOL PVP private-key export exposure",
     "date": "2026-09-30",
@@ -22,6 +79,7 @@
       "private-key-export"
     ],
     "relatedIds": [
+      "candy-digital-custodial-oct-2026",
       "dexx-key-leak-nov-2024",
       "solareum-telegram-mar-2024",
       "banana-gun-sep-2024",
