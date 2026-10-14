@@ -483,6 +483,21 @@ code {
   font-size: 0.78em;
 }
 
+.ir-chart {
+  margin: 1rem 0 1.25rem;
+  padding: 0.65rem 0.45rem 0.35rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.ir-chart svg,
+.ir-chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .footer-note {
   margin-top: 2rem;
   padding-top: 1.25rem;

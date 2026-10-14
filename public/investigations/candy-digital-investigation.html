@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for Candy Digital." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Candy Digital — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">11 Oct 2026</span>
+          </div>
+          <h1>Candy Digital</h1>
+          <p class="muted">
+            Wiki id <code>candy-digital-custodial-oct-2026</code>
+            · <a href="/incident/candy-digital-custodial-oct-2026">Live incident page</a>
+          </p>
+
+          <div class="callout">
+            <p>
+              <strong>Bug class.</strong> Product/ops custodial key exposure
+              with multi-user fund loss on Solana. Candy generated and held the
+              keys for users’ Phantom-based wallets, so the on-chain pattern
+              looks like a bulk key leak. This draft does not infer how those
+              keys left Candy’s custody. Drains are ordinary system transfers
+              signed by the victim wallets: no approval and no drainer program.
+            </p>
+          </div>
+
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Collector
+              <a href="https://solscan.io/account/HLwZCJB8YU6Yvq8HNMMNNrLCo1xammz95bCa3jm2k75c"><code>HLwZCJB8YU6Yvq8HNMMNNrLCo1xammz95bCa3jm2k75c</code></a>
+              received <strong>425.991874 SOL</strong> across
+              <strong>1,549 inflows from 1,549 unique senders</strong> on
+              11–13 Oct 2026 UTC. Six of those inflows are address-poisoning
+              dust of 0.00001 SOL or less. Real victims are
+              <strong>1,543 wallets / 425.99186 SOL</strong>. Public reports
+              that say 1,543 versus 1,549 wallets are counting real victims
+              versus all senders.
+            </p>
+            <p>
+              Wave 1 (11 Oct 23:02:44–23:10:31 UTC) moved 149.39 SOL from 12
+              real victims, plus one dust transfer. Candy’s lockdown was
+              reported at 00:22 UTC on 12 Oct, between the waves. Wave 2
+              (12 Oct 09:55:17–11:22:57 UTC) moved 276.60 SOL from 1,531 real
+              victims. At 23:58:22 UTC on 12 Oct the collector sent
+              <strong>420 SOL</strong> to
+              <a href="https://solscan.io/account/FvNJKwKcVJahVCbKE6JFuic59FRWGqZBt3xgeVp9TFcz"><code>FvNJKwKcVJahVCbKE6JFuic59FRWGqZBt3xgeVp9TFcz</code></a>.
+              No CEX touch has been seen. No NFTs or USDC were taken in this
+              collector flow.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Times below are <strong>UTC</strong>. Signatures are Solana
+              RPC–verified. A public-RPC recheck on 14 Oct 2026 confirmed the
+              first victim transfer (collector pre-balance 0), the 420 SOL
+              exit, the first lookalike dust, the receiver’s 1-lamport
+              poisoning dust, and the 0-SOL-delta listing between waves.
+              X posts and write-ups are pointers only.
+            </p>
+            <h3>Wallets</h3>
+            <table class="hash-table">
+              <thead><tr><th>Role</th><th>Address</th><th>RPC note</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>Collector</td>
+                  <td><a href="https://solscan.io/account/HLwZCJB8YU6Yvq8HNMMNNrLCo1xammz95bCa3jm2k75c"><code>HLwZCJB8YU6Yvq8HNMMNNrLCo1xammz95bCa3jm2k75c</code></a></td>
+                  <td>1,551 successful signatures, 11 Oct 2026 23:02:44 through 13 Oct 2026 00:00:28 UTC. Never pre-funded. First tx is a victim inflow. Paid no drain fees. Balance 5.991868581 SOL at the 14 Oct ~07:00 ET check and on the later public-RPC recheck.</td>
+                </tr>
+                <tr>
+                  <td>Exit receiver</td>
+                  <td><a href="https://solscan.io/account/FvNJKwKcVJahVCbKE6JFuic59FRWGqZBt3xgeVp9TFcz"><code>FvNJKwKcVJahVCbKE6JFuic59FRWGqZBt3xgeVp9TFcz</code></a></td>
+                  <td>Two transactions only: the 420 SOL receive, then 1-lamport lookalike dust. Balance 420.000001 SOL at the 14 Oct ~07:00 ET check and on the later public-RPC recheck. No CEX hop seen.</td>
+                </tr>
+                <tr>
+                  <td>First victim</td>
+                  <td><a href="https://solscan.io/account/EoFhti9oQccv37gqmfWi1dvfUYkD7uWTjrBqdq8hzEjY"><code>EoFhti9oQccv37gqmfWi1dvfUYkD7uWTjrBqdq8hzEjY</code></a></td>
+                  <td>34.460533438 SOL. Fee payer of the collector’s first transaction.</td>
+                </tr>
+                <tr>
+                  <td>Receiver dust (lookalike of collector)</td>
+                  <td><a href="https://solscan.io/account/HLwZLYGH5XiwQy626eJSm63xKtGW6NyJx5bR87zs975c"><code>HLwZLYGH5XiwQy626eJSm63xKtGW6NyJx5bR87zs975c</code></a></td>
+                  <td>Sent 1,000 lamports to the exit receiver at 23:59:14 UTC on 12 Oct. Not a collector counterparty.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="callout">
+              <p>
+                <strong>Attacker funding is unknown on chain.</strong> The
+                collector’s first signature is a victim transfer. Pre-balances
+                on that transaction show the collector at 0. There is no
+                backward funding hop from this address.
+              </p>
+            </div>
+            <h3>Charts (collector dump, 14 Oct RPC pull)</h3>
+            <p>
+              Tables and charts below are counted from the 1,551-signature
+              collector dump (sig, slot, unix time, collector SOL delta, fee
+              payer, other balance deltas, instruction types). Real-victim
+              rows exclude the six dust inflows of 0.00001 SOL or less.
+            </p>
+            <figure class="ir-chart">
+              <svg class="ir-chart-svg" viewBox="0 0 720 300" role="img" aria-labelledby="cum-title cum-desc">
+                <title id="cum-title">Cumulative real-victim SOL into the collector</title>
+                <desc id="cum-desc">Wave 1 climbs to 149.39 SOL in eight minutes on 11 Oct. Wave 2 climbs from 149.39 to 425.99 SOL on 12 Oct, with a quiet gap from 10:05 to 10:55 UTC.</desc>
+                <text x="12" y="22" fill="var(--text)" font-size="13" font-family="DM Sans, system-ui, sans-serif" font-weight="600">Cumulative real-victim SOL</text>
+                <text x="12" y="40" fill="var(--text-muted)" font-size="11" font-family="DM Sans, system-ui, sans-serif">Two waves. Y-axis shared. Lockdown (reported 00:22 UTC 12 Oct) sits in the gap.</text>
+                <!-- panel 1 -->
+                <text x="50" y="62" fill="var(--text-muted)" font-size="11" font-family="DM Sans, system-ui, sans-serif">Wave 1 · 11 Oct 23:02–23:10 UTC · 12 wallets · 149.39 SOL</text>
+                <rect x="50" y="70" width="280" height="180" fill="var(--bg-elevated)" stroke="var(--border)"/>
+                <polyline fill="none" stroke="var(--accent)" stroke-width="2" points="50.0,235.6 218.0,222.0 246.0,196.3 274.0,187.5"/>
+                <polygon fill="var(--accent)" fill-opacity="0.18" points="50.0,235.6 218.0,222.0 246.0,196.3 274.0,187.5 274.0,250.0 50.0,250.0"/>
+                <text x="50" y="268" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">23:02</text>
+                <text x="300" y="268" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace" text-anchor="end">23:12</text>
+                <text x="44" y="74" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace" text-anchor="end">430</text>
+                <text x="44" y="164" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace" text-anchor="end">215</text>
+                <text x="44" y="252" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace" text-anchor="end">0</text>
+                <!-- panel 2 -->
+                <text x="390" y="62" fill="var(--text-muted)" font-size="11" font-family="DM Sans, system-ui, sans-serif">Wave 2 · 12 Oct 09:55–11:22 UTC · 1,531 wallets · 276.60 SOL</text>
+                <rect x="390" y="70" width="300" height="180" fill="var(--bg-elevated)" stroke="var(--border)"/>
+                <polyline fill="none" stroke="var(--accent)" stroke-width="2" points="390.0,187.5 406.7,120.5 423.3,119.3 440.0,119.3 606.7,72.4 623.3,72.0 640.0,71.9 656.7,71.8 673.3,71.7 690.0,71.7"/>
+                <polygon fill="var(--accent)" fill-opacity="0.18" points="390.0,187.5 406.7,120.5 423.3,119.3 440.0,119.3 606.7,72.4 623.3,72.0 640.0,71.9 656.7,71.8 673.3,71.7 690.0,71.7 690.0,250.0 390.0,250.0"/>
+                <text x="390" y="268" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">09:55</text>
+                <text x="590" y="268" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace" text-anchor="middle">10:55</text>
+                <text x="690" y="268" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace" text-anchor="end">11:25</text>
+                <text x="12" y="292" fill="var(--text-muted)" font-size="10" font-family="DM Sans, system-ui, sans-serif">Quiet intra-wave interval 10:05–10:55 UTC is on-chain timing, not a cause claim.</text>
+              </svg>
+            </figure>
+            <figure class="ir-chart">
+              <svg class="ir-chart-svg" viewBox="0 0 720 200" role="img" aria-labelledby="wave-title wave-desc">
+                <title id="wave-title">Wave comparison</title>
+                <desc id="wave-desc">Wave 1 moved 149.39 SOL from 12 wallets. Wave 2 moved 276.60 SOL from 1,531 wallets.</desc>
+                <text x="12" y="22" fill="var(--text)" font-size="13" font-family="DM Sans, system-ui, sans-serif" font-weight="600">Wave comparison</text>
+                <text x="12" y="40" fill="var(--text-muted)" font-size="11" font-family="DM Sans, system-ui, sans-serif">SOL (top) vs wallet count (bottom). Scales differ.</text>
+                <text x="12" y="78" fill="var(--text)" font-size="12" font-family="DM Sans, system-ui, sans-serif">Wave 1</text>
+                <rect x="90" y="64" width="197.4" height="16" fill="var(--accent)"/>
+                <text x="292" y="76" fill="var(--text)" font-size="11" font-family="IBM Plex Mono, monospace">149.39 SOL</text>
+                <rect x="90" y="86" width="2.4" height="16" fill="var(--link)"/>
+                <text x="98" y="98" fill="var(--text-muted)" font-size="11" font-family="IBM Plex Mono, monospace">12 wallets</text>
+                <text x="12" y="148" fill="var(--text)" font-size="12" font-family="DM Sans, system-ui, sans-serif">Wave 2</text>
+                <rect x="90" y="134" width="365.5" height="16" fill="var(--accent)"/>
+                <text x="460" y="146" fill="var(--text)" font-size="11" font-family="IBM Plex Mono, monospace">276.60 SOL</text>
+                <rect x="90" y="156" width="306.2" height="16" fill="var(--link)"/>
+                <text x="402" y="168" fill="var(--text-muted)" font-size="11" font-family="IBM Plex Mono, monospace">1,531 wallets</text>
+                <text x="12" y="192" fill="var(--text-muted)" font-size="10" font-family="DM Sans, system-ui, sans-serif">SOL bars scaled to 276.60. Wallet bars scaled to 1,531.</text>
+              </svg>
+            </figure>
+            <figure class="ir-chart">
+              <svg class="ir-chart-svg" viewBox="0 0 720 300" role="img" aria-labelledby="size-title size-desc">
+                <title id="size-title">Real-victim transfer size distribution</title>
+                <desc id="size-desc">Most wallets sent under 0.001 SOL. Most of the SOL came from the 77 transfers of 1 SOL or more.</desc>
+                <text x="12" y="22" fill="var(--text)" font-size="13" font-family="DM Sans, system-ui, sans-serif" font-weight="600">Real-victim size buckets</text>
+                <text x="12" y="40" fill="var(--text-muted)" font-size="11" font-family="DM Sans, system-ui, sans-serif"><tspan fill="var(--accent)">■</tspan> wallet count &nbsp; <tspan fill="var(--link)">■</tspan> SOL sum &nbsp; median 0.001089 SOL · max 34.46 SOL</text>
+                <text x="12" y="81" fill="var(--text)" font-size="11" font-family="IBM Plex Mono, monospace">0.0001–0.001</text>
+                <rect x="130" y="70" width="300.0" height="10" fill="var(--accent)" fill-opacity="0.85"/>
+                <text x="434.0" y="79" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">763</text>
+                <rect x="130" y="83" width="1.0" height="10" fill="var(--link)" fill-opacity="0.75"/>
+                <text x="135.0" y="92" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">0.68 SOL</text>
+                <text x="12" y="117" fill="var(--text)" font-size="11" font-family="IBM Plex Mono, monospace">0.001–0.01</text>
+                <rect x="130" y="106" width="152.2" height="10" fill="var(--accent)" fill-opacity="0.85"/>
+                <text x="286.2" y="115" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">387</text>
+                <rect x="130" y="119" width="2.5" height="10" fill="var(--link)" fill-opacity="0.75"/>
+                <text x="136.5" y="128" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">1.74 SOL</text>
+                <text x="12" y="153" fill="var(--text)" font-size="11" font-family="IBM Plex Mono, monospace">0.01–0.1</text>
+                <rect x="130" y="142" width="68.4" height="10" fill="var(--accent)" fill-opacity="0.85"/>
+                <text x="202.4" y="151" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">174</text>
+                <rect x="130" y="155" width="11.0" height="10" fill="var(--link)" fill-opacity="0.75"/>
+                <text x="145.0" y="164" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">7.53 SOL</text>
+                <text x="12" y="189" fill="var(--text)" font-size="11" font-family="IBM Plex Mono, monospace">0.1–1</text>
+                <rect x="130" y="178" width="55.8" height="10" fill="var(--accent)" fill-opacity="0.85"/>
+                <text x="189.8" y="187" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">142</text>
+                <rect x="130" y="191" width="76.0" height="10" fill="var(--link)" fill-opacity="0.75"/>
+                <text x="210.0" y="200" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">52.12 SOL</text>
+                <text x="12" y="225" fill="var(--text)" font-size="11" font-family="IBM Plex Mono, monospace">1–10</text>
+                <rect x="130" y="214" width="27.1" height="10" fill="var(--accent)" fill-opacity="0.85"/>
+                <text x="161.1" y="223" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">69</text>
+                <rect x="130" y="227" width="300.0" height="10" fill="var(--link)" fill-opacity="0.75"/>
+                <text x="434.0" y="236" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">205.75 SOL</text>
+                <text x="12" y="261" fill="var(--text)" font-size="11" font-family="IBM Plex Mono, monospace">10–100</text>
+                <rect x="130" y="250" width="3.1" height="10" fill="var(--accent)" fill-opacity="0.85"/>
+                <text x="137.1" y="259" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">8</text>
+                <rect x="130" y="263" width="230.6" height="10" fill="var(--link)" fill-opacity="0.75"/>
+                <text x="364.6" y="272" fill="var(--text-muted)" font-size="10" font-family="IBM Plex Mono, monospace">158.18 SOL</text>
+              </svg>
+            </figure>
+            <h3>Wave totals</h3>
+            <table class="hash-table">
+              <thead><tr><th>Wave</th><th>UTC window</th><th>Real victims</th><th>Real SOL</th><th>Dust</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>11 Oct 23:02:44–23:10:31</td>
+                  <td>12</td>
+                  <td>149.393259</td>
+                  <td>1 (1,000 lamports)</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>12 Oct 09:55:17–11:22:57</td>
+                  <td>1,531</td>
+                  <td>276.598601</td>
+                  <td>2 (1,000 lamports each)</td>
+                </tr>
+                <tr>
+                  <td>Exit + later dust</td>
+                  <td>12 Oct 23:58:22–13 Oct 00:00:28</td>
+                  <td>0</td>
+                  <td>−420.000005 (exit + fee)</td>
+                  <td>3 (1 + 1,000 + 10,000 lamports)</td>
+                </tr>
+                <tr>
+                  <td>All inflows</td>
+                  <td>11 Oct 23:02:44–13 Oct 00:00:28</td>
+                  <td>1,543</td>
+                  <td>425.991860</td>
+                  <td>6 senders / 0.000014 SOL</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Wave 2 is not a single continuous burst: 09:55–10:05 UTC moved
+              most of that wave’s SOL; 10:05–10:55 UTC is quiet on this
+              collector; 10:55–11:22 UTC is many small transfers. That is
+              dump timing, not a cause claim. Median real transfer
+              <strong>0.001089 SOL</strong>. Largest
+              <strong>34.460533438 SOL</strong>.
+            </p>
+            <h3>Wave 1 real victims</h3>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>SOL</th><th>Sender / signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>11 Oct 23:02:44</td>
+                  <td>34.460533438</td>
+                  <td>
+                    <a href="https://solscan.io/account/EoFhti9oQccv37gqmfWi1dvfUYkD7uWTjrBqdq8hzEjY"><code>EoFhti9o…zEjY</code></a><br />
+                    <a href="https://solscan.io/tx/4nCxTDswDaz3kPRnCLPr7GsvYjngLCFuSdGfzjYqUKAvBwEDmUyUUciVVZLhESbfjjnWcTFYi1eVztEuBVx2wwM5"><code>4nCxTDswDaz3kPRnCLPr7GsvYjngLCFuSdGfzjYqUKAvBwEDmUyUUciVVZLhESbfjjnWcTFYi1eVztEuBVx2wwM5</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:08:26</td>
+                  <td>32.491485522</td>
+                  <td>
+                    <a href="https://solscan.io/account/7wXZeFyvzgddeFDb9csUXx54kRMh6nSUeEd4FSmFMZ7t"><code>7wXZeFyv…MZ7t</code></a><br />
+                    <a href="https://solscan.io/tx/4GkgZcRskcwnqYaLSAd3mcXmFgr5r2wpyGSkVkzrnfeX2vszD8RV16Ko95ks2dF92Yy4ZrvgktNL5v4R1KT6XhMY"><code>4GkgZcRskcwnqYaLSAd3mcXmFgr5r2wpyGSkVkzrnfeX2vszD8RV16Ko95ks2dF92Yy4ZrvgktNL5v4R1KT6XhMY</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:09:10</td>
+                  <td>13.523494488</td>
+                  <td>
+                    <a href="https://solscan.io/account/C5EWfzouAUyThi1X5mbDwpCgY9t9CcZqhJtqnzbmt77T"><code>C5EWfzou…t77T</code></a><br />
+                    <a href="https://solscan.io/tx/3szBAZddatmeZjsK4VPH74XKiWcy4LQQQApc6wsDmoHD7AivEd7ErNA3H82x6WUyZNF1AzjfAn1PAvimRpNde4y7"><code>3szBAZddatmeZjsK4VPH74XKiWcy4LQQQApc6wsDmoHD7AivEd7ErNA3H82x6WUyZNF1AzjfAn1PAvimRpNde4y7</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:09:12</td>
+                  <td>7.590298252</td>
+                  <td>
+                    <a href="https://solscan.io/account/EeW8ULNqgHAyLpYEvKoD4r5tjxt9vMzUzevawoxvA9LH"><code>EeW8ULNq…A9LH</code></a><br />
+                    <a href="https://solscan.io/tx/2Lgd6XStH7xQEy2ZPqQYmKSJbNaQtx4FTYHrHe69bCSUQN28TR29HiB8SMHb5pCJV7AGjMpHfnYpfsqLhmf8rubn"><code>2Lgd6XStH7xQEy2ZPqQYmKSJbNaQtx4FTYHrHe69bCSUQN28TR29HiB8SMHb5pCJV7AGjMpHfnYpfsqLhmf8rubn</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:09:12</td>
+                  <td>12.166511606</td>
+                  <td>
+                    <a href="https://solscan.io/account/8QkFSJCk5RtcLybWgwbRTLG42Rt32bibhftbt9SZ4Eok"><code>8QkFSJCk…4Eok</code></a><br />
+                    <a href="https://solscan.io/tx/5wBok2vmAhe7hQiDXXv3CqYSTFyvqVd2sVi3LQn89Z2F6KSkXE8hQrVd197cmyhiJhVk73DrPR4M71WQxCf2FqJn"><code>5wBok2vmAhe7hQiDXXv3CqYSTFyvqVd2sVi3LQn89Z2F6KSkXE8hQrVd197cmyhiJhVk73DrPR4M71WQxCf2FqJn</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:09:47</td>
+                  <td>6.620242330</td>
+                  <td>
+                    <a href="https://solscan.io/account/Hpw3yaeCKN8VqREMixZZi8vAnJ6tkrnSGhVysmACrgBV"><code>Hpw3yaeC…rgBV</code></a><br />
+                    <a href="https://solscan.io/tx/z1iBpJjcfrwhp7hjaJHujqLACXuDsLFK5kqBsidbLhF8Mi1u6mN75yt2pRnVsUk37cdhgHBGSCJ7Nt73oayZo9a"><code>z1iBpJjcfrwhp7hjaJHujqLACXuDsLFK5kqBsidbLhF8Mi1u6mN75yt2pRnVsUk37cdhgHBGSCJ7Nt73oayZo9a</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:09:48</td>
+                  <td>5.790658033</td>
+                  <td>
+                    <a href="https://solscan.io/account/FH3vwVzArju3m4BJAs7K5TL8CzCGJSBb9BwCTuDtpYXB"><code>FH3vwVzA…pYXB</code></a><br />
+                    <a href="https://solscan.io/tx/3wCmFbwyf7jaExxKQy86FdfSqZdz4Se3XvGQYveWSw2XNHdZPnqgRHgweBXJsHXzBD6PytWgMBpCd4DffqBkNJ2w"><code>3wCmFbwyf7jaExxKQy86FdfSqZdz4Se3XvGQYveWSw2XNHdZPnqgRHgweBXJsHXzBD6PytWgMBpCd4DffqBkNJ2w</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:09:56</td>
+                  <td>15.565897743</td>
+                  <td>
+                    <a href="https://solscan.io/account/4Nr3HFqxBvtztTHwDSD51Bb9q6fx2PCUDYurB6tdXFsG"><code>4Nr3HFqx…XFsG</code></a><br />
+                    <a href="https://solscan.io/tx/3uKSnRwrF15EvZ5EA2XRH8fRMb1Xh3bwrZPCMYvEURHRqxy9M39uHhNoWxikudZHEhYTtZfrmDShUKBnkftw945m"><code>3uKSnRwrF15EvZ5EA2XRH8fRMb1Xh3bwrZPCMYvEURHRqxy9M39uHhNoWxikudZHEhYTtZfrmDShUKBnkftw945m</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:10:02</td>
+                  <td>6.409569702</td>
+                  <td>
+                    <a href="https://solscan.io/account/BdPpYNXLGreeNwhHosiiqL72Sqdh6iZACiCbHCcWQixB"><code>BdPpYNXL…QixB</code></a><br />
+                    <a href="https://solscan.io/tx/RU9MBUsVbvWiek7UuxKskd2XkdyETfwQzEKjeJ7BRh9SXi3tYFCXygrsCQEazZ1ZnK7eards4j2BSZmzC21hTQA"><code>RU9MBUsVbvWiek7UuxKskd2XkdyETfwQzEKjeJ7BRh9SXi3tYFCXygrsCQEazZ1ZnK7eards4j2BSZmzC21hTQA</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:10:21</td>
+                  <td>5.678117811</td>
+                  <td>
+                    <a href="https://solscan.io/account/AmcgLy6GF54iTMY9pkArkURdWXPZaFMMT2dmnTzLqBic"><code>AmcgLy6G…qBic</code></a><br />
+                    <a href="https://solscan.io/tx/LgvTZgXcWXYG4SqobyMfhkisjPbdfbwL8iP27HaX54381ZBaop11vHEsS6n2E1E18pYHdz67o57D8fpYw7B66UB"><code>LgvTZgXcWXYG4SqobyMfhkisjPbdfbwL8iP27HaX54381ZBaop11vHEsS6n2E1E18pYHdz67o57D8fpYw7B66UB</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:10:22</td>
+                  <td>5.246970397</td>
+                  <td>
+                    <a href="https://solscan.io/account/Ej9XULLQLVukMX87HYin6EUg3ExbjN2YFc7EGmY5ufM3"><code>Ej9XULLQ…ufM3</code></a><br />
+                    <a href="https://solscan.io/tx/1wLdwR4FLttKcKW9DgPoGGmr2tkrR4T7RTLq7A6HwVZXcuFTsMxyfrV5LRT2WkCQEfDiKf8MK8cbrmLQMCBgiPs"><code>1wLdwR4FLttKcKW9DgPoGGmr2tkrR4T7RTLq7A6HwVZXcuFTsMxyfrV5LRT2WkCQEfDiKf8MK8cbrmLQMCBgiPs</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>11 Oct 23:10:31</td>
+                  <td>3.849479702</td>
+                  <td>
+                    <a href="https://solscan.io/account/AcuP5KmUZ8T5tuqMCduQMvZvwVEKmujZZvF12jKuekMV"><code>AcuP5KmU…ekMV</code></a><br />
+                    <a href="https://solscan.io/tx/3nRsvWN91zLGu98NUP7DibydfKpUaFnXhbadBczcSuu3MQo57un2fCDRVuABZETMRtN6Sq6p7WZfCNtPQ8cPhu5G"><code>3nRsvWN91zLGu98NUP7DibydfKpUaFnXhbadBczcSuu3MQo57un2fCDRVuABZETMRtN6Sq6p7WZfCNtPQ8cPhu5G</code></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Largest Wave 2 inflows</h3>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>SOL</th><th>Sender / signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>12 Oct 09:55:17</td>
+                  <td>27.864934497</td>
+                  <td>
+                    <a href="https://solscan.io/account/8an3AHdtzMvM4XXGUHwtrcnASZ7QMcWpqLFKrSgsW45g"><code>8an3AHdt…W45g</code></a><br />
+                    <a href="https://solscan.io/tx/57C6tc3i1BmpCAM8zyRPeVN9LzsHJjeNsDBa37QXHtpUWkjjzjwudc2BUKuJBdN6pwH47fK6ftruZD8y8pWPkSgt"><code>57C6tc3i1BmpCAM8zyRPeVN9LzsHJjeNsDBa37QXHtpUWkjjzjwudc2BUKuJBdN6pwH47fK6ftruZD8y8pWPkSgt</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>12 Oct 10:55:05</td>
+                  <td>11.419870670</td>
+                  <td>
+                    <a href="https://solscan.io/account/5LpYYemjL7sghwhWBGaG7nqdZfVB2BPNVwvne17LEkza"><code>5LpYYemj…Ekza</code></a><br />
+                    <a href="https://solscan.io/tx/24eHPakWXBqTFN6wdUU5z3PfKyoiBFDCHHYK8SuXkGFwTrSqGuKfm6WEzszZEZ9zaSJGt55o96umoq95tNnMM3C5"><code>24eHPakWXBqTFN6wdUU5z3PfKyoiBFDCHHYK8SuXkGFwTrSqGuKfm6WEzszZEZ9zaSJGt55o96umoq95tNnMM3C5</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>12 Oct 09:56:10</td>
+                  <td>10.684948084</td>
+                  <td>
+                    <a href="https://solscan.io/account/4Z8MWrCEC1yWDdDFjMUAdo6vCpdcrQLoXjmvkXseCtiF"><code>4Z8MWrCE…CtiF</code></a><br />
+                    <a href="https://solscan.io/tx/5EKmKJ2axyuYzA1Kg3RDtFAm6MdAgHQybEHCKdWHctZAZnUndeAFZ3f7u7WTJDyghonNduskLapSqsgdWuarmDKs"><code>5EKmKJ2axyuYzA1Kg3RDtFAm6MdAgHQybEHCKdWHctZAZnUndeAFZ3f7u7WTJDyghonNduskLapSqsgdWuarmDKs</code></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>12 Oct 09:56:07</td>
+                  <td>8.261575218</td>
+                  <td>
+                    <a href="https://solscan.io/account/6jXNbsNxuCTWHo1439eUVxhYsLsHvK6UFkGQtWHwPqoZ"><code>6jXNbsNx…PqoZ</code></a><br />
+                    <a href="https://solscan.io/tx/5fa271Ss5KF1uPufyGJsb63N7ca6TYDJ6TjnevWw5pmV1AwuLmX9GoBhLFjYWBLqsuaVWPwCsUNTvLfmZfkptazu"><code>5fa271Ss5KF1uPufyGJsb63N7ca6TYDJ6TjnevWw5pmV1AwuLmX9GoBhLFjYWBLqsuaVWPwCsUNTvLfmZfkptazu</code></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Address-poisoning dust</h3>
+            <p>
+              Six inflows of 0.00001 SOL or less, mostly from lookalike
+              vanity addresses. They are why some public counts say 1,549
+              wallets instead of 1,543.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Lamports in</th><th>Sender</th><th>Lookalike of</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>11 Oct 23:03:04</td>
+                  <td>1,000</td>
+                  <td><a href="https://solscan.io/account/EoFhtiDQM4k2YbfG1Wm44fs5vGCzrJNmSLFdDeYpzEjY"><code>EoFhtiDQ…zEjY</code></a></td>
+                  <td>first victim <code>EoFhti9o…zEjY</code></td>
+                  <td><a href="https://solscan.io/tx/2E55gaudPQJMnzNJT37Sanqd9PQvEXgS6HSPqJYiXrXj4JX4N3tvdLKcpJLS59xUSjHWu1exT9TUQLpJ49cP1Uip"><code>2E55gaud…P1Uip</code></a></td>
+                </tr>
+                <tr>
+                  <td>12 Oct 09:57:02</td>
+                  <td>1,000</td>
+                  <td><a href="https://solscan.io/account/AMfNWjkoCNJhraZcUhjyrEaCdEcuUxD6V1mV2WanxZzf"><code>AMfNWjko…nxZzf</code></a></td>
+                  <td>victim <a href="https://solscan.io/tx/52bhwzrrxtZngWBLU3mkVxDEkjiyRs7U954MCKgbeGLC8x1rajyrrxVWbt4JkGBLg42KYrYFaX3MZB7oSRUfdcWc"><code>AMfNUWzy…xZzf</code></a> (2.678 SOL at 09:56:23)</td>
+                  <td><a href="https://solscan.io/tx/4BPJzptmPZKrrUmBpJi1PdFckTBHvMeokbWx978iCBiimg3X4sGvziaXP9nqbuDaEung15Wf5rwjmMTBoh6bd5CL"><code>4BPJzptm…bd5CL</code></a></td>
+                </tr>
+                <tr>
+                  <td>12 Oct 10:56:10</td>
+                  <td>1,000</td>
+                  <td><a href="https://solscan.io/account/5LpYnYdoV9bKnT8fnXTL38RFW5hZkMksgEBZY4pJDkza"><code>5LpYnYdo…Dkza</code></a></td>
+                  <td>victim <code>5LpYYemj…Ekza</code> (11.42 SOL at 10:55:05)</td>
+                  <td><a href="https://solscan.io/tx/5xQn94iiXgpMVv3YYfWvT72SL2CoTgWpTiLL9KbpU9qdWtpFX5Tfbbfp7M1XCkbqsxyUptuztdAV2Z7PqQssdkFG"><code>5xQn94ii…sdkFG</code></a></td>
+                </tr>
+                <tr>
+                  <td>12 Oct 23:58:41</td>
+                  <td>1</td>
+                  <td><a href="https://solscan.io/account/2d6FFHjRenXBEk2K6uTWAJ66zPcxHjB6M25ntY1ZAqiQ"><code>2d6FFHjR…AqiQ</code></a></td>
+                  <td>no prefix/suffix match in this dump (1-lamport spray; dump lists many <code>system/transfer</code> ixs)</td>
+                  <td><a href="https://solscan.io/tx/5TkEqZNVgJVbLUPibyNgAfUVpJSxcBW76afZxnVq3Q5WtV7J7v6jRDrwCySSkCgYQx5GEuA778V8Hb5hSJcbg1vr"><code>5TkEqZNV…bg1vr</code></a></td>
+                </tr>
+                <tr>
+                  <td>12 Oct 23:59:05</td>
+                  <td>1,000</td>
+                  <td><a href="https://solscan.io/account/FvNJjbZu3nLTUqY92erkSmKzPQso3XRumaqzJgAKVFcz"><code>FvNJjbZu…VFcz</code></a></td>
+                  <td>exit receiver <code>FvNJKwKc…TFcz</code></td>
+                  <td><a href="https://solscan.io/tx/pAKdncEmKAsAVr1RZddBZjAUDMLXbJ5EpisCqEMuScQpTWupNtQVyRttJKstVGYKg2X62jJ5BfpjiFGaYzPhq4T"><code>pAKdncEm…Phq4T</code></a></td>
+                </tr>
+                <tr>
+                  <td>13 Oct 00:00:28</td>
+                  <td>10,000</td>
+                  <td><a href="https://solscan.io/account/FvNJx76HkM9qyCNTcHHBRVNeKh1ohLkG6MRPPH8y1Fcz"><code>FvNJx76H…1Fcz</code></a></td>
+                  <td>exit receiver <code>FvNJKwKc…TFcz</code></td>
+                  <td><a href="https://solscan.io/tx/3xQFByJ7XRvjPs1HA2s8VjV4PHBbVHpBodUjb31Gbzf53AjZiSsRE4FLJa8YmUsqtCRJ72p95EbCTFTJSGyRbLFV"><code>3xQFByJ7…RbLFV</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Exit</h3>
+            <p>
+              12 Oct 2026 23:58:22 UTC, slot 456235850. Collector signed.
+              System transfer of 420,000,000,000 lamports. Fee 5,012
+              lamports, paid by the collector (the only collector-paid fee
+              in this dump). Receiver created at 0.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>12 Oct 23:58:22</td>
+                  <td>collector → receiver 420 SOL</td>
+                  <td><a href="https://solscan.io/tx/3giXDYdxn9QrfNV5gB7URkgRZCmCroPof7E9ZDmXvP82sq9WChZBXzVkwKf77bZFYuabQhBKndSEwiebkzCYcT6r"><code>3giXDYdxn9QrfNV5gB7URkgRZCmCroPof7E9ZDmXvP82sq9WChZBXzVkwKf77bZFYuabQhBKndSEwiebkzCYcT6r</code></a></td>
+                </tr>
+                <tr>
+                  <td>12 Oct 23:59:14</td>
+                  <td>lookalike <code>HLwZLYGH…975c</code> → receiver 1,000 lamports</td>
+                  <td><a href="https://solscan.io/tx/3GhsSH2Yqj2H3mr892DC3HRoEVNPQtkV43vgRHuR1ZFUU6e8G4rhWbqcK2uDrYnCCx4yVBY49ZvYg9mu4zdRKzZx"><code>3GhsSH2Yqj2H3mr892DC3HRoEVNPQtkV43vgRHuR1ZFUU6e8G4rhWbqcK2uDrYnCCx4yVBY49ZvYg9mu4zdRKzZx</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>0-SOL-delta listing</h3>
+            <p>
+              One of the 1,551 collector signatures does not change collector
+              SOL. 12 Oct 2026 01:14:26 UTC, slot 455861537, fee payer
+              <a href="https://solscan.io/account/D4yTxJWpnb9NxNGQAvRoApXN4GE5UAJ9zDTzUW5yR6YL"><code>D4yTxJWpnb9NxNGQAvRoApXN4GE5UAJ9zDTzUW5yR6YL</code></a>.
+              Public-RPC decode: ComputeBudget plus program
+              <code>CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d</code>.
+              Collector is in the account list; its pre/post lamports are
+              unchanged at 149.393260024 SOL. This is not an inflow or an
+              outflow. This draft does not interpret that instruction.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>12 Oct 01:14:26</td>
+                  <td>0 SOL delta; collector listed</td>
+                  <td><a href="https://solscan.io/tx/5C9wyUNfPmaAa6zL4mrW8wKXJUfAVuBVmuLmqUDqcbyphhfcpqdTejXyeCsq1rtt22DHQy9Xf7HqkebEPi15FKbW"><code>5C9wyUNfPmaAa6zL4mrW8wKXJUfAVuBVmuLmqUDqcbyphhfcpqdTejXyeCsq1rtt22DHQy9Xf7HqkebEPi15FKbW</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Every real-victim inflow in the dump is a single
+              <code>system/transfer</code>. Each victim is its own fee payer.
+              The collector is fee payer only on the 420 SOL exit.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <p>
+              Unconfirmed. Candy generated and held the keys for users’
+              Phantom-based wallets, so the pattern looks like a bulk key
+              leak. This draft does not infer a leak path.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Official
+              <a href="https://blog.candy.io/candy-community-update/">Candy community update</a>
+              (12 Oct 2026): a security protocol locks minted NFTs (no
+              transfers or sales between wallets) until Candy is satisfied
+              the platform and user control can be reestablished; two
+              internal audits had given Candy no reason to believe NFTs were
+              lost; Candy said it was preparing to reimburse drained Solana
+              and to communicate platform-reboot plans. Candy stated it will
+              never ask for a seed phrase or private key.
+            </p>
+            <p>
+              Public reports place the lockdown announcement at
+              <strong>00:22 UTC on 12 Oct 2026</strong>, between the waves.
+              That timestamp is a pointer claim, not an on-chain event.
+              Reimbursement is an official promise and is not hashed here.
+            </p>
+          </section>
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>How keys left Candy’s custody is unpublished.</li>
+              <li>The attacker’s own funding is unknown; the collector was never pre-funded.</li>
+              <li>Who controls the 420 SOL receiver is unpublished. No CEX touch has been seen as of the 14 Oct check.</li>
+              <li>1,543 real-victim signatures are in the dump; this page hashes Wave 1 in full, the largest Wave 2 inflows, all six dust transfers, the exit, and the 0-SOL-delta listing.</li>
+              <li>Candy has not published a reimbursement amount or process in the 12 Oct update.</li>
+              <li>The 00:22 UTC lockdown time is a public-report timestamp, not independently hashed as a Candy post in this draft.</li>
+              <li>The 0-SOL-delta Core-program listing is not interpreted here.</li>
+              <li>No official Candy USD total. This draft does not convert 425.99 SOL to dollars.</li>
+            </ul>
+          </section>
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://blog.candy.io/candy-community-update/">Candy — community update</a> — 12 Oct 2026. Official lock and reimbursement promise.</li>
+              <li><a href="https://x.com/0xkuncoro/status/2109987389120680043">0xkuncoro (X)</a> — pointer. Includes the 00:22 UTC lockdown time and a 1,549-wallet count.</li>
+              <li><a href="https://x.com/DiamondNFL/status/2109988951809527991">DiamondNFL (X)</a> — pointer. Title uses 1,543 wallets / 425.99 SOL.</li>
+              <li><a href="https://solanahub.de/en/news/candy-digital-erstattung-420-sol/">SOLANA·HUB — reimbursement / 420 SOL write-up</a> — pointer.</li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>

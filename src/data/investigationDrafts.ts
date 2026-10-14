@@ -10,6 +10,14 @@ export interface InvestigationDraft {
 /** Static HTML IR notes served from /investigations/. Not live wiki articles. */
 export const investigationDrafts: InvestigationDraft[] = [
   {
+    incidentId: "candy-digital-custodial-oct-2026",
+    title: "Candy Digital",
+    date: "2026-10-11",
+    href: "/investigations/candy-digital-investigation.html",
+    status: "draft",
+    published: false,
+  },
+  {
     incidentId: "tradewiz-key-export-sep-2026",
     title: "TradeWiz",
     date: "2026-09-30",
