@@ -253,6 +253,8 @@
               first victim transfer (collector pre-balance 0), the 420 SOL
               exit, the first lookalike dust, the receiver’s 1-lamport
               poisoning dust, and the 0-SOL-delta listing between waves.
+              A 21 Oct 2026 public-RPC recheck confirmed the 420 SOL still
+              unmoved and hashed the leftover collector hops below.
               X posts and write-ups are pointers only.
             </p>
             <h3>Wallets</h3>
@@ -262,12 +264,12 @@
                 <tr>
                   <td>Collector</td>
                   <td><a href="https://solscan.io/account/HLwZCJB8YU6Yvq8HNMMNNrLCo1xammz95bCa3jm2k75c"><code>HLwZCJB8YU6Yvq8HNMMNNrLCo1xammz95bCa3jm2k75c</code></a></td>
-                  <td>1,551 successful signatures, 11 Oct 2026 23:02:44 through 13 Oct 2026 00:00:28 UTC. Never pre-funded. First tx is a victim inflow. Paid no drain fees. Balance 5.991868581 SOL at the 14 Oct ~07:00 ET check and on the later public-RPC recheck.</td>
+                  <td>1,551 successful signatures in the 11 Oct 2026 23:02:44–13 Oct 2026 00:00:28 UTC dump. Never pre-funded. First tx is a victim inflow. Paid no drain fees. Balance 5.991868581 SOL at the 14 Oct ~07:00 ET check. Leftover 5.99 SOL left 14 Oct; 0.001873537 SOL (~0.002 SOL) at the 21 Oct 2026 RPC check.</td>
                 </tr>
                 <tr>
                   <td>Exit receiver</td>
                   <td><a href="https://solscan.io/account/FvNJKwKcVJahVCbKE6JFuic59FRWGqZBt3xgeVp9TFcz"><code>FvNJKwKcVJahVCbKE6JFuic59FRWGqZBt3xgeVp9TFcz</code></a></td>
-                  <td>Two transactions only: the 420 SOL receive, then 1-lamport lookalike dust. Balance 420.000001 SOL at the 14 Oct ~07:00 ET check and on the later public-RPC recheck. No CEX hop seen.</td>
+                  <td>Two transactions only: the 420 SOL receive, then 1-lamport lookalike dust. Still unmoved at the 21 Oct 2026 RPC check (balance 420.000001 SOL). No CEX hop seen on this 420 SOL.</td>
                 </tr>
                 <tr>
                   <td>First victim</td>
@@ -278,6 +280,16 @@
                   <td>Receiver dust (lookalike of collector)</td>
                   <td><a href="https://solscan.io/account/HLwZLYGH5XiwQy626eJSm63xKtGW6NyJx5bR87zs975c"><code>HLwZLYGH5XiwQy626eJSm63xKtGW6NyJx5bR87zs975c</code></a></td>
                   <td>Sent 1,000 lamports to the exit receiver at 23:59:14 UTC on 12 Oct. Not a collector counterparty.</td>
+                </tr>
+                <tr>
+                  <td>Leftover hop (after 14 Oct)</td>
+                  <td><a href="https://solscan.io/account/FBbDJ9tvLgF3hb9zJKQcW41B1Nc2mnMtqV8kYpNJdBLr"><code>FBbDJ9tvLgF3hb9zJKQcW41B1Nc2mnMtqV8kYpNJdBLr</code></a></td>
+                  <td>Received 5.99 SOL from the collector on 14 Oct. Sent 5.89 SOL on 15 Oct. No account at the 21 Oct 2026 RPC check (empty/closed).</td>
+                </tr>
+                <tr>
+                  <td>Unlabeled high-throughput (5.89 SOL)</td>
+                  <td><a href="https://solscan.io/account/A1safaZVY24vCompd8jFBq9k2Apu6SiBDh3xJ4DqAAGV"><code>A1safaZVY24vCompd8jFBq9k2Apu6SiBDh3xJ4DqAAGV</code></a></td>
+                  <td>Received 5.89 SOL on 15 Oct. Unlabeled. An RPC page of 1,000 signatures spans about four days. Possibly a service or exchange deposit, not confirmed.</td>
                 </tr>
               </tbody>
             </table>
@@ -637,6 +649,44 @@
                 </tr>
               </tbody>
             </table>
+            <h3>Update (Oct 21, 2026)</h3>
+            <p>
+              Status / funds, public-RPC recheck 21 Oct 2026. The 420 SOL on
+              <a href="https://solscan.io/account/FvNJKwKcVJahVCbKE6JFuic59FRWGqZBt3xgeVp9TFcz"><code>FvNJKwKcVJahVCbKE6JFuic59FRWGqZBt3xgeVp9TFcz</code></a>
+              has <strong>not moved</strong>. That account still has only two
+              transactions. Last activity remains the 12 Oct inbound
+              <a href="https://solscan.io/tx/3giXDYdxn9QrfNV5gB7URkgRZCmCroPof7E9ZDmXvP82sq9WChZBXzVkwKf77bZFYuabQhBKndSEwiebkzCYcT6r"><code>3giXDYdxn9QrfNV5gB7URkgRZCmCroPof7E9ZDmXvP82sq9WChZBXzVkwKf77bZFYuabQhBKndSEwiebkzCYcT6r</code></a>
+              from the collector. Balance still <strong>420.000001 SOL</strong>.
+            </p>
+            <p>
+              The leftover ~5.99 SOL on the collector left on 14 Oct 2026
+              20:55:09 UTC (5.99 SOL, collector signed, fee 5,044 lamports)
+              to
+              <a href="https://solscan.io/account/FBbDJ9tvLgF3hb9zJKQcW41B1Nc2mnMtqV8kYpNJdBLr"><code>FBbDJ9tvLgF3hb9zJKQcW41B1Nc2mnMtqV8kYpNJdBLr</code></a>.
+              On 15 Oct 2026 13:39:36 UTC, 5.89 SOL went from that hop to
+              <a href="https://solscan.io/account/A1safaZVY24vCompd8jFBq9k2Apu6SiBDh3xJ4DqAAGV"><code>A1safaZVY24vCompd8jFBq9k2Apu6SiBDh3xJ4DqAAGV</code></a>.
+              <code>A1sa…AAGV</code> is unlabeled and high-throughput (an RPC
+              page of 1,000 signatures spans about four days). It may be a
+              service or exchange deposit; that is <strong>not confirmed</strong>.
+              Collector balance at the 21 Oct check:
+              <strong>0.001873537 SOL</strong> (~0.002 SOL). This leftover hop
+              is not a Candy reimbursement.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>14 Oct 20:55:09</td>
+                  <td>collector → <code>FBbD…dBLr</code> 5.99 SOL</td>
+                  <td><a href="https://solscan.io/tx/3noeYPmPAbASc1EsEnj4Dhxt5kpp9fXd9212ge8SE1hkQycFj2pYsK8tAKHG5smprKp11o5YvbKGRoj1KfMdtpV"><code>3noeYPmPAbASc1EsEnj4Dhxt5kpp9fXd9212ge8SE1hkQycFj2pYsK8tAKHG5smprKp11o5YvbKGRoj1KfMdtpV</code></a></td>
+                </tr>
+                <tr>
+                  <td>15 Oct 13:39:36</td>
+                  <td><code>FBbD…dBLr</code> → <code>A1sa…AAGV</code> 5.89 SOL</td>
+                  <td><a href="https://solscan.io/tx/3TGU5My3RCudaKSqTL3dBYeY8pBSu6FYYt3aQwibo3vWRjeDvz2AyDSHStdSySPrXUcjcFyCn2kZKZsNkpsT2cbW"><code>3TGU5My3RCudaKSqTL3dBYeY8pBSu6FYYt3aQwibo3vWRjeDvz2AyDSHStdSySPrXUcjcFyCn2kZKZsNkpsT2cbW</code></a></td>
+                </tr>
+              </tbody>
+            </table>
             <h3>0-SOL-delta listing</h3>
             <p>
               One of the 1,551 collector signatures does not change collector
@@ -661,7 +711,8 @@
             <p>
               Every real-victim inflow in the dump is a single
               <code>system/transfer</code>. Each victim is its own fee payer.
-              The collector is fee payer only on the 420 SOL exit.
+              In that dump the collector is fee payer only on the 420 SOL
+              exit. After the dump it also signed the 14 Oct leftover hop.
             </p>
           </section>
           <section class="article-section">
@@ -691,15 +742,33 @@
               That timestamp is a pointer claim, not an on-chain event.
               Reimbursement is an official promise and is not hashed here.
             </p>
+            <p>
+              <strong>Update (Oct 21, 2026).</strong>
+              Official
+              <a href="https://blog.candy.io/candy-community-update-securing-your-collection-and-what-comes-next/">15 Oct community update</a>
+              (pointer): Candy is creating new per-user wallets via a
+              third-party security partner, will migrate NFTs to those
+              wallets and then restore stolen SOL there, does not store
+              card or SSN data, and is still reviewing whether account
+              information such as emails was accessed.
+              Official
+              <a href="https://blog.candy.io/candy-community-update-your-nfts-and-sol-are-on-the-move/">19 Oct community update</a>
+              (pointer): SOL transfers to the new wallets, including
+              restoring stolen SOL, began the weekend of 17–18 Oct; NFTs
+              move next; marketplace listings are cancelled. Candy has not
+              published a root cause. User-wallet reimbursement transfers
+              are official claims and are not hashed here.
+            </p>
           </section>
           <section class="article-section">
             <h2>Coverage gaps</h2>
             <ul>
               <li>How keys left Candy’s custody is unpublished.</li>
               <li>The attacker’s own funding is unknown; the collector was never pre-funded.</li>
-              <li>Who controls the 420 SOL receiver is unpublished. No CEX touch has been seen as of the 14 Oct check.</li>
-              <li>1,543 real-victim signatures are in the dump; this page hashes Wave 1 in full, the largest Wave 2 inflows, all six dust transfers, the exit, and the 0-SOL-delta listing.</li>
-              <li>Candy has not published a reimbursement amount or process in the 12 Oct update.</li>
+              <li>Who controls the 420 SOL receiver is unpublished. That 420 SOL is still unmoved as of the 21 Oct check. No CEX touch has been seen on it.</li>
+              <li>The leftover 5.89 SOL sits on unlabeled <code>A1sa…AAGV</code>. A service or exchange deposit is possible and not confirmed.</li>
+              <li>1,543 real-victim signatures are in the dump; this page hashes Wave 1 in full, the largest Wave 2 inflows, all six dust transfers, the exit, the leftover hops, and the 0-SOL-delta listing.</li>
+              <li>Candy has described a reimbursement process (new wallets, NFT then SOL restore) but has not published an amount. User-wallet reimbursement transfers are not hashed here.</li>
               <li>The 00:22 UTC lockdown time is a public-report timestamp, not independently hashed as a Candy post in this draft.</li>
               <li>The 0-SOL-delta Core-program listing is not interpreted here.</li>
               <li>No official Candy USD total. This draft does not convert 425.99 SOL to dollars.</li>
@@ -709,6 +778,8 @@
             <h2>References</h2>
             <ol class="sources-list">
               <li><a href="https://blog.candy.io/candy-community-update/">Candy — community update</a> — 12 Oct 2026. Official lock and reimbursement promise.</li>
+              <li><a href="https://blog.candy.io/candy-community-update-securing-your-collection-and-what-comes-next/">Candy — securing your collection</a> — 15 Oct 2026. Pointer.</li>
+              <li><a href="https://blog.candy.io/candy-community-update-your-nfts-and-sol-are-on-the-move/">Candy — NFTs and SOL are on the move</a> — 19 Oct 2026. Pointer.</li>
               <li><a href="https://x.com/0xkuncoro/status/2109987389120680043">0xkuncoro (X)</a> — pointer. Includes the 00:22 UTC lockdown time and a 1,549-wallet count.</li>
               <li><a href="https://x.com/DiamondNFL/status/2109988951809527991">DiamondNFL (X)</a> — pointer. Title uses 1,543 wallets / 425.99 SOL.</li>
               <li><a href="https://solanahub.de/en/news/candy-digital-erstattung-420-sol/">SOLANA·HUB — reimbursement / 420 SOL write-up</a> — pointer.</li>

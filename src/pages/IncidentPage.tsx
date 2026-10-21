@@ -7,6 +7,13 @@ import {
   formatUsd,
 } from "../lib/format";
 
+function paragraphs(text: string): string[] {
+  return text
+    .split(/\n\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
 export function IncidentPage() {
   const { id } = useParams<{ id: string }>();
   const inc = id ? getIncidentById(id) : undefined;
@@ -40,6 +47,14 @@ export function IncidentPage() {
           {inc.lossDescription ? ` — ${inc.lossDescription}` : ""}
         </p>
       )}
+      {inc.estimatedLossUsd === null && inc.lossDescription && (
+        <section className="article-section">
+          <h2>Status / funds</h2>
+          {paragraphs(inc.lossDescription).map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </section>
+      )}
       {inc.mitigated && (
         <p style={{ color: "var(--ok)" }}>
           Recovery / reimbursement or preemptive patch noted in sources.
@@ -54,7 +69,9 @@ export function IncidentPage() {
       {inc.details && (
         <section className="article-section">
           <h2>Details</h2>
-          <p>{inc.details}</p>
+          {paragraphs(inc.details).map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
         </section>
       )}
 
@@ -68,7 +85,9 @@ export function IncidentPage() {
       {inc.response && (
         <section className="article-section">
           <h2>Response</h2>
-          <p>{inc.response}</p>
+          {paragraphs(inc.response).map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
         </section>
       )}
 
