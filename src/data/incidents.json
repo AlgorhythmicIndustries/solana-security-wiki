@@ -60,16 +60,16 @@
     "id": "tradewiz-key-export-sep-2026",
     "title": "TradeWiz SOL PVP private-key export exposure",
     "date": "2026-09-30",
-    "endDate": "2026-10-03",
+    "endDate": "2026-10-21",
     "category": "application",
     "severity": "high",
     "estimatedLossUsd": 459000,
-    "lossDescription": "Bitquery's 1 Oct 2026 09:54 UTC snapshot (SOL at $120) is about $459,468 across a claimed 20,933 wallets. That dollar total, wallet count, and rent figure are Bitquery's, not independently recounted here. RPC-verified parked SOL at the 3 Oct 2026 ~11:50 ET check: collector 1845.184891292 SOL plus holding wallet 1599.008050340 SOL. TradeWiz has not published a refund or police dollar figure in the 30 Sep–3 Oct posts reviewed here.",
+    "lossDescription": "Bitquery's 1 Oct 2026 09:54 UTC snapshot (SOL at $120) is about $459,468 across a claimed 20,933 wallets. That dollar total, wallet count, and rent figure are Bitquery's, not independently recounted here. RPC-verified parked SOL at the 3 Oct 2026 ~11:50 ET check was collector 1845.184891292 SOL plus holding wallet 1599.008050340 SOL. By 15 Oct 2026 essentially all of that parked SOL (~3,200 SOL across 9 Oct and 15 Oct hops) had exited into wrapped-SOL account 8b9c7XAStj2dKpqk3U2SsXcxh5jPkuFTExUhnFZo4iFZ, consistent with public attribution to Bridgers (SWFT) cross-chain swap (not a verified on-chain label). Collector held ~0.43 SOL on a 21 Oct RPC check. TradeWiz's 20 Oct post claims compensation for more than 1,500 users; that is an official claim, not a hashed payout total.",
     "mitigated": true,
     "summary": "TradeWiz (@TradeWiz_Bot) said a limited private-key exposure in the SOL PVP private-key export feature led to mass wallet drains on Solana. This is product/ops private-key exposure (custodial signing), not a protocol exploit and not one-off phishing: Bitquery says the on-chain artifact is ordinary transfers signed by drained wallets, with no exploit program and no token approval. TradeWiz holds user keys to sign. How those keys left the export feature is unpublished.",
-    "details": "RPC-verified collector 6mmiAPpQmY6YFxecmAyHMi2P8B7CE92Y8E65saE388Hj first appeared 28 Aug 2026; about 39,719 signatures through 3 Oct 2026 11:44 ET (32,168 successful), with mass activity 30 Sep 09:00–13:00 ET and 1 Oct 06:00–11:00 ET. Four MEXC hot-wallet withdrawals from ASTyfSima4LLAdDgoFGkgqoKowG1LZFDr9fAQrg7iaJZ landed on the collector (gross 1.005632 SOL, 28 Aug–3 Sep), which then forwarded essentially those amounts to trading wallet 5e92RDcRg1FiB8knfe1YNQGT7gqrkxnixGGiNoxujfaC (balance 0 at check). On 30 Sep 11:46 ET the collector sent 1599.00805034 SOL to holding wallet 7iFXCZAg9i54N4vNAEPKBaNB7xQc7SbceEQx75fqMHsc (that wallet's only transaction; balance unchanged). Forwarder 9Jx1rDvCCGLCuyAvuc8MG9bsSE3RdSRajVY85Q54eKCj, active since 2 Jun 2026, moved 100 then 91 SOL to exchange-style deposit Cmjwy18ShHxUrZ5ZLw5d1Hruz6yszR2kcXW4aTPMoxXs, which swept to BmFdpraQhkiDQE6SnfG5omcA1VwzqfXrwtNYBwWTymy6. Bitquery labels Cmjwy18 as KuCoin; Arkham labeling failed, so KuCoin is not chain-proven. A 28 Sep 14:40–14:45 ET window showed collector inflows over 0.01 SOL from at least 10 wallets summing 33.68 SOL (Bitquery's 18-wallet ~34 SOL test is not independently recounted). Official follow-ups: 1 Oct ~10:16 PM ET any previously associated TradeWiz wallet may be at risk and later losses on old addresses are ineligible for compensation; 2 Oct ~11:13 PM ET Robinhood/RBH wallets were not affected.",
+    "details": "RPC-verified collector 6mmiAPpQmY6YFxecmAyHMi2P8B7CE92Y8E65saE388Hj first appeared 28 Aug 2026; about 39,719 signatures through 3 Oct 2026 11:44 ET (32,168 successful), with mass activity 30 Sep 09:00–13:00 ET and 1 Oct 06:00–11:00 ET. Four MEXC hot-wallet withdrawals from ASTyfSima4LLAdDgoFGkgqoKowG1LZFDr9fAQrg7iaJZ landed on the collector (gross 1.005632 SOL, 28 Aug–3 Sep), which then forwarded essentially those amounts to trading wallet 5e92RDcRg1FiB8knfe1YNQGT7gqrkxnixGGiNoxujfaC (balance 0 at check). On 30 Sep 11:46 ET the collector sent 1599.00805034 SOL to holding wallet 7iFXCZAg9i54N4vNAEPKBaNB7xQc7SbceEQx75fqMHsc. Forwarder 9Jx1rDvCCGLCuyAvuc8MG9bsSE3RdSRajVY85Q54eKCj, active since 2 Jun 2026, moved 100 then 91 SOL to exchange-style deposit Cmjwy18ShHxUrZ5ZLw5d1Hruz6yszR2kcXW4aTPMoxXs, which swept to BmFdpraQhkiDQE6SnfG5omcA1VwzqfXrwtNYBwWTymy6. Bitquery labels Cmjwy18 as KuCoin; Arkham labeling failed, so KuCoin is not chain-proven. A 28 Sep 14:40–14:45 ET window showed collector inflows over 0.01 SOL from at least 10 wallets summing 33.68 SOL (Bitquery's 18-wallet ~34 SOL test is not independently recounted). Update 21 Oct 2026: on 9 Oct holding sent ~1065 SOL to wtN2x8dJK6XNr1h7wgpJcQWnhgdD9zKEk96AbDuCvcb (e.g. 1054.99 SOL, then 1055.88 SOL onward to wrapped-SOL 8b9c7XAStj2dKpqk3U2SsXcxh5jPkuFTExUhnFZo4iFZ). On 14 Oct the collector sent 1615.44 SOL and holding sent remaining 533.98 SOL to 3AJY4ETRBMzWVV5UEVkirHVxJLJdyXwiYdxiewBnjnos; on 15 Oct that hop peeled ~2149.4 SOL via 5SNz7GpBtNUMGos9P55GvkLVYruGGpijui3idJCqWf1g into the same 8b9c7X account, owned by ZfctMHBkZNTqeYGE47ekxtydgXgpo9xKJCAasjaCLTU and consistent with public attribution to Bridgers (SWFT) cross-chain swap. Collector ~0.43 SOL afterward.",
     "rootCause": "Official claim: limited private-key exposure in the SOL PVP private-key export feature. Product model: TradeWiz holds user keys to sign. TradeWiz has not published how the keys left the export feature. This entry does not infer a leak path.",
-    "response": "Official posts promised full compensation for verified losses and said first-wave refunds went out the same day as the notice; police report and exchange tracing on 1 Oct; 1 Oct evening warning that any previously associated wallet may be at risk; 2 Oct evening claim that Robinhood/RBH wallets were not affected, with a graphic stating an additional security upgrade and service restoration at 02:30 UTC. First-wave refunds are an official claim and are not hashed here.",
+    "response": "Official posts promised full compensation for verified losses and said first-wave refunds went out the same day as the notice; police report and exchange tracing on 1 Oct; 1 Oct evening warning that any previously associated wallet may be at risk; 2 Oct evening claim that Robinhood/RBH wallets were not affected. On 13 Oct TradeWiz said the bot was back online after a security upgrade. On 14 Oct a claims-admin reply asked a victim for the compromised wallet private key 'for verification' (risk signal). On 20 Oct TradeWiz said compensation was completed for more than 1,500 affected users, with a 26 Oct claim deadline. Those compensation figures are official claims and are not hashed here; victims have publicly disputed payouts. No official root-cause write-up was found.",
     "tags": [
       "tradewiz",
       "telegram",
@@ -107,6 +107,18 @@
         "url": "https://x.com/TradeWiz_Bot/status/2106220990816792787"
       },
       {
+        "label": "TradeWiz — bot back online",
+        "url": "https://x.com/TradeWiz_Bot/status/2109911846572679495"
+      },
+      {
+        "label": "TradeWiz — private key for verification",
+        "url": "https://x.com/TradeWiz_Bot/status/2110382321933455524"
+      },
+      {
+        "label": "TradeWiz — 1,500+ users compensated",
+        "url": "https://x.com/TradeWiz_Bot/status/2112552631021559829"
+      },
+      {
         "label": "Bitquery — TradeWiz investigation",
         "url": "https://bitquery.io/investigations/tradewiz-hack"
       },
@@ -117,6 +129,10 @@
       {
         "label": "Bitquery (X) — customer-first thread",
         "url": "https://x.com/Bitquery_io/status/2105605331539923366"
+      },
+      {
+        "label": "avoid.net — Bridgers / SWFT",
+        "url": "https://avoid.net/bridgers-cross-chain-swap"
       }
     ],
     "lesson": "A trading bot that holds user private keys is a custodian: an export-feature exposure can empty many user wallets with ordinary signed transfers, and pausing the bot does not revoke copies of those keys.",
@@ -126,7 +142,8 @@
       "Treat key-export as a high-risk action: step-up auth, rate limits, encryption in transit, and audit every export.",
       "Tell users that a drained hot wallet is burned; do not send new funds to an old bot-issued address.",
       "Monitor for mass simultaneous transfers from bot-issued wallets and circuit-break signing plus warn users within minutes.",
-      "Publish which products and address cohorts were in scope, and rotate users onto new keys before the next sweep window."
+      "Publish which products and address cohorts were in scope, and rotate users onto new keys before the next sweep window.",
+      "Never ask victims to submit a compromised private key as claims 'verification'; pay refunds to a user-created wallet outside the drained address."
     ]
   },
   {
