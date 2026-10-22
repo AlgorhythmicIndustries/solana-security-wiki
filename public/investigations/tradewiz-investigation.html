@@ -256,7 +256,7 @@
                 <tr>
                   <td>Collector</td>
                   <td><a href="https://solscan.io/account/6mmiAPpQmY6YFxecmAyHMi2P8B7CE92Y8E65saE388Hj"><code>6mmiAPpQmY6YFxecmAyHMi2P8B7CE92Y8E65saE388Hj</code></a></td>
-                  <td>First activity 28 Aug 2026. About 39,719 signatures through 3 Oct 2026 11:44 ET (32,168 successful). Balance 1845.184891292 SOL at ~11:50 ET that day.</td>
+                  <td>First activity 28 Aug 2026. About 39,719 signatures through 3 Oct 2026 11:44 ET (32,168 successful). Balance 1845.184891292 SOL at ~11:50 ET that day. Later emptied; see Update (Oct 21, 2026).</td>
                 </tr>
                 <tr>
                   <td>Trading wallet</td>
@@ -266,7 +266,7 @@
                 <tr>
                   <td>Holding</td>
                   <td><a href="https://solscan.io/account/7iFXCZAg9i54N4vNAEPKBaNB7xQc7SbceEQx75fqMHsc"><code>7iFXCZAg9i54N4vNAEPKBaNB7xQc7SbceEQx75fqMHsc</code></a></td>
-                  <td>One transaction only. Still 1599.008050340 SOL.</td>
+                  <td>Received 1599.008050340 SOL on 30 Sep (one inbound). Emptied 9 Oct and 14 Oct 2026; see Update (Oct 21, 2026).</td>
                 </tr>
                 <tr>
                   <td>Forwarder</td>
@@ -438,6 +438,125 @@
               median 63 cents; 69 wallets ≥10 SOL. Bitquery does not know who
               signed the drains or how keys left the export feature.
             </p>
+            <h3>Update (Oct 21, 2026)</h3>
+            <p>
+              Times below are <strong>UTC</strong>. Signatures are Solana
+              RPC–verified on this pass. Parked SOL left the collector and
+              holding wallets in two waves (9 Oct and 14–15 Oct) into
+              wrapped-SOL token account
+              <a href="https://solscan.io/account/8b9c7XAStj2dKpqk3U2SsXcxh5jPkuFTExUhnFZo4iFZ"><code>8b9c7XAStj2dKpqk3U2SsXcxh5jPkuFTExUhnFZo4iFZ</code></a>,
+              owned by
+              <a href="https://solscan.io/account/ZfctMHBkZNTqeYGE47ekxtydgXgpo9xKJCAasjaCLTU"><code>ZfctMHBkZNTqeYGE47ekxtydgXgpo9xKJCAasjaCLTU</code></a>.
+              Public reporting (avoid.net Bridgers investigation; ZachXBT
+              XRP-theft tracing) identifies that owner as the Bridgers/SWFT
+              no-KYC cross-chain swap relay. Phrase: consistent with public
+              attribution to Bridgers (SWFT) cross-chain swap — not a verified
+              on-chain label. Net: essentially all stolen SOL (~3,200 SOL across
+              9 Oct and 15 Oct) has exited via that hop. Collector held
+              <strong>0.426 SOL</strong> on this RPC check and has been closing
+              dust/meme token accounts (17–20 Oct).
+            </p>
+            <p>
+              9 Oct 2026 ~17:12–17:17 UTC: holding sent ~1065 SOL to
+              <a href="https://solscan.io/account/wtN2x8dJK6XNr1h7wgpJcQWnhgdD9zKEk96AbDuCvcb"><code>wtN2x8dJK6XNr1h7wgpJcQWnhgdD9zKEk96AbDuCvcb</code></a>.
+              Hashed example 1054.99 SOL at 17:14:33 UTC; wtN2x8 forwarded
+              1055.88 SOL to 8b9c7X at 17:17:36 UTC. A further 9.13 SOL from
+              wtN2x8 to 8b9c7X landed 10 Oct 04:52:07 UTC (RPC time; not in the
+              17:12–17:17 window).
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>9 Oct 2026 17:14:33</td>
+                  <td>holding → wtN2x8 1054.99 SOL</td>
+                  <td><a href="https://solscan.io/tx/2wf8R9oLJ89pWjR7FJ2PDKBfTwp6oEGXjkHNRzQkFQFjpsrA8qM2hdFC1btvFrLfLaSTyfBfBexD7ib6QRLtsSUA"><code>2wf8R9oLJ89pWjR7FJ2PDKBfTwp6oEGXjkHNRzQkFQFjpsrA8qM2hdFC1btvFrLfLaSTyfBfBexD7ib6QRLtsSUA</code></a></td>
+                </tr>
+                <tr>
+                  <td>9 Oct 2026 17:17:36</td>
+                  <td>wtN2x8 → 8b9c7X 1055.88 SOL</td>
+                  <td><a href="https://solscan.io/tx/5ZCewCNvjWLhSHTvP1Gmhduvn3kwdJYSjN1c2uiEKpm9wmt4AdjL3oiMU251iqVve7APXg11ADd2e21RZ3WSYQpR"><code>5ZCewCNvjWLhSHTvP1Gmhduvn3kwdJYSjN1c2uiEKpm9wmt4AdjL3oiMU251iqVve7APXg11ADd2e21RZ3WSYQpR</code></a></td>
+                </tr>
+                <tr>
+                  <td>10 Oct 2026 04:52:07</td>
+                  <td>wtN2x8 → 8b9c7X 9.13 SOL</td>
+                  <td><a href="https://solscan.io/tx/1TSJdjN1GQ9SheLTTsbRKj3xs5a2t7moqfpmm3j4DCLxA9h3CnUf82nqauTd1j8zf4SB57NB7z3nH4qR2e2WtqA"><code>1TSJdjN1GQ9SheLTTsbRKj3xs5a2t7moqfpmm3j4DCLxA9h3CnUf82nqauTd1j8zf4SB57NB7z3nH4qR2e2WtqA</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              14 Oct 2026: collector sent 1615.44 SOL to hop
+              <a href="https://solscan.io/account/3AJY4ETRBMzWVV5UEVkirHVxJLJdyXwiYdxiewBnjnos"><code>3AJY4ETRBMzWVV5UEVkirHVxJLJdyXwiYdxiewBnjnos</code></a>
+              at 18:11 UTC. Holding sent its remaining 533.98 SOL to the same hop
+              at 18:45 UTC.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>14 Oct 2026 18:11:29</td>
+                  <td>collector → 3AJY4E 1615.44 SOL</td>
+                  <td><a href="https://solscan.io/tx/4qbcZUsQhobySXRWtXUNbk5eLXhNkzFsUaexGaFPmSSYNE8okFqV7vf5yRiHzdt47CGHHA2o9hWWonVydGhaXDXK"><code>4qbcZUsQhobySXRWtXUNbk5eLXhNkzFsUaexGaFPmSSYNE8okFqV7vf5yRiHzdt47CGHHA2o9hWWonVydGhaXDXK</code></a></td>
+                </tr>
+                <tr>
+                  <td>14 Oct 2026 18:45:42</td>
+                  <td>holding → 3AJY4E 533.98 SOL</td>
+                  <td><a href="https://solscan.io/tx/sXXsFcR6WbmH4u2PY191aTD5nSnyRW6LUXuW2AFAW6H4oTPwrq6RvTDo1WzmS1kk6J9UyNBX7vPramjGpgjc5pU"><code>sXXsFcR6WbmH4u2PY191aTD5nSnyRW6LUXuW2AFAW6H4oTPwrq6RvTDo1WzmS1kk6J9UyNBX7vPramjGpgjc5pU</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              15 Oct 2026: 3AJY4E peeled ~2149.4 SOL to fresh hop
+              <a href="https://solscan.io/account/5SNz7GpBtNUMGos9P55GvkLVYruGGpijui3idJCqWf1g"><code>5SNz7GpBtNUMGos9P55GvkLVYruGGpijui3idJCqWf1g</code></a>
+              in five transfers; 5SNz7G immediately forwarded each into 8b9c7X.
+              Four large peels are hashed (11:21–11:40 UTC). A ~0.96 SOL test in
+              that window is not hashed here.
+            </p>
+            <table class="hash-table">
+              <thead><tr><th>UTC</th><th>Role</th><th>Signature</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>15 Oct 2026 11:21:49</td>
+                  <td>3AJY4E → 5SNz7G 97.79 SOL</td>
+                  <td><a href="https://solscan.io/tx/3fo8TASj2x5DHwvzzCnCnD2M2NxujqDxKgyqsJUmkMuPDiHPFsDLxAbVWJa184jszcZ1BeTtSsogEbAkr8CPNhf9"><code>3fo8TASj2x5DHwvzzCnCnD2M2NxujqDxKgyqsJUmkMuPDiHPFsDLxAbVWJa184jszcZ1BeTtSsogEbAkr8CPNhf9</code></a></td>
+                </tr>
+                <tr>
+                  <td>15 Oct 2026 11:22:18</td>
+                  <td>5SNz7G → 8b9c7X 97.79 SOL</td>
+                  <td><a href="https://solscan.io/tx/2Z9nMHwMcWokVS44U1P988mKTCYH7Cv2JZquRAXH5H8CTzfZGdLWuqiysu6E77AYpvfStLjaSRs3yYneAtQoNptQ"><code>2Z9nMHwMcWokVS44U1P988mKTCYH7Cv2JZquRAXH5H8CTzfZGdLWuqiysu6E77AYpvfStLjaSRs3yYneAtQoNptQ</code></a></td>
+                </tr>
+                <tr>
+                  <td>15 Oct 2026 11:26:13</td>
+                  <td>3AJY4E → 5SNz7G 489.18 SOL</td>
+                  <td><a href="https://solscan.io/tx/3PsKeZHRNyu6kx6jtDERGzvn94BmX4xBMEjhXL5mzZLt9vxM7JYib4LD9LfQu32Euyyw3iYpoNAbJpT57iwh1SJh"><code>3PsKeZHRNyu6kx6jtDERGzvn94BmX4xBMEjhXL5mzZLt9vxM7JYib4LD9LfQu32Euyyw3iYpoNAbJpT57iwh1SJh</code></a></td>
+                </tr>
+                <tr>
+                  <td>15 Oct 2026 11:26:54</td>
+                  <td>5SNz7G → 8b9c7X 489.18 SOL</td>
+                  <td><a href="https://solscan.io/tx/2XrshtdSED5Tu1VzR5LABHuZZjYSxzTFSJapweZGafMfSSCpJ6NadtSQfH1feN77cpbFSXVqQ8pGcTopQGfw3E7f"><code>2XrshtdSED5Tu1VzR5LABHuZZjYSxzTFSJapweZGafMfSSCpJ6NadtSQfH1feN77cpbFSXVqQ8pGcTopQGfw3E7f</code></a></td>
+                </tr>
+                <tr>
+                  <td>15 Oct 2026 11:30:53</td>
+                  <td>3AJY4E → 5SNz7G 978.62 SOL</td>
+                  <td><a href="https://solscan.io/tx/2kxfP6H1wp77d8NXeHwqBn9Xe33anLX64hhWCyhLuWzVjmiQScCDZntCgiz2xxn6LWtTq84WdUMAThyAH2sePQGm"><code>2kxfP6H1wp77d8NXeHwqBn9Xe33anLX64hhWCyhLuWzVjmiQScCDZntCgiz2xxn6LWtTq84WdUMAThyAH2sePQGm</code></a></td>
+                </tr>
+                <tr>
+                  <td>15 Oct 2026 11:31:26</td>
+                  <td>5SNz7G → 8b9c7X 978.62 SOL</td>
+                  <td><a href="https://solscan.io/tx/5hBaMq6NBHibpZ4nSgoSr5apLVZy6gXKHsahHUTJErWy9kXKcMBeXgJ5xtG856yCm8cotMpRDp2DhT6RETe8JGy7"><code>5hBaMq6NBHibpZ4nSgoSr5apLVZy6gXKHsahHUTJErWy9kXKcMBeXgJ5xtG856yCm8cotMpRDp2DhT6RETe8JGy7</code></a></td>
+                </tr>
+                <tr>
+                  <td>15 Oct 2026 11:39:13</td>
+                  <td>3AJY4E → 5SNz7G 582.85 SOL</td>
+                  <td><a href="https://solscan.io/tx/S21zK5vmNsg8tghmSL1PmwfQ6V996KF5YX2fsJkgm1fVdRdWB2YsboGidXrdgVqwBcdvFtE73CkdcK9phMX6EM9"><code>S21zK5vmNsg8tghmSL1PmwfQ6V996KF5YX2fsJkgm1fVdRdWB2YsboGidXrdgVqwBcdvFtE73CkdcK9phMX6EM9</code></a></td>
+                </tr>
+                <tr>
+                  <td>15 Oct 2026 11:40:02</td>
+                  <td>5SNz7G → 8b9c7X 582.85 SOL</td>
+                  <td><a href="https://solscan.io/tx/32datsX36c8hciGCqBuAofzJroLNAoZHbtSNjHafphsSfyWTXHNbwinNEouzTBJV25eo2sCDA45h3m3NzNSfquVX"><code>32datsX36c8hciGCqBuAofzJroLNAoZHbtSNjHafphsSfyWTXHNbwinNEouzTBJV25eo2sCDA45h3m3NzNSfquVX</code></a></td>
+                </tr>
+              </tbody>
+            </table>
           </section>
           <section class="article-section">
             <h2>Root cause</h2>
@@ -493,10 +612,34 @@
                 date. Restoration is an official claim, not independently
                 confirmed here.
               </li>
+              <li>
+                13 Oct 2026 07:39 UTC —
+                <a href="https://x.com/TradeWiz_Bot/status/2109911846572679495">bot back online</a>
+                after a security upgrade; additional identity verification for
+                key export claimed; compensation for over 1,000 users claimed;
+                old affected addresses to be removed.
+              </li>
+              <li>
+                14 Oct 2026 14:48 UTC —
+                <a href="https://x.com/TradeWiz_Bot/status/2110382321933455524">claims-admin reply</a>
+                told a user that providing the compromised wallet’s private key
+                was “solely for verification.” Treat that as a risk signal:
+                victims should not hand a key to a claims process.
+              </li>
+              <li>
+                20 Oct 2026 14:32 UTC —
+                <a href="https://x.com/TradeWiz_Bot/status/2112552631021559829">compensation update</a>:
+                SOL Bot compensation completed for more than 1,500 affected
+                users; security upgrade completed; claim deadline 26 Oct.
+                Official claim; payouts are not hashed here. Victims have
+                publicly disputed payouts.
+              </li>
             </ul>
             <p>
-              SlowMist, PeckShield, ZachXBT, and DefimonAlerts: no TradeWiz posts
-              found in this public pass.
+              No official root-cause write-up was found. SlowMist, PeckShield,
+              and DefimonAlerts: still no TradeWiz incident posts in this public
+              pass. Bridgers/SWFT attribution for the exit hop is public
+              reporting, not a TradeWiz disclosure.
             </p>
           </section>
           <section class="article-section">
@@ -506,8 +649,10 @@
               <li>28 Sep test is hashed only as a window: ≥10 wallets / 33.68 SOL over 0.01 SOL. Bitquery’s exact 18-wallet count is not independently recounted.</li>
               <li>Bitquery dollar totals, full wallet counts, and rent figures are not independently recounted.</li>
               <li>Cmjwy18 is an exchange-style deposit; KuCoin is Bitquery’s label, not chain-proven (Arkham 402).</li>
-              <li>How keys left the export feature is unpublished.</li>
-              <li>No official TradeWiz dollar total for refunds or police tracing.</li>
+              <li>How keys left the export feature is unpublished. No official root-cause write-up found.</li>
+              <li>No official TradeWiz dollar total for refunds or police tracing. 20 Oct “1,500+ users compensated” is an official claim; payouts are not hashed here.</li>
+              <li>15 Oct ~0.96 SOL test peel is not hashed.</li>
+              <li>Individual 17–20 Oct dust/meme token-account closes on the collector are not listed.</li>
               <li>Bitquery could not identify the service that took the ~34 SOL test-run outflow.</li>
             </ul>
           </section>
@@ -519,10 +664,14 @@
               <li><a href="https://x.com/TradeWiz_Bot/status/2105561995290575183">TradeWiz — police report</a> — 1 Oct 2026 07:34 UTC.</li>
               <li><a href="https://x.com/TradeWiz_Bot/status/2105844364094357504">TradeWiz — replace old addresses</a> — 2 Oct 2026 02:16 UTC.</li>
               <li><a href="https://x.com/TradeWiz_Bot/status/2106220990816792787">TradeWiz — Robinhood/RBH notice</a> — 3 Oct 2026 03:13 UTC.</li>
+              <li><a href="https://x.com/TradeWiz_Bot/status/2109911846572679495">TradeWiz — bot back online</a> — 13 Oct 2026 07:39 UTC.</li>
+              <li><a href="https://x.com/TradeWiz_Bot/status/2110382321933455524">TradeWiz — private key “for verification”</a> — 14 Oct 2026 14:48 UTC.</li>
+              <li><a href="https://x.com/TradeWiz_Bot/status/2112552631021559829">TradeWiz — 1,500+ users compensated</a> — 20 Oct 2026 14:32 UTC.</li>
               <li><a href="https://bitquery.io/investigations/tradewiz-hack">Bitquery — TradeWiz investigation</a> — figures as of 1 Oct 2026 09:54 UTC.</li>
               <li><a href="https://x.com/Bitquery_io/status/2105567481503068346">Bitquery (X) — $459K / 20,933 wallets</a></li>
               <li><a href="https://x.com/Bitquery_io/status/2105605331539923366">Bitquery (X) — customer-first thread</a></li>
               <li><a href="https://news.bitcoin.com/security/the-459000-bot-hacker-was-a-customer-first-researchers-say/">Bitcoin.com — Bitquery recap</a></li>
+              <li><a href="https://avoid.net/bridgers-cross-chain-swap">avoid.net — Bridgers / SWFT cross-chain swap</a> — public attribution for ZfctMHBk…, not a chain label.</li>
             </ol>
           </section>
 
