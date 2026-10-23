@@ -1,5 +1,52 @@
 [
   {
+    "id": "wax-multi-chain-bridge-oct-2026",
+    "title": "WAX Multi-Chain Bridge exploit",
+    "date": "2026-10-22",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": null,
+    "lossDescription": "Solana-side loss is 52,986.497732 USDC (hashed). Ethereum releases are 21,558.252354 USDT, 840.2750339 DAI, 2.54669928 WETH, and 0.10993227 WBTC (hashed). Public reports cite ~$77–91K; this entry does not re-price.",
+    "summary": "On 22 Oct 2026 the WAX Multi-Chain Bridge released 52,986.497732 USDC on Solana (the only large Solana vault outflow to the attacker) and USDT/DAI/WETH/WBTC on Ethereum. Destination chains released after the WAX source withdraw was reported to have charged nothing (eth.token::withdraw / max_fee ≥ 0). That source-side bug is reported by SlowMist/WAX/Blockaid pointers and is not independently verified from WAX-chain params in this entry.",
+    "details": "Solana ReleaseToken at 2026-10-22T10:00:55Z, signature aSLapMf8bSnNDXQHushhjz3hg7joZH6NEk4hrDergb7ReRtFEXT44eQGDPgDFs4GzBqRbMy5cG3dLz9WrZdh1Wo, from vault 8cqv3kRg1ivwPNrGGrvJANXb6RPik6XEhnBzs18tPcKC to attacker 4H1piNZ8LsYhZGYhkbJDbPDSghxRj3HWxJqVz5dve8Q7. Ethereum releases from bridge 0x24b22b031ae1b5a6b09f9a0fd33613a40e0d70e6 to 0x01664E199991b2F3fe412c2DE5B9b7A0dcDc5070: USDT 0x7c6e4bf4efff995981b8b0f7fa1434cc85063e95c0f7460c71277e0a3f9c14d0, DAI 0x58960a7afccf78725e8bcfcf7c1f38cac9e08f2a556da81ec7ee1c5023fc79c6, WETH 0x9a55cd6c9e9067ac2bf8d33dff233a3e3dd3739c56206444b8a5e79daabb4ff5, WBTC 0x6e1553e7d932d8019f59ea6a3bd09c3071b41d538975686cf3f7e785f9e67160. Solana USDC later moved to unlabeled H15JEWrcrp1rTteRoorQTF4e54QF1QmZfxghBcT6ueo9 then BfP2dBiHbiqYvsmESsgHEL8wQtZt25sbDNKnwmNRB34G. Ethereum proceeds were swapped to ETH and 15.58 ETH sent to 0x62907e044ffe22a24aa8794ff2a6ea20598227bb (HitBTC is attribution only; Blockscout unlabeled). No cryptographic link between the Solana and Ethereum attacker EOAs is included.",
+    "rootCause": "Reported, not independently verified from WAX-chain params: eth.token::withdraw accepted max_fee that did not satisfy max_fee ≥ 0 (reported as max_fee = -quantity), so the source charged nothing while Solana/Ethereum still released.",
+    "response": "Public pointers from SlowMist, WAX, and Arisk/Blockaid on 22 Oct 2026. No hashed pause, patch, or recovery transaction is included in this entry.",
+    "tags": [
+      "wax",
+      "bridge",
+      "cross-chain",
+      "usdc",
+      "release-token"
+    ],
+    "relatedIds": [
+      "allbridge-core-flash-loan-jul-2026",
+      "across-protocol-solana-relayer-jul-2026",
+      "noones-bridge-jan-2025",
+      "wormhole-bridge-feb-2022"
+    ],
+    "sources": [
+      {
+        "label": "SlowMist (X) — pointer",
+        "url": "https://x.com/SlowMist_Team/status/2113290086808990182"
+      },
+      {
+        "label": "WAX (X) — pointer",
+        "url": "https://x.com/WAX_io/status/2113390476225397077"
+      },
+      {
+        "label": "Arisk / Blockaid (X) — pointer",
+        "url": "https://x.com/Arisk_io_en/status/2113530553190552053"
+      }
+    ],
+    "lesson": "Destination chains (Solana/Ethereum) must not release after a source-chain withdraw that charged nothing; max_fee has to be constrained to ≥ 0 on the source, and destination ReleaseToken / equivalent should check that the source actually paid a fee.",
+    "mitigations": [
+      "Reject source-chain withdraws unless max_fee ≥ 0 (and ideally a positive floor), so fee cannot be set to -quantity.",
+      "Do not honor destination-chain ReleaseToken / equivalent claims unless source-side fee settlement is verified, not only a claim signature.",
+      "Monitor destination vault outflows that are unmatched to paid source withdrawals and pause release programs on divergence.",
+      "Treat Arkham/Etherscan/Blockscout labels (including HitBTC) as attribution only until a chain-native label or hashed deposit proof exists."
+    ]
+  },
+  {
     "id": "candy-digital-custodial-oct-2026",
     "title": "Candy Digital custodial wallet drain",
     "date": "2026-10-11",

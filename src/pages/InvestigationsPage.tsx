@@ -18,7 +18,7 @@ export function InvestigationsPage() {
         coverage gaps.
       </p>
       <p className="muted">
-        {sorted.length} investigations (Candy Digital through OptiFi).
+        {sorted.length} investigations (WAX Multi-Chain Bridge through OptiFi).
       </p>
       <ul className="timeline">
         {sorted.map((d) => {

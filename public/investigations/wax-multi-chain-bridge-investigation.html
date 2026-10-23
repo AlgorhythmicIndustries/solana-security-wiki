@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for WAX Multi-Chain Bridge." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>WAX Multi-Chain Bridge — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">22 Oct 2026</span>
+          </div>
+          <h1>WAX Multi-Chain Bridge</h1>
+          <p class="muted">
+            Wiki id <code>wax-multi-chain-bridge-oct-2026</code>
+            · <a href="/incident/wax-multi-chain-bridge-oct-2026">Live incident page</a>
+          </p>
+
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              On 22 Oct 2026 the WAX Multi-Chain Bridge released funds on Solana
+              and Ethereum. Solana-side loss is <strong>USDC only</strong>:
+              <strong>52,986.497732 USDC</strong> at
+              <code>2026-10-22T10:00:55Z</code> from vault
+              <a href="https://solscan.io/account/8cqv3kRg1ivwPNrGGrvJANXb6RPik6XEhnBzs18tPcKC"><code>8cqv3kRg1ivwPNrGGrvJANXb6RPik6XEhnBzs18tPcKC</code></a>
+              to attacker
+              <a href="https://solscan.io/account/4H1piNZ8LsYhZGYhkbJDbPDSghxRj3HWxJqVz5dve8Q7"><code>4H1piNZ8LsYhZGYhkbJDbPDSghxRj3HWxJqVz5dve8Q7</code></a>.
+              Ethereum then released USDT, DAI, WETH, and WBTC to
+              <a href="https://etherscan.io/address/0x01664E199991b2F3fe412c2DE5B9b7A0dcDc5070"><code>0x01664E199991b2F3fe412c2DE5B9b7A0dcDc5070</code></a>.
+              Destination chains released after the source was <strong>reported</strong>
+              to have charged nothing. USD totals in public posts are not re-priced here.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Times are UTC ISO. Hashes below are from Solana RPC and Ethereum
+              publicnode/Blockscout. X posts are pointers only.
+            </p>
+            <p>
+              Solana <code>ReleaseToken</code> on program
+              <a href="https://solscan.io/account/4vDLe5MvKt1dtLRe7CpyUwVz8Mmt8FQ3GodAwZZZej55"><code>4vDLe5MvKt1dtLRe7CpyUwVz8Mmt8FQ3GodAwZZZej55</code></a>,
+              signed by the attacker (claim pattern with ed25519 verify). USDC mint
+              <code>EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v</code>.
+              Vault ATA
+              <a href="https://solscan.io/account/CmntxLMGkAzLSL6fC7ynorSgJ4FfJfTyPeeo2ypF5117"><code>CmntxLMGkAzLSL6fC7ynorSgJ4FfJfTyPeeo2ypF5117</code></a>
+              (owner = vault authority) → attacker ATA
+              <a href="https://solscan.io/account/9w8JHZLNwzchizoLx7nNbBAgtkwTFVHLgqWxAmDQvPhs"><code>9w8JHZLNwzchizoLx7nNbBAgtkwTFVHLgqWxAmDQvPhs</code></a>.
+            </p>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Signature</th><th>Asset</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-22T10:00:55Z</code></td>
+                  <td><a href="https://solscan.io/tx/aSLapMf8bSnNDXQHushhjz3hg7joZH6NEk4hrDergb7ReRtFEXT44eQGDPgDFs4GzBqRbMy5cG3dLz9WrZdh1Wo"><code>aSLapMf8bSnNDXQHushhjz3hg7joZH6NEk4hrDergb7ReRtFEXT44eQGDPgDFs4GzBqRbMy5cG3dLz9WrZdh1Wo</code></a></td>
+                  <td>52,986.497732 USDC</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              One other 22 Oct bridge USDC outflow is
+              <a href="https://solscan.io/tx/5tzcQcXuqwMAa6kMFqg7dnyThfbB2qbVJ2QVRTNvo3yWydMjLa7uV4Cyi5zxg2h9iG8rzy7aXGV1fjAk9DfG8Q1B"><code>5tzcQcXuqwMAa6kMFqg7dnyThfbB2qbVJ2QVRTNvo3yWydMjLa7uV4Cyi5zxg2h9iG8rzy7aXGV1fjAk9DfG8Q1B</code></a>
+              at <code>2026-10-22T08:52:19Z</code> for 28.421465 USDC to a
+              <strong>different</strong> owner — not the attacker.
+            </p>
+            <p>
+              Ethereum releases (secondary) from bridge
+              <a href="https://etherscan.io/address/0x24b22b031ae1b5a6b09f9a0fd33613a40e0d70e6"><code>0x24b22b031ae1b5a6b09f9a0fd33613a40e0d70e6</code></a>
+              → attacker
+              <a href="https://etherscan.io/address/0x01664E199991b2F3fe412c2DE5B9b7A0dcDc5070"><code>0x01664E199991b2F3fe412c2DE5B9b7A0dcDc5070</code></a>,
+              method <code>0x353a25c0</code>:
+            </p>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Hash</th><th>Asset</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-22T10:05:35Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x7c6e4bf4efff995981b8b0f7fa1434cc85063e95c0f7460c71277e0a3f9c14d0"><code>0x7c6e4bf4efff995981b8b0f7fa1434cc85063e95c0f7460c71277e0a3f9c14d0</code></a></td>
+                  <td>21,558.252354 USDT</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:05:47Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x58960a7afccf78725e8bcfcf7c1f38cac9e08f2a556da81ec7ee1c5023fc79c6"><code>0x58960a7afccf78725e8bcfcf7c1f38cac9e08f2a556da81ec7ee1c5023fc79c6</code></a></td>
+                  <td>840.2750339 DAI</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:05:59Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x9a55cd6c9e9067ac2bf8d33dff233a3e3dd3739c56206444b8a5e79daabb4ff5"><code>0x9a55cd6c9e9067ac2bf8d33dff233a3e3dd3739c56206444b8a5e79daabb4ff5</code></a></td>
+                  <td>2.54669928 WETH</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:06:11Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x6e1553e7d932d8019f59ea6a3bd09c3071b41d538975686cf3f7e785f9e67160"><code>0x6e1553e7d932d8019f59ea6a3bd09c3071b41d538975686cf3f7e785f9e67160</code></a></td>
+                  <td>0.10993227 WBTC</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="callout coverage-gap">
+              <p>
+                <strong>Coverage gap.</strong> WAX-chain
+                <code>eth.token::withdraw</code> / <code>max_fee</code> params
+                were not pulled. The source-side “charged nothing” claim is
+                <strong>reported</strong> (SlowMist / WAX / Blockaid pointers),
+                not independently verified on WAX in this draft.
+              </p>
+            </div>
+          </section>
+
+          <section class="article-section">
+            <h2>Forward hops</h2>
+            <h3>Solana</h3>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Signature</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-22T09:58:42Z</code></td>
+                  <td><a href="https://solscan.io/tx/3xCgNQTMNqF7z2weGZhjgUPiZBsB6qAuzET2idQLYh7CfvMVmhVEvpUMqqurPw3nhzxFYSzrVEUghKi3BfuJZ1gf"><code>3xCgNQTMNqF7z2weGZhjgUPiZBsB6qAuzET2idQLYh7CfvMVmhVEvpUMqqurPw3nhzxFYSzrVEUghKi3BfuJZ1gf</code></a></td>
+                  <td>0.095409301 SOL gas from <a href="https://solscan.io/account/F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe"><code>F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:00:55Z</code></td>
+                  <td><a href="https://solscan.io/tx/aSLapMf8bSnNDXQHushhjz3hg7joZH6NEk4hrDergb7ReRtFEXT44eQGDPgDFs4GzBqRbMy5cG3dLz9WrZdh1Wo"><code>aSLapMf8bSnNDXQHushhjz3hg7joZH6NEk4hrDergb7ReRtFEXT44eQGDPgDFs4GzBqRbMy5cG3dLz9WrZdh1Wo</code></a></td>
+                  <td>Bridge release 52,986.497732 USDC</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:12:38Z</code></td>
+                  <td><a href="https://solscan.io/tx/4AT7skMbFGJbFHgHRKgFTJTZMsdBZgjFqvjmEH9tWLedERqm59bbh8HJSybBivUobnziNbcbk6UVuVFKFpoxXcLo"><code>4AT7skMbFGJbFHgHRKgFTJTZMsdBZgjFqvjmEH9tWLedERqm59bbh8HJSybBivUobnziNbcbk6UVuVFKFpoxXcLo</code></a></td>
+                  <td>52,986 USDC → <a href="https://solscan.io/account/H15JEWrcrp1rTteRoorQTF4e54QF1QmZfxghBcT6ueo9"><code>H15JEWrcrp1rTteRoorQTF4e54QF1QmZfxghBcT6ueo9</code></a> (dust 0.497732 USDC left on attacker ATA)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:19:22Z</code></td>
+                  <td><a href="https://solscan.io/tx/3e1kfyHjBbWY9QS7czcumGXzJYLaBUeZ4WBhXDb2fnKJrEURCvoYWNTRyLzMaQ4rghu8ovMcUnDvKPMd8D3XVdJR"><code>3e1kfyHjBbWY9QS7czcumGXzJYLaBUeZ4WBhXDb2fnKJrEURCvoYWNTRyLzMaQ4rghu8ovMcUnDvKPMd8D3XVdJR</code></a></td>
+                  <td>Relay <code>DepositNative</code> 0.090651874 SOL → vault <a href="https://solscan.io/account/7uTT8Xi5RWXzy7h9XL244GRgEycDYDhLjr3ZyNdXi8pZ"><code>7uTT8Xi5RWXzy7h9XL244GRgEycDYDhLjr3ZyNdXi8pZ</code></a> (program <code>99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2</code>); deposit id <code>0xee21076200a807bc1a1cc4f08ac94d5ae0dcbc46c7e1490a508a524aaf4362cb</code>. Fill not traced.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:51:27Z</code></td>
+                  <td><a href="https://solscan.io/tx/36ypwkVqq9jgc3KNak2ixEDjL33AHLxrxxgvhR4tuh6Mnk8FoJjWx4DvbRTy1kmCe2QRdwDwNZ9TFhCjoMHSG7nK"><code>36ypwkVqq9jgc3KNak2ixEDjL33AHLxrxxgvhR4tuh6Mnk8FoJjWx4DvbRTy1kmCe2QRdwDwNZ9TFhCjoMHSG7nK</code></a></td>
+                  <td><code>H15JEWr…</code> sweeps 52,986 USDC → unlabeled treasury <a href="https://solscan.io/account/BfP2dBiHbiqYvsmESsgHEL8wQtZt25sbDNKnwmNRB34G"><code>BfP2dBiHbiqYvsmESsgHEL8wQtZt25sbDNKnwmNRB34G</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              <code>DeJBGdMFa1uynnnKiwrVioatTuHmNLpyFKnmB5kaFdzQ</code> on the
+              10:12:38Z transfer is Phantom Assert Owner, not a bridge.
+              Gas-tx memos are 32-byte hex blobs, not Ethereum mainnet txs.
+            </p>
+            <h3>Ethereum (brief)</h3>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Hash</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-22T10:03:47Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x4dd581ffde12bfaa5f3363d0f31054fdb3ed4eb273df69fb6d1599324eeb0625"><code>0x4dd581ffde12bfaa5f3363d0f31054fdb3ed4eb273df69fb6d1599324eeb0625</code></a></td>
+                  <td>~0.00822 ETH gas via Relay Depository <code>0x4cd00E387622c35bddb9b4c962c136462338bc31</code></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:16:11Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0xa677e6b7fad7228f7d0c48bf311cfd1336cd7b47fb78df41b8c9aee9393bf585"><code>0xa677e6b7fad7228f7d0c48bf311cfd1336cd7b47fb78df41b8c9aee9393bf585</code></a></td>
+                  <td>USDT → ~8.945 ETH (Kyber MetaAggregationRouterV2)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:18:35Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x7b0ec19f74701ec607aea5762722e7852a73eaef1049fc616aae45bfa0a33771"><code>0x7b0ec19f74701ec607aea5762722e7852a73eaef1049fc616aae45bfa0a33771</code></a></td>
+                  <td>WBTC → ~3.736 ETH (UniswapX MainnetSettler)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:20:23Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x25584d745ae88b50a75840addc40f00ebc3f7f955c0a72512aa362315889075b"><code>0x25584d745ae88b50a75840addc40f00ebc3f7f955c0a72512aa362315889075b</code></a></td>
+                  <td>WETH → 2.547 ETH (Paraswap AugustusV6)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:22:23Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x03e2b47f46eff6b6f5a7fee977418e27bd4bbc395b784778de6325c17ba49177"><code>0x03e2b47f46eff6b6f5a7fee977418e27bd4bbc395b784778de6325c17ba49177</code></a></td>
+                  <td>DAI → ~0.349 ETH (Paraswap AugustusV6)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-22T10:24:23Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0xd3f4c1c672eb8c3cdbc00216b0215fc72a16bc659a2e48b8a90241b4f165fe80"><code>0xd3f4c1c672eb8c3cdbc00216b0215fc72a16bc659a2e48b8a90241b4f165fe80</code></a></td>
+                  <td>15.58 ETH → <code>0x62907e044ffe22a24aa8794ff2a6ea20598227bb</code> (HitBTC is X/SlowMist attribution only; Blockscout unlabeled)</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Swap ETH sum ≈ 15.577, matching the 15.58 deposit. Claim → deposit
+              ≈ 18.8 min. Blockaid-reported WAX withdraw start (~09:46Z) is a
+              pointer, not a hashed WAX tx.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Root cause (reported)</h2>
+            <p>
+              <strong>Reported, not WAX-chain verified here:</strong> WAX
+              <code>eth.token::withdraw</code> accepted <code>max_fee</code>
+              that did not satisfy <code>max_fee ≥ 0</code> (reported as
+              <code>max_fee = -quantity</code>), so the source charged nothing.
+              Destination chains (Solana/Ethereum) still released. Lesson:
+              destination release must not honor a source withdraw that paid
+              no fee. Pointers: SlowMist, WAX, Blockaid — not a substitute for
+              pulling WAX withdraw params.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              Public pointers from SlowMist, WAX, and Arisk/Blockaid on 22 Oct
+              2026. No hashed pause, patch, or recovery transaction is included
+              in this draft.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>WAX <code>max_fee</code> / withdraw params not pulled — root cause reported only.</li>
+              <li>No cryptographic link between Solana attacker <code>4H1piNZ8LsYhZGYhkbJDbPDSghxRj3HWxJqVz5dve8Q7</code> and Ethereum attacker <code>0x01664E199991b2F3fe412c2DE5B9b7A0dcDc5070</code> (Relay on both legs is circumstantial).</li>
+              <li>HitBTC label on <code>0x62907e044ffe22a24aa8794ff2a6ea20598227bb</code> unproven on Blockscout.</li>
+              <li>Relay SOL deposit destination-chain fill not traced.</li>
+              <li><code>H15JEWrcrp1rTteRoorQTF4e54QF1QmZfxghBcT6ueo9</code> / <code>BfP2dBiHbiqYvsmESsgHEL8wQtZt25sbDNKnwmNRB34G</code> unlabeled — USDC stop is a resting treasury, not a proven CEX.</li>
+              <li>Solana gas-fund memos not found as Ethereum mainnet txs.</li>
+            </ul>
+          </section>
+
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://x.com/SlowMist_Team/status/2113290086808990182">SlowMist (X) — pointer</a></li>
+              <li><a href="https://x.com/WAX_io/status/2113390476225397077">WAX (X) — pointer</a></li>
+              <li><a href="https://x.com/Arisk_io_en/status/2113530553190552053">Arisk / Blockaid (X) — pointer</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>
