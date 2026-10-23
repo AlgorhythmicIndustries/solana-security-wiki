@@ -510,7 +510,7 @@ code {
 }
 
 .table-scroll .tornado-table {
-  min-width: 78rem;
+  min-width: 96rem;
 }
 
 .tornado-table th:nth-child(1),
@@ -519,12 +519,27 @@ code {
 .tornado-table td:nth-child(2),
 .tornado-table th:nth-child(3),
 .tornado-table td:nth-child(3),
+.tornado-table th:nth-child(4),
+.tornado-table td:nth-child(4),
 .tornado-table th:nth-child(5),
 .tornado-table td:nth-child(5),
 .tornado-table th:nth-child(7),
 .tornado-table td:nth-child(7),
 .tornado-table th:nth-child(8),
 .tornado-table td:nth-child(8) {
+  white-space: nowrap;
+}
+
+.table-scroll .wallet-snap-table {
+  min-width: 68rem;
+}
+
+.wallet-snap-table th:nth-child(1),
+.wallet-snap-table td:nth-child(1),
+.wallet-snap-table th:nth-child(2),
+.wallet-snap-table td:nth-child(2),
+.wallet-snap-table th:nth-child(3),
+.wallet-snap-table td:nth-child(3) {
   white-space: nowrap;
 }
 
