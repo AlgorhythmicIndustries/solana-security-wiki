@@ -18,7 +18,7 @@ export function InvestigationsPage() {
         coverage gaps.
       </p>
       <p className="muted">
-        {sorted.length} investigations (WAX Multi-Chain Bridge through OptiFi).
+        {sorted.length} investigations (Bloom Trading bot drain through OptiFi).
       </p>
       <ul className="timeline">
         {sorted.map((d) => {

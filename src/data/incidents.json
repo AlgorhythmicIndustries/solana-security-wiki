@@ -1,5 +1,60 @@
 [
   {
+    "id": "bloom-trading-bot-drain-oct-2026",
+    "title": "Bloom Trading Telegram bot drain",
+    "date": "2026-10-26",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "lossDescription": "59 real System transfers from 48 wallets (9 users) total 9,408.229795593 SOL. Six address-poisoning dust transfers (0.000132 SOL) are excluded. Same-day refunds of 9,408.2297 SOL (9,399.2297 SOL refunds + 9 SOL tests) match the drained total to 0.0001 SOL. This entry does not convert SOL to USD.",
+    "mitigated": true,
+    "summary": "On 26 Oct 2026 Bloom Trading Telegram-bot wallets sent 9,408.229795593 SOL to attacker 7kY8qx8MqJ7Rz2vMhgHETdZLHcTp1oM78AA9dmE9p8BQ in 59 successful System transfers from 48 wallets (9 users). Per-user 0.001 SOL probes ran from 2026-10-26T01:00:28Z; the main sweep was 2026-10-26T01:03:07Z–01:04:41Z. Drains are plain System transfers signed and fee-paid by the victim wallets. Bloom reported RCE in a third-party module; chain cannot distinguish server-side signing from key theft. Bloom refunded 9,408.2297 SOL the same day. Stolen SOL later peeled across 237+ single-use addresses; the endpoint is unresolved.",
+    "details": "Attacker 7kY8qx8MqJ7Rz2vMhgHETdZLHcTp1oM78AA9dmE9p8BQ was brand-new (first inbounds at 2026-10-26T00:59:45Z failed InsufficientFundsForRent). Account-creating 0.01 SOL probe 4PzAaBNv86D1igC5VVb3JwCxXbb13W7MS6WmUmMq8SFtnZSm8ErhgygKHSsg5exfSCARAH4JLkm6GApRUTCXwZBM at 2026-10-26T01:00:28Z from 9LxMdvs1m8QRFvFuhvzzMXykAkpaHTJhktULdpBztUMm. Main sweep 48 wallets in 94 s; largest 2LQ8nHstLcbUBs53QSqBSNLsihGGJo2EytGmVXuU7GJNrDHKwtF3YXeTGeha23shmx36cDe7g3zyz2QzPrihGfNo (1,636.013712817 SOL). Consolidation ADe8xTkY71BXz5ehqWhxqpgsGyFqzhw6dH1FNbURrj4G9hQMcQAWunKULWMGzimJQh47CPYJkpdL4xveMqK9Fvi at 2026-10-26T04:30:56Z sent 9,408.209917593 SOL to holding 6nYyCzJJzErbmfxvXqzbAqwoBzNvXUiwr15KCkcgmoe9. Oct 27–28 peel into HqCbwhMAJgf3EMabx3Kty8mCo9E2ZjqoHcNDbonPP9Am (9,373.23 SOL, 29 txs) and GfHDgSHQwBw5ssuMRdfw9JLKWzQAvnwJ7ajk7SuzdeFr (120.5 SOL). Refunds from 35yDUVrTnHwrZg8wAQoQaEHHfrzwgmhbTuTU91t8uTKK, funded via Squads v4 vault 3YtdHj6fyWtxax9mEcyXsah5Gff2E8C9cBPLa6DSDLcy and wallets fed by 7HeD6sLLqAnKVRuSfc1Ko3BSPMNKWgGTiWLKXJF31vKM (inferred Bloom fee wallet; behavioral, not a label). Every drain is a single-signer System transfer by the victim wallet (CU limit 100000, CU price 1000000, fee 105000 lamports); no Bloom program on the drain txs.",
+    "rootCause": "Reported by Bloom: RCE in a third-party module. On-chain, drains are plain System transfers signed and fee-paid by the victim wallets themselves, which is consistent with the bot being made to sign server-side but cannot distinguish that from key theft. Per-user 0.001 SOL probes imply the attacker knew wallet-to-user mapping.",
+    "response": "Bloom refunded 9,408.2297 SOL on 26 Oct 2026 (1 SOL test plus refund per user, last refund 2026-10-26T20:33:39Z) from payer 35yDUVrTnHwrZg8wAQoQaEHHfrzwgmhbTuTU91t8uTKK. Recipients are not the drained wallets. Public X posts from Bloom, KRinweb3, and Darkfost_Coc are pointers only.",
+    "tags": [
+      "bloom",
+      "bloom-trading",
+      "telegram",
+      "bot",
+      "custody",
+      "keys"
+    ],
+    "relatedIds": [
+      "candy-digital-custodial-oct-2026",
+      "tradewiz-key-export-sep-2026",
+      "dexx-key-leak-nov-2024",
+      "solareum-telegram-mar-2024",
+      "banana-gun-sep-2024",
+      "timefun-backend-signing-mar-2025"
+    ],
+    "sources": [
+      {
+        "label": "Bloom Trading (X) — pointer",
+        "url": "https://x.com/BloomTrading/status/2114646392010359238"
+      },
+      {
+        "label": "Bloom Trading (X) — pointer",
+        "url": "https://x.com/BloomTrading/status/2114818686871560696"
+      },
+      {
+        "label": "KRinweb3 (X) — pointer",
+        "url": "https://x.com/KRinweb3/status/2114696117380341892"
+      },
+      {
+        "label": "Darkfost_Coc (X) — pointer",
+        "url": "https://x.com/Darkfost_Coc/status/2114680159286493434"
+      }
+    ],
+    "lesson": "Custodial/server-held bot keys make a server compromise indistinguishable from user signatures. Bots need per-transaction policy limits (destination allowlists, spend caps, delays) so a compromised app server cannot sweep.",
+    "mitigations": [
+      "Do not hold full user keypairs on the bot server; use HSM/MPC or session keys so a compromised app process cannot produce arbitrary System transfers.",
+      "Enforce per-transaction policy at the signer: destination allowlists, spend caps, and delays, so RCE or key access cannot drain wallets in 94 seconds.",
+      "Alert on mass simultaneous System transfers from operator-issued wallets and halt signing within minutes.",
+      "Treat a drained hot wallet as burned; refund to new user-controlled addresses, not the drained keys."
+    ]
+  },
+  {
     "id": "wax-multi-chain-bridge-oct-2026",
     "title": "WAX Multi-Chain Bridge exploit",
     "date": "2026-10-22",

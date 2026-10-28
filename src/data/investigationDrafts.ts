@@ -10,6 +10,14 @@ export interface InvestigationDraft {
 /** Static HTML IR notes served from /investigations/. Not live wiki articles. */
 export const investigationDrafts: InvestigationDraft[] = [
   {
+    incidentId: "bloom-trading-bot-drain-oct-2026",
+    title: "Bloom Trading bot drain",
+    date: "2026-10-26",
+    href: "/investigations/bloom-trading-bot-drain-investigation.html",
+    status: "draft",
+    published: false,
+  },
+  {
     incidentId: "wax-multi-chain-bridge-oct-2026",
     title: "WAX Multi-Chain Bridge",
     date: "2026-10-22",
