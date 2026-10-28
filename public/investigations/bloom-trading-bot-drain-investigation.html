@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for Bloom Trading Telegram trading bot drain." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Bloom Trading bot drain — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">26 Oct 2026</span>
+          </div>
+          <h1>Bloom Trading bot drain</h1>
+          <p class="muted">
+            Wiki id <code>bloom-trading-bot-drain-oct-2026</code>
+            · <a href="/incident/bloom-trading-bot-drain-oct-2026">Live incident page</a>
+          </p>
+
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              On 26 Oct 2026, Bloom Trading’s Telegram trading bot wallets sent
+              <strong>9,408.229795593 SOL</strong> to a brand-new attacker
+              <a href="https://solscan.io/account/7kY8qx8MqJ7Rz2vMhgHETdZLHcTp1oM78AA9dmE9p8BQ"><code>7kY8qx8MqJ7Rz2vMhgHETdZLHcTp1oM78AA9dmE9p8BQ</code></a>
+              in <strong>59</strong> successful System transfers from
+              <strong>48 wallets</strong> belonging to <strong>9 users</strong>.
+              Per-user 0.001 SOL probes started at
+              <code>2026-10-26T01:00:28Z</code>; the main sweep ran
+              <code>2026-10-26T01:03:07Z</code>–<code>01:04:41Z</code>.
+              Six address-poisoning dust transfers (0.000132 SOL total) are
+              excluded. Bloom refunded <strong>9,408.2297 SOL</strong> the same
+              day. Stolen SOL later fanned out across 237+ single-use addresses;
+              the endpoint is unresolved.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Timeline</h2>
+            <p>Times are UTC ISO. X posts are pointers only.</p>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Event</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-26T00:59:45Z</code></td>
+                  <td>First inbound to the attacker fails with <code>InsufficientFundsForRent</code> (account did not exist).</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:00:28Z</code></td>
+                  <td>0.01 SOL probe from <a href="https://solscan.io/account/9LxMdvs1m8QRFvFuhvzzMXykAkpaHTJhktULdpBztUMm"><code>9LxMdvs1m8QRFvFuhvzzMXykAkpaHTJhktULdpBztUMm</code></a> creates the attacker account.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:02:08Z</code>–<code>01:02:27Z</code></td>
+                  <td>Exactly one 0.001 SOL probe per user (U1–U9), ~2 s apart.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:03:07Z</code>–<code>01:04:41Z</code></td>
+                  <td>Main sweep: 48 full-balance System transfers in 94 s.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:32:00Z</code></td>
+                  <td>Late 0.001 SOL transfer from <a href="https://solscan.io/account/7YoMjEFGiEcMhYPoksbPP3fdtvpUenYYixdX9TgXz1AY"><code>7YoMjEFGiEcMhYPoksbPP3fdtvpUenYYixdX9TgXz1AY</code></a>.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T04:30:56Z</code></td>
+                  <td>Attacker consolidates 9,408.209917593 SOL to holding wallet <a href="https://solscan.io/account/6nYyCzJJzErbmfxvXqzbAqwoBzNvXUiwr15KCkcgmoe9"><code>6nYyCzJJzErbmfxvXqzbAqwoBzNvXUiwr15KCkcgmoe9</code></a>.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T15:19:29Z</code></td>
+                  <td>Refund payer <a href="https://solscan.io/account/35yDUVrTnHwrZg8wAQoQaEHHfrzwgmhbTuTU91t8uTKK"><code>35yDUVrTnHwrZg8wAQoQaEHHfrzwgmhbTuTU91t8uTKK</code></a> first appears.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T15:37:01Z</code>–<code>20:33:39Z</code></td>
+                  <td>9 users each receive a 1 SOL test then a refund (9,408.2297 SOL total).</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-27T06:40:55Z</code>–<code>2026-10-28T01:22:30Z</code></td>
+                  <td>Holding wallet peels into two fan-out wallets, then 237+ single-use addresses. Endpoint unresolved.</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="article-section">
+            <h2>Impact</h2>
+            <p>
+              <strong>59</strong> real victim transfers from <strong>48 wallets</strong>
+              (9 users): <strong>9,408.229795593 SOL</strong>. Public “65 transfers
+              from 53 addresses” counts include 6 address-poisoning dust txs
+              (0.000132 SOL) from lookalike vanity addresses; those are not victims.
+              Bloom claimed 49 wallets; 48 are on chain. Only 0.000001 USDC reached
+              the attacker ATA
+              <a href="https://solscan.io/account/59Hb4BQ5mFrgDnY4rKixJfQu61mUNcSkmvkgPfqdNTRZ"><code>59Hb4BQ5mFrgDnY4rKixJfQu61mUNcSkmvkgPfqdNTRZ</code></a>.
+              Same-day refunds of <strong>9,408.2297 SOL</strong> (9,399.2297 SOL
+              refunds + 9 SOL tests) match the drained total to 0.0001 SOL.
+              Recipients are not the drained wallets. This entry does not convert
+              SOL to USD.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Every drain is a legacy tx with one signature: the victim wallet
+              is signer and fee payer. Instructions are
+              <code>ComputeBudget::SetComputeUnitLimit(100000)</code>,
+              <code>ComputeBudget::SetComputeUnitPrice(1000000)</code>, and
+              <code>system::transfer</code> to the attacker. No Bloom program,
+              delegate, PDA, or session authority is on the drain txs. Victims
+              paid 105,000 lamports each. The attacker was never pre-funded.
+            </p>
+            <h3>Wallets</h3>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Role</th><th>Address</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Attacker</td>
+                  <td><a href="https://solscan.io/account/7kY8qx8MqJ7Rz2vMhgHETdZLHcTp1oM78AA9dmE9p8BQ"><code>7kY8qx8MqJ7Rz2vMhgHETdZLHcTp1oM78AA9dmE9p8BQ</code></a></td>
+                </tr>
+                <tr>
+                  <td>Holding</td>
+                  <td><a href="https://solscan.io/account/6nYyCzJJzErbmfxvXqzbAqwoBzNvXUiwr15KCkcgmoe9"><code>6nYyCzJJzErbmfxvXqzbAqwoBzNvXUiwr15KCkcgmoe9</code></a></td>
+                </tr>
+                <tr>
+                  <td>Fan-out</td>
+                  <td><a href="https://solscan.io/account/HqCbwhMAJgf3EMabx3Kty8mCo9E2ZjqoHcNDbonPP9Am"><code>HqCbwhMAJgf3EMabx3Kty8mCo9E2ZjqoHcNDbonPP9Am</code></a> (9,373.23 SOL, 29 txs)</td>
+                </tr>
+                <tr>
+                  <td>Fan-out</td>
+                  <td><a href="https://solscan.io/account/GfHDgSHQwBw5ssuMRdfw9JLKWzQAvnwJ7ajk7SuzdeFr"><code>GfHDgSHQwBw5ssuMRdfw9JLKWzQAvnwJ7ajk7SuzdeFr</code></a> (120.5 SOL; 85.53 SOL returned)</td>
+                </tr>
+                <tr>
+                  <td>Refund payer</td>
+                  <td><a href="https://solscan.io/account/35yDUVrTnHwrZg8wAQoQaEHHfrzwgmhbTuTU91t8uTKK"><code>35yDUVrTnHwrZg8wAQoQaEHHfrzwgmhbTuTU91t8uTKK</code></a></td>
+                </tr>
+                <tr>
+                  <td>Squads v4 vault (refund funding)</td>
+                  <td><a href="https://solscan.io/account/3YtdHj6fyWtxax9mEcyXsah5Gff2E8C9cBPLa6DSDLcy"><code>3YtdHj6fyWtxax9mEcyXsah5Gff2E8C9cBPLa6DSDLcy</code></a></td>
+                </tr>
+                <tr>
+                  <td>Inferred Bloom fee wallet</td>
+                  <td><a href="https://solscan.io/account/7HeD6sLLqAnKVRuSfc1Ko3BSPMNKWgGTiWLKXJF31vKM"><code>7HeD6sLLqAnKVRuSfc1Ko3BSPMNKWgGTiWLKXJF31vKM</code></a> (behavioral: lamport fee destination in sampled <code>b1oomGGqPKGD6errbyfbVMBuzSC8WtAAYo8MwNafWW1</code> trades — inference only)</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Representative drain signatures</h3>
+            <p>
+              Full 59-tx victim set is chain-verified; hashes below are the
+              account-creating probe, first sweep, largest sweep, last sweep,
+              and late 0.001 SOL tx.
+            </p>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Signature</th><th>Note</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-26T00:59:45Z</code></td>
+                  <td><a href="https://solscan.io/tx/3UCGPxsSu2bigzRYzgYhFNT7pLV63XnGa82GngPN5vLHJG6FuVWYdsLyH7ANzFVgRqDYRX45L35QZXXgoSeG9edQ"><code>3UCGPxsSu2bigzRYzgYhFNT7pLV63XnGa82GngPN5vLHJG6FuVWYdsLyH7ANzFVgRqDYRX45L35QZXXgoSeG9edQ</code></a></td>
+                  <td>Failed rent create (1 lamport)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:00:28Z</code></td>
+                  <td><a href="https://solscan.io/tx/4PzAaBNv86D1igC5VVb3JwCxXbb13W7MS6WmUmMq8SFtnZSm8ErhgygKHSsg5exfSCARAH4JLkm6GApRUTCXwZBM"><code>4PzAaBNv86D1igC5VVb3JwCxXbb13W7MS6WmUmMq8SFtnZSm8ErhgygKHSsg5exfSCARAH4JLkm6GApRUTCXwZBM</code></a></td>
+                  <td>0.01 SOL probe; creates attacker</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:03:07Z</code></td>
+                  <td><a href="https://solscan.io/tx/5qXWqiDfgQ8ixdVPXMA2w9NAymFu8KWeXDFi7NWJ7RDbZysyPXLWJrkz41dQFUQ5nNxJWeT3xBLZSsbsFrkfdSiR"><code>5qXWqiDfgQ8ixdVPXMA2w9NAymFu8KWeXDFi7NWJ7RDbZysyPXLWJrkz41dQFUQ5nNxJWeT3xBLZSsbsFrkfdSiR</code></a></td>
+                  <td>First sweep (6.359977780 SOL)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:03:50Z</code></td>
+                  <td><a href="https://solscan.io/tx/2LQ8nHstLcbUBs53QSqBSNLsihGGJo2EytGmVXuU7GJNrDHKwtF3YXeTGeha23shmx36cDe7g3zyz2QzPrihGfNo"><code>2LQ8nHstLcbUBs53QSqBSNLsihGGJo2EytGmVXuU7GJNrDHKwtF3YXeTGeha23shmx36cDe7g3zyz2QzPrihGfNo</code></a></td>
+                  <td>Largest: 1,636.013712817 SOL from <a href="https://solscan.io/account/9LxMdvs1m8QRFvFuhvzzMXykAkpaHTJhktULdpBztUMm"><code>9LxMdvs1m8QRFvFuhvzzMXykAkpaHTJhktULdpBztUMm</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:04:41Z</code></td>
+                  <td><a href="https://solscan.io/tx/25uyG7WYrC4p3UWGKKKjgNTDsQvoyjqPE5QoMzqqF77QrqpV1qH4GmFz952tzXN2yjWD4zabHPZbSDvHaYa4gYRM"><code>25uyG7WYrC4p3UWGKKKjgNTDsQvoyjqPE5QoMzqqF77QrqpV1qH4GmFz952tzXN2yjWD4zabHPZbSDvHaYa4gYRM</code></a></td>
+                  <td>Last main-window sweep</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:32:00Z</code></td>
+                  <td><a href="https://solscan.io/tx/4jJQ2g7MzoPrSWmj422sdxVsNFbWaZFF4nSkuA9LPL5pSAKkydaVMPxAJBDZdFW834DZFDbzXhbzH8A4mQWpfmci"><code>4jJQ2g7MzoPrSWmj422sdxVsNFbWaZFF4nSkuA9LPL5pSAKkydaVMPxAJBDZdFW834DZFDbzXhbzH8A4mQWpfmci</code></a></td>
+                  <td>Late 0.001 SOL</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Per-user 0.001 SOL probes</h3>
+            <p>
+              One probe per user, in this order. That mapping implies the
+              attacker knew which wallets belonged to which user (backend
+              user→wallet data), not a blind address scan.
+            </p>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>User</th><th>Signature</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-26T01:02:08Z</code></td>
+                  <td>U1</td>
+                  <td><a href="https://solscan.io/tx/3N6CTtD8XMMchFL9fBqavot7qiQ6vB67n7DKFyoWepmTKUvPavJPum6kqCiPPnWPHfCfurtMJigJ8VQgSr8f9sUU"><code>3N6CTtD8XMMchFL9fBqavot7qiQ6vB67n7DKFyoWepmTKUvPavJPum6kqCiPPnWPHfCfurtMJigJ8VQgSr8f9sUU</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:02:12Z</code></td>
+                  <td>U3</td>
+                  <td><a href="https://solscan.io/tx/61u9MfEkfTQRmMC6Lf4VGeVdUKPgwT273sEs2SesSN9zmbNfBHxvnZZn3CypHsPVY6iMA2yTFgjofBWtkBbstjpU"><code>61u9MfEkfTQRmMC6Lf4VGeVdUKPgwT273sEs2SesSN9zmbNfBHxvnZZn3CypHsPVY6iMA2yTFgjofBWtkBbstjpU</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:02:14Z</code></td>
+                  <td>U2</td>
+                  <td><a href="https://solscan.io/tx/3eJqUwpsXkL6GPYRSfEvQAnUD7whm8uphmSpEx5LEDP6EubYbH3XME115tagwCofgjDxUSkTiQwq29qRJBs2Vhy2"><code>3eJqUwpsXkL6GPYRSfEvQAnUD7whm8uphmSpEx5LEDP6EubYbH3XME115tagwCofgjDxUSkTiQwq29qRJBs2Vhy2</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:02:17Z</code></td>
+                  <td>U4</td>
+                  <td><a href="https://solscan.io/tx/9cmgoot46B2mdnmSAxh4yi6ZereBGDA33Y2rJQnBNVR8EZnBg8Skwwa1KHkJHbMvpf1f8sSXdVkkxc7GV3v3t7Z"><code>9cmgoot46B2mdnmSAxh4yi6ZereBGDA33Y2rJQnBNVR8EZnBg8Skwwa1KHkJHbMvpf1f8sSXdVkkxc7GV3v3t7Z</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:02:19Z</code></td>
+                  <td>U5</td>
+                  <td><a href="https://solscan.io/tx/2QShmPiSHxEGSsivKDbSCVnrLvm7HqzPVPMqwj4CeQwrkQH5eY8E3krHLuKnhtSGQ9nygFpHY2QAoWKEcHmVWiNv"><code>2QShmPiSHxEGSsivKDbSCVnrLvm7HqzPVPMqwj4CeQwrkQH5eY8E3krHLuKnhtSGQ9nygFpHY2QAoWKEcHmVWiNv</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:02:21Z</code></td>
+                  <td>U6</td>
+                  <td><a href="https://solscan.io/tx/RQdSsG3gq4vT3Fz2zY533Xd7WTg2dWeL3iuKx6RC9kbZUFYtYXShfANs7PYTeLc4MCBMxZM6F18JYGqLNEApgSK"><code>RQdSsG3gq4vT3Fz2zY533Xd7WTg2dWeL3iuKx6RC9kbZUFYtYXShfANs7PYTeLc4MCBMxZM6F18JYGqLNEApgSK</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:02:23Z</code></td>
+                  <td>U7</td>
+                  <td><a href="https://solscan.io/tx/2nF8gnsSvTqRDxin1S7rnyb9jtYeG2MjNdkoTYAnk1gu9JRviwpYu1mWRjXnrK9uvsuy2rc3vutjSHoFVNdnqpdt"><code>2nF8gnsSvTqRDxin1S7rnyb9jtYeG2MjNdkoTYAnk1gu9JRviwpYu1mWRjXnrK9uvsuy2rc3vutjSHoFVNdnqpdt</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:02:25Z</code></td>
+                  <td>U9</td>
+                  <td><a href="https://solscan.io/tx/4xF8wj5iFBe8fc7uptZBi5NoBiqYz3bhq21PaMrMsMa9HdP7Vt1gcGghn99MXrWgSs2iL9KSF6i9kuVxdvZcxWNm"><code>4xF8wj5iFBe8fc7uptZBi5NoBiqYz3bhq21PaMrMsMa9HdP7Vt1gcGghn99MXrWgSs2iL9KSF6i9kuVxdvZcxWNm</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-26T01:02:27Z</code></td>
+                  <td>U8</td>
+                  <td><a href="https://solscan.io/tx/2b7h8tR2D3Fv5eWuGKqHkBFQzs11A7oJUswg9DFyG4TXLoghjJ2gqmw4peHyhz6or7MM4DBXThLK5iULbPnsqp1g"><code>2b7h8tR2D3Fv5eWuGKqHkBFQzs11A7oJUswg9DFyG4TXLoghjJ2gqmw4peHyhz6or7MM4DBXThLK5iULbPnsqp1g</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Normal Bloom trades from the same wallets (example
+              <a href="https://solscan.io/tx/4m7sm6evMYhPGJXp4EwsTMLAFBnRfqFkMEvTwfsyX5aJEZovo5rpDNsxX6QJnjTQ3Nh1qE5jvmPPc9mogAN8rtz1"><code>4m7sm6evMYhPGJXp4EwsTMLAFBnRfqFkMEvTwfsyX5aJEZovo5rpDNsxX6QJnjTQ3Nh1qE5jvmPPc9mogAN8rtz1</code></a>)
+              are also single-signer by the user wallet, via program
+              <a href="https://solscan.io/account/b1oomGGqPKGD6errbyfbVMBuzSC8WtAAYo8MwNafWW1"><code>b1oomGGqPKGD6errbyfbVMBuzSC8WtAAYo8MwNafWW1</code></a>.
+              That is consistent with Bloom holding these keys server-side.
+            </p>
+            <h3>Refunds (9 users)</h3>
+            <p>
+              Payer
+              <a href="https://solscan.io/account/35yDUVrTnHwrZg8wAQoQaEHHfrzwgmhbTuTU91t8uTKK"><code>35yDUVrTnHwrZg8wAQoQaEHHfrzwgmhbTuTU91t8uTKK</code></a>
+              sent each recipient a 1 SOL test then the refund. Per-user
+              drained totals match refund + 1 SOL to within 0.00005 SOL.
+              Recipients are not the drained wallets. Funding includes Squads
+              v4 <code>VaultTransactionExecute</code>
+              <a href="https://solscan.io/tx/4KhZfkzzxBhaAGy5huh3BhHfemesissxBchsjEXM3SfT5HiwfuRRWE9fHekUtXUCa3n4FKqV5t8hsaLigk46fW3c"><code>4KhZfkzzxBhaAGy5huh3BhHfemesissxBchsjEXM3SfT5HiwfuRRWE9fHekUtXUCa3n4FKqV5t8hsaLigk46fW3c</code></a>
+              and
+              <a href="https://solscan.io/tx/3mU8cdT548cfSScqC49RYJUETKPyxQRL4VZMCdq7JiTCYPjfCrq28UV8KhGNxYCnmCqLrfUGZibvpKKLKoNESPRf"><code>3mU8cdT548cfSScqC49RYJUETKPyxQRL4VZMCdq7JiTCYPjfCrq28UV8KhGNxYCnmCqLrfUGZibvpKKLKoNESPRf</code></a>
+              from vault
+              <a href="https://solscan.io/account/3YtdHj6fyWtxax9mEcyXsah5Gff2E8C9cBPLa6DSDLcy"><code>3YtdHj6fyWtxax9mEcyXsah5Gff2E8C9cBPLa6DSDLcy</code></a>,
+              plus wallets fed by inferred fee wallet
+              <a href="https://solscan.io/account/7HeD6sLLqAnKVRuSfc1Ko3BSPMNKWgGTiWLKXJF31vKM"><code>7HeD6sLLqAnKVRuSfc1Ko3BSPMNKWgGTiWLKXJF31vKM</code></a>.
+            </p>
+            <table class="hash-table">
+              <thead>
+                <tr><th>User</th><th>Wallets</th><th>Drained (SOL)</th><th>Refund signature</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>U1</td>
+                  <td>5</td>
+                  <td>1,864.478437</td>
+                  <td><a href="https://solscan.io/tx/rBBn7VB9KKEgoyyVaT8pC4si3Qo6W76RpZAQmF92xYP6nUueUzkuZbV7qDqqpuxiStASdhQxjFLUjuuYmZbUsEs"><code>rBBn7VB9KKEgoyyVaT8pC4si3Qo6W76RpZAQmF92xYP6nUueUzkuZbV7qDqqpuxiStASdhQxjFLUjuuYmZbUsEs</code></a></td>
+                </tr>
+                <tr>
+                  <td>U2</td>
+                  <td>6</td>
+                  <td>1,308.748090</td>
+                  <td><a href="https://solscan.io/tx/cF7VqRZq2PSQ2pjpjqsYa1ER54bdqYX16iq51zwSSxXmpZykgWFRS7C5Sdd5E6zo3z8Dr8mG7khJYkwu7SfZ55D"><code>cF7VqRZq2PSQ2pjpjqsYa1ER54bdqYX16iq51zwSSxXmpZykgWFRS7C5Sdd5E6zo3z8Dr8mG7khJYkwu7SfZ55D</code></a></td>
+                </tr>
+                <tr>
+                  <td>U3</td>
+                  <td>4</td>
+                  <td>1,145.660290</td>
+                  <td><a href="https://solscan.io/tx/XqkQ7eyazp2NEmFPisLJWza83pfduVzZKxnfWmG8k7ZWeYBr7sXChDVBKdjHd4D62jguZn24VHsdqy5EuZczHhV"><code>XqkQ7eyazp2NEmFPisLJWza83pfduVzZKxnfWmG8k7ZWeYBr7sXChDVBKdjHd4D62jguZn24VHsdqy5EuZczHhV</code></a></td>
+                </tr>
+                <tr>
+                  <td>U4</td>
+                  <td>1</td>
+                  <td>1,039.706511</td>
+                  <td><a href="https://solscan.io/tx/5jfprvB5TpTfYe4GH4FtVX8987r3PuuXAYtzwjF2Txvwkjfn1YYQdkj4Kf5thKTX81iqB4sE4WNCG1BEAMuXsf5Q"><code>5jfprvB5TpTfYe4GH4FtVX8987r3PuuXAYtzwjF2Txvwkjfn1YYQdkj4Kf5thKTX81iqB4sE4WNCG1BEAMuXsf5Q</code></a></td>
+                </tr>
+                <tr>
+                  <td>U5</td>
+                  <td>1</td>
+                  <td>1,021.724131</td>
+                  <td><a href="https://solscan.io/tx/232QgdcLhJgaGNLjVDs3xaQCsdWDSXZa7u2hTbrm345aexd4uTKhMM9HbgLTaBFwjBM8CsdWQ7krtHgSwXpJrknz"><code>232QgdcLhJgaGNLjVDs3xaQCsdWDSXZa7u2hTbrm345aexd4uTKhMM9HbgLTaBFwjBM8CsdWQ7krtHgSwXpJrknz</code></a></td>
+                </tr>
+                <tr>
+                  <td>U6</td>
+                  <td>5</td>
+                  <td>865.156641</td>
+                  <td><a href="https://solscan.io/tx/2uSn5RFmYsk1jCoYdvswMKBpnWUkWFaDRtoAkuBviXGurJ6L3U3LYgmdXSUkKWfgv96HiGuFGSw6dTqimmeMAF6h"><code>2uSn5RFmYsk1jCoYdvswMKBpnWUkWFaDRtoAkuBviXGurJ6L3U3LYgmdXSUkKWfgv96HiGuFGSw6dTqimmeMAF6h</code></a></td>
+                </tr>
+                <tr>
+                  <td>U7</td>
+                  <td>7</td>
+                  <td>771.097771</td>
+                  <td><a href="https://solscan.io/tx/2BD6qa2K5Jz9eKqEsnW9gXdM7HydftgZA5R7F7gVKaCDYmwXMxbwGHFE6d7wM9nFFejEND5XzyoRhs8faziHUmFT"><code>2BD6qa2K5Jz9eKqEsnW9gXdM7HydftgZA5R7F7gVKaCDYmwXMxbwGHFE6d7wM9nFFejEND5XzyoRhs8faziHUmFT</code></a></td>
+                </tr>
+                <tr>
+                  <td>U8</td>
+                  <td>7</td>
+                  <td>742.157876</td>
+                  <td><a href="https://solscan.io/tx/dYGxT9HkwHDe77R4cPR6reLTeBpGpiNWFzBzARnRzoAdWCa1pgTCXNJAR7NPVuN3bF9Fv9ydPXVZZmyqnhVYs1g"><code>dYGxT9HkwHDe77R4cPR6reLTeBpGpiNWFzBzARnRzoAdWCa1pgTCXNJAR7NPVuN3bF9Fv9ydPXVZZmyqnhVYs1g</code></a></td>
+                </tr>
+                <tr>
+                  <td>U9</td>
+                  <td>12</td>
+                  <td>649.500049</td>
+                  <td><a href="https://solscan.io/tx/3x25dvrkh1pNMc5LENVJyksyjaQjqExopf97cqCKrVsTvU6kvUEdAJ8WztXMZruTnXzFe53QJCQMj1debvhBq2eT"><code>3x25dvrkh1pNMc5LENVJyksyjaQjqExopf97cqCKrVsTvU6kvUEdAJ8WztXMZruTnXzFe53QJCQMj1debvhBq2eT</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="article-section">
+            <h2>Flow of funds</h2>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Signature</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-26T04:30:56Z</code></td>
+                  <td><a href="https://solscan.io/tx/ADe8xTkY71BXz5ehqWhxqpgsGyFqzhw6dH1FNbURrj4G9hQMcQAWunKULWMGzimJQh47CPYJkpdL4xveMqK9Fvi"><code>ADe8xTkY71BXz5ehqWhxqpgsGyFqzhw6dH1FNbURrj4G9hQMcQAWunKULWMGzimJQh47CPYJkpdL4xveMqK9Fvi</code></a></td>
+                  <td>9,408.209917593 SOL attacker → holding <a href="https://solscan.io/account/6nYyCzJJzErbmfxvXqzbAqwoBzNvXUiwr15KCkcgmoe9"><code>6nYyCzJJzErbmfxvXqzbAqwoBzNvXUiwr15KCkcgmoe9</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-27T06:40:55Z</code></td>
+                  <td><a href="https://solscan.io/tx/2Q4ExGh3JVGLWwRKnwBfDNzUE8xbsc4JPBs9XBUY6V2KwobKAmyc7F9NkM49vvxfUfJpb6dueTFrkvomptTGWFvR"><code>2Q4ExGh3JVGLWwRKnwBfDNzUE8xbsc4JPBs9XBUY6V2KwobKAmyc7F9NkM49vvxfUfJpb6dueTFrkvomptTGWFvR</code></a></td>
+                  <td>Peel start: 10 SOL → <a href="https://solscan.io/account/GfHDgSHQwBw5ssuMRdfw9JLKWzQAvnwJ7ajk7SuzdeFr"><code>GfHDgSHQwBw5ssuMRdfw9JLKWzQAvnwJ7ajk7SuzdeFr</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-28T00:31:16Z</code></td>
+                  <td><a href="https://solscan.io/tx/4rUewEaQGhPh6A4uMbuZAMXsneFXQhRcbB6En7aQ6YCXbRfQ1e5qMoQDh3KcfujNW9jMcMdvEirKSunGiAGKUfKW"><code>4rUewEaQGhPh6A4uMbuZAMXsneFXQhRcbB6En7aQ6YCXbRfQ1e5qMoQDh3KcfujNW9jMcMdvEirKSunGiAGKUfKW</code></a></td>
+                  <td>85.526240687 SOL returned holding ← <a href="https://solscan.io/account/GfHDgSHQwBw5ssuMRdfw9JLKWzQAvnwJ7ajk7SuzdeFr"><code>GfHDgSHQwBw5ssuMRdfw9JLKWzQAvnwJ7ajk7SuzdeFr</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-28T01:22:30Z</code></td>
+                  <td><a href="https://solscan.io/tx/4q6gwbuDx462FoepgExQ2nJzbdTHHzxY8fwmqUwCHTZtphfS2M8rzgi6bzm15cepqy31uasnDXx9vQtsXMTNH6FK"><code>4q6gwbuDx462FoepgExQ2nJzbdTHHzxY8fwmqUwCHTZtphfS2M8rzgi6bzm15cepqy31uasnDXx9vQtsXMTNH6FK</code></a></td>
+                  <td>Last sampled holding outflow: 242.23 SOL → <a href="https://solscan.io/account/HqCbwhMAJgf3EMabx3Kty8mCo9E2ZjqoHcNDbonPP9Am"><code>HqCbwhMAJgf3EMabx3Kty8mCo9E2ZjqoHcNDbonPP9Am</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              <a href="https://solscan.io/account/HqCbwhMAJgf3EMabx3Kty8mCo9E2ZjqoHcNDbonPP9Am"><code>HqCbwhMAJgf3EMabx3Kty8mCo9E2ZjqoHcNDbonPP9Am</code></a>
+              paid out 9,575.17 SOL in 237 txs, mostly ~50 SOL
+              bursts to fresh single-use addresses, then re-aggregated and
+              re-split (≥3 layers, ~2 and ~12–13 SOL pieces). Sampled hops are
+              plain System transfers between fresh EOAs. No CEX, bridge, or
+              mixer program was reached in the hops sampled. Balances as of
+              ~2026-10-28T11:00Z: attacker 0 SOL, holding 0.00863528 SOL,
+              both fan-out wallets 0. Status: laundering tree, unresolved.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Root cause (reported)</h2>
+            <p>
+              <strong>Reported by Bloom:</strong> RCE in a third-party module.
+              That claim is not independently verified here.
+            </p>
+            <p>
+              On-chain, the drains are plain System transfers signed and
+              fee-paid by the victim wallets themselves. That is consistent
+              with the bot being made to sign server-side. It is equally
+              consistent with the keys being read out of the server.
+              <strong>Chain cannot tell a key exfiltration apart from abuse of
+              an in-process signer</strong> and does not prove that keys were
+              or were not compromised. Per-user probing shows the attacker had
+              the user↔wallet mapping.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Lessons</h2>
+            <p>
+              Custodial / server-held bot keys make a server compromise
+              indistinguishable from user signatures. Bots need per-transaction
+              policy limits (destination allowlists, spend caps, delays) so a
+              compromised app server cannot sweep.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Final destination unresolved (237+ first-layer addresses, ≥3 peel layers; no CEX/bridge/mixer in sampled hops).</li>
+              <li>48 wallets on chain vs Bloom’s claimed 49.</li>
+              <li>Root cause (RCE in a third-party module) is Bloom’s claim only.</li>
+              <li>Fee-wallet attribution of <code>7HeD6sLLqAnKVRuSfc1Ko3BSPMNKWgGTiWLKXJF31vKM</code> is a behavioral inference, not a chain-native label.</li>
+            </ul>
+          </section>
+
+          <section class="article-section">
+            <h2>References</h2>
+            <ol class="sources-list">
+              <li><a href="https://x.com/BloomTrading/status/2114646392010359238">Bloom Trading (X) — pointer</a></li>
+              <li><a href="https://x.com/BloomTrading/status/2114818686871560696">Bloom Trading (X) — pointer</a></li>
+              <li><a href="https://x.com/KRinweb3/status/2114696117380341892">KRinweb3 (X) — pointer</a></li>
+              <li><a href="https://x.com/Darkfost_Coc/status/2114680159286493434">Darkfost_Coc (X) — pointer</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>
