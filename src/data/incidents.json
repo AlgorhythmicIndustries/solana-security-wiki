@@ -102,6 +102,58 @@
     ]
   },
   {
+    "id": "artrade-staking-oct-2026",
+    "title": "Artrade staking-system ATR drain",
+    "date": "2026-10-22",
+    "category": "application",
+    "severity": "low",
+    "estimatedLossUsd": null,
+    "lossDescription": "Artrade reported approximately 66 million ATR drained through its staking system. Darkfost reports the stolen ATR was swapped to about 196.2 SOL plus 14 additional SOL before hitting addresses attributed to HitBTC. This entry does not convert ATR or SOL to USD. Reserve-based user restoration is an official promise, not a hashed payout total.",
+    "mitigated": true,
+    "summary": "On 22 Oct 2026 Artrade, a Solana art-and-luxury marketplace, disclosed unauthorized ATR activity limited to wallets and infrastructure connected to Artrade and its program. A follow-up the same day said the incident was contained and that approximately 66 million ATR were drained through the staking system; personal wallets were not identified as compromised. The team pledged to restore affected balances from its ATR reserve, paused platform features, and temporarily suspended ATR deposits on centralized exchanges. Root cause is unpublished: contract logic, privileged authority, and operator-infrastructure compromise are all still possible.",
+    "details": "Darkfost, writing after Artrade's second update, reports 369 staker addresses were affected and that stolen ATR was collected at 9LsD3Hs6YZgwiEmWEZbkwZpRPUoCzJmDufCUVt269o74, then moved through rRmgU4dj2ND3HXBqreayVhLGDMoZwFyUSPfwXyLoMVr for ATR→WSOL (signature 45rrJDxVhHtwpnwki6hFYojR2CDM8BntSkmLRoVejGfXKyvt1irdHKPkxJhzDByHfAgWL1eFcecMu1x3zuU2fAia) and WSOL→SOL (signatures 3gdYiPVAjqJYbGUr1aC6WbcxcunTovCHxBwPf5n6rAnFmHLhwBUvz1nfejT1bnK7DT13vTSFPkVu3SecbRsuxAtW and Fq1H2d6mxoD4yYS9fZePy5W6dwq1dM6fWdt246XWrXvYgDsGLx7br2n2msVFqX8CWCDnUSezxLWHJvDJyvdGPSD). Proceeds are reported as 196.2 SOL plus 14 SOL to 8UqqJUKGDyQxKkQduUUJgJZKngn9TZGpjdhGp23Hisde then BfP2dBiHbiqYvsmESsgHEL8wQtZt25sbDNKnwmNRB34G, the same Solana hop the WAX bridge entry treats as unlabeled/HitBTC-attributed. Those addresses, signatures, the 369-staker count, and any WAX linkage are Darkfost's reporting, not independently hashed here. Artrade's docs describe per-user staking PDAs rather than a single pooled vault; that architecture claim does not by itself explain a bulk staking drain.",
+    "rootCause": "Unconfirmed. Artrade said value was removed through the staking system and that personal wallets were not compromised. This entry does not infer a program bug versus a privileged-instruction or operator-infrastructure path.",
+    "response": "Artrade 22 Oct 2026: initial incident notice (personal wallets safe; do not buy/sell/transfer ATR); CEX ATR deposits suspended; SECURITY UPDATE #2 (contained; ~66M ATR via staking; reserve will restore balances; platform features remain offline). 24 Oct 2026: recovery still ongoing, hoped to reopen the following week after security checks. Restoration from reserves is an official promise and is not hashed here.",
+    "tags": [
+      "artrade",
+      "atr",
+      "staking",
+      "marketplace",
+      "pda"
+    ],
+    "relatedIds": [
+      "wax-multi-chain-bridge-oct-2026",
+      "stake-nova-flash-loan-feb-2026"
+    ],
+    "sources": [
+      {
+        "label": "Artrade (X) — official channel",
+        "url": "https://x.com/ArtradeApp"
+      },
+      {
+        "label": "The Crypto Guardian — staking drain / UPDATE #2",
+        "url": "https://thecryptoguardian.com/artrade-says-66m-atr-drained-through-staking-system/"
+      },
+      {
+        "label": "The Latest Crypto News — Darkfost flow",
+        "url": "https://thelatestcryptonews.com/news/artrade-hacked-more-than-66-million-atr-tokens-stolen/"
+      },
+      {
+        "label": "Darkfost (X) — pointer",
+        "url": "https://x.com/Darkfost_Coc"
+      }
+    ],
+    "lesson": "A staking program is a privileged money-movement path even when docs describe per-user PDAs: if admin, emergency, or operator infrastructure can empty many stake accounts, 'isolated vaults' do not contain a bulk drain, and covering users from a token reserve is compensation rather than recovery of the stolen inventory.",
+    "mitigations": [
+      "Bound staking admin and emergency instructions so a single privileged path cannot drain every stake PDA; require a timelocked multisig for any bulk unstake or destination change.",
+      "Monitor staking-account and staking-vault outflows independently of the operator dashboard; auto-pause staking on unexplained multi-account drains.",
+      "Do not treat a whitepaper PDA-isolation claim as a control until tests show a compromised admin cannot sweep the set.",
+      "Publish which program, instruction, and address cohort were in scope, and rotate or freeze attacker-controlled destinations with CEX/issuer partners.",
+      "Keep personal-wallet funds out of operator-controlled staking authorities; if an emergency function exists, it should secure a single PDA, not empty the cohort.",
+      "Treat HitBTC or other exchange labels as attribution only until a chain-native label or hashed deposit proof exists."
+    ]
+  },
+  {
     "id": "candy-digital-custodial-oct-2026",
     "title": "Candy Digital custodial wallet drain",
     "date": "2026-10-11",

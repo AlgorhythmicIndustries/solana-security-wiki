@@ -24,6 +24,7 @@ const sections: Section[] = [
       "Run a third-party audit (Neodyme, OtterSec, Halborn, Asymmetric, Sec3, Zellic) before mainnet TVL grows; require an audit on every privileged-instruction change.",
       "Run differential / fuzz testing against attacker-supplied accounts and instruction permutations.",
       "Build and test against a current Solana feature-flag set; runtime semantics change.",
+      "If staking uses per-user PDAs, still bound admin/emergency instructions so one privileged path cannot drain every stake account; monitor staking-account outflows independently of the operator dashboard (Artrade).",
     ],
   },
   {
@@ -82,7 +83,7 @@ const sections: Section[] = [
     id: "supply-chain",
     title: "5. Supply chain and dependencies",
     intro:
-      "Coverage for the @solana/web3.js, @kodane/patch-manager, npm wave, and Telegram-bot incidents.",
+      "Coverage for the @solana/web3.js, @kodane/patch-manager, npm wave, Telegram-bot incidents, and Bloom's third-party-module RCE.",
     items: [
       "Pin every dependency version; lockfiles committed; no wildcard ranges in production manifests.",
       "Run an SCA tool (Socket.dev, Snyk, Dependabot) on every PR with blocking severity policy.",
@@ -94,6 +95,7 @@ const sections: Section[] = [
       "Independently review any code or repo shared by an external counterparty before cloning to a privileged machine.",
       "Subscribe to security advisories for every framework you use (Anchor, Agave, Pyth, etc.).",
       "Avoid handling raw private keys in any process that loads npm packages; route signing through a separate hardened service.",
+      "Do not load unaudited third-party modules into a process that can produce user signatures; sandbox plugin surfaces (Bloom).",
     ],
   },
   {
@@ -136,7 +138,7 @@ const sections: Section[] = [
     id: "backend",
     title: "8. Backend, custody, and key management",
     intro:
-      "Coverage for Thunder Terminal, Solareum, DEXX, Banana Gun, Time.fun, TradeWiz, Candy Digital, and exchange-class incidents like Upbit.",
+      "Coverage for Thunder Terminal, Solareum, DEXX, Banana Gun, Time.fun, TradeWiz, Candy Digital, Bloom Trading, and exchange-class incidents like Upbit.",
     items: [
       "Store credentials and signing keys in HSM/KMS or MPC; never in env files, code, or logs.",
       "Use scoped, short-lived credentials with rotation; audit every issuance.",
