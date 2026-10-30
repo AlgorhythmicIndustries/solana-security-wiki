@@ -10,6 +10,14 @@ export interface InvestigationDraft {
 /** Static HTML IR notes served from /investigations/. Not live wiki articles. */
 export const investigationDrafts: InvestigationDraft[] = [
   {
+    incidentId: "binance-hot-wallet-drain-oct-2026",
+    title: "Binance hot-wallet drain",
+    date: "2026-10-29",
+    href: "/investigations/binance-hot-wallet-drain-investigation.html",
+    status: "draft",
+    published: false,
+  },
+  {
     incidentId: "bloom-trading-bot-drain-oct-2026",
     title: "Bloom Trading bot drain",
     date: "2026-10-26",

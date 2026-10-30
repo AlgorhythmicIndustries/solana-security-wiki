@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for Binance Solana hot-wallet drain." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Binance hot-wallet drain — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">29 Oct 2026</span>
+          </div>
+          <h1>Binance hot-wallet drain</h1>
+          <p class="muted">
+            Wiki id <code>binance-hot-wallet-drain-oct-2026</code>
+            · <a href="/incident/binance-hot-wallet-drain-oct-2026">Live incident page</a>
+          </p>
+
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              On 29 Oct 2026 the Solana hot wallet
+              <a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"><code>5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9</code></a>
+              (“Binance 2” label; attribution only) sent
+              <strong>970,521.9 SOL</strong> (~$95.8M at drain-time price,
+              DefiLlama) to attacker
+              <a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a>
+              in <strong>5</strong> transfers from
+              <code>2026-10-29T20:10:18Z</code> to
+              <code>2026-10-29T20:33:29Z</code>.
+              No SPL tokens were taken. The 5 drain txs are bare legacy
+              System transfers. The wallet’s 1,125 normal withdrawals in the
+              same window used a durable nonce plus compute-budget
+              instructions, so the drain did not come through Binance’s
+              normal withdrawal pipeline. As of
+              <code>2026-10-30</code> ~12:10Z the attacker still held
+              <strong>970,554.1 SOL</strong> and had not moved it.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Context</h2>
+            <p>
+              This is the Solana side of a multi-chain incident of about
+              <strong>$6.3B</strong> (Binance’s figure). Per-chain on-chain
+              split: EVM about $3.82B, BTC about $1.47B, Tron about $0.63B,
+              XRP about $0.30B, SOL about $0.10B. Other chains are covered
+              in the
+              <a href="https://cursor.com/canvas/store-f2c0529a-71b2-4db0-be57-a944c8d477d0/30412674-7b79-4780-9ef2-9212c9274de1">living report</a>.
+            </p>
+            <p>
+              <strong>Reported by Binance:</strong> a compromised DevOps
+              engineer’s laptop led to a service container that submitted
+              unauthorized withdrawals, with “no evidence of any wallet
+              private key leak”. Later updates spoke of “multiple factors”
+              and “additional points of breach”. Those claims are not
+              independently verified here.
+            </p>
+            <p>
+              On Ethereum, Binance 14’s own key signed the EIP-7702
+              authorizations. The chain cannot prove no key leaked.
+            </p>
+            <p>
+              <strong>Attribution (claim, not a government finding):</strong>
+              TRM and Chainalysis attribute the incident to DPRK with high
+              confidence. There is no government attribution yet. There is
+              no public law-enforcement action as of 2026-10-30.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Timeline</h2>
+            <p>Times are UTC ISO. X posts are pointers only. Wallet labels are attribution only.</p>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Event</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-29T20:10:18Z</code></td>
+                  <td>965,455.1 SOL drain, slot 463010532, from source to attacker.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T20:10:19Z</code></td>
+                  <td>1,266.7 SOL drain.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T20:26:20Z</code></td>
+                  <td>1,266.7 SOL drain.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T20:28:16Z</code></td>
+                  <td>1,266.7 SOL drain.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T20:33:29Z</code></td>
+                  <td>1,266.7 SOL drain. Five-tx total: 970,521.9 SOL.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T20:36:42Z</code></td>
+                  <td>Last normal durable-nonce withdrawal from the source in the notes (signature not in this draft).</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T23:02:30Z</code></td>
+                  <td>Source swept remaining 155,030.078 SOL plus 5 SPL balances to <a href="https://solscan.io/account/9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"><code>9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM</code></a> (routine consolidation route; normal nonce shape).</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-30</code> ~12:10Z</td>
+                  <td>Attacker still held 970,554.1 SOL. No outgoing txs. Excess over 970,521.9 is inbound dust.</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="article-section">
+            <h2>Impact</h2>
+            <p>
+              <strong>970,521.9 SOL</strong> in 5 System transfers
+              (~$95.8M at drain-time price, DefiLlama). No SPL tokens were
+              taken; token outflows in the window have the normal withdrawal
+              shape. Public figures that cite 965,455 SOL are the first tx
+              alone; 970,500 is rounded. As of 2026-10-30 ~12:10Z the
+              attacker held <strong>970,554.1 SOL</strong>. Nothing has been
+              frozen on Solana.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <p>
+              Every drain is a legacy tx signed solely by
+              <a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"><code>5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9</code></a>,
+              which is also the fee payer. Instruction is one bare
+              <code>system::transfer</code>. Recent blockhash, no durable
+              nonce, no ComputeBudget instructions, 5,000-lamport fee.
+            </p>
+            <p>
+              In the window 19:30–22:00Z the source had 1,615 txs and 513
+              SOL-outflow txs. All <strong>1,125</strong> normal outflows
+              use <code>advanceNonce</code> (durable nonce, authority
+              <code>5tzFki…</code>) plus 2 ComputeBudget instructions plus
+              transfer(s). The 5 drains are the <strong>only</strong>
+              outflows with a different shape. So they were signed by the
+              hot-wallet key but <strong>built outside Binance’s normal
+              withdrawal tx builder.</strong>
+            </p>
+            <h3>Wallets</h3>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Role</th><th>Address</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Source hot wallet (“Binance 2” label; attribution only)</td>
+                  <td><a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"><code>5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9</code></a></td>
+                </tr>
+                <tr>
+                  <td>Attacker</td>
+                  <td><a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a> (fresh system account; first tx is the drain; has never signed a transaction)</td>
+                </tr>
+                <tr>
+                  <td>Post-incident sweep destination (attribution only)</td>
+                  <td><a href="https://solscan.io/account/9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"><code>9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Drain signatures</h3>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Signature</th><th>Note</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-29T20:10:18Z</code></td>
+                  <td><a href="https://solscan.io/tx/5YvwLFWubH1ob8JCNDLbPVioC3jtEZ8Maoz5WhNAs5cc8n9V2BjTWbixt6Ny5mddAKkN2SWJUR9y5kzede3ZTqk2"><code>5YvwLFWubH1ob8JCNDLbPVioC3jtEZ8Maoz5WhNAs5cc8n9V2BjTWbixt6Ny5mddAKkN2SWJUR9y5kzede3ZTqk2</code></a></td>
+                  <td>965,455.1 SOL, slot 463010532. Source 1,068,373.107 → 102,918.007 SOL</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T20:10:19Z</code></td>
+                  <td><a href="https://solscan.io/tx/333sZJXN6DQPBAu9QZBw9cBrkA7KFLRVshPLcekDgag8X2dQVWRpcR9hHKfmxabtfkwFcXeD5ihmP6zqmxtMv3Rc"><code>333sZJXN6DQPBAu9QZBw9cBrkA7KFLRVshPLcekDgag8X2dQVWRpcR9hHKfmxabtfkwFcXeD5ihmP6zqmxtMv3Rc</code></a></td>
+                  <td>1,266.7 SOL, slot 463010535</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T20:26:20Z</code></td>
+                  <td><a href="https://solscan.io/tx/aLaoSjVuU8kjz5UnYxLGviQCEnT5ByStWLuBF4ghpGp62uqAwFpYyLUG5gDuLxXKMY8VBEMk18SRB89178PfxhD"><code>aLaoSjVuU8kjz5UnYxLGviQCEnT5ByStWLuBF4ghpGp62uqAwFpYyLUG5gDuLxXKMY8VBEMk18SRB89178PfxhD</code></a></td>
+                  <td>1,266.7 SOL, slot 463015024</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T20:28:16Z</code></td>
+                  <td><a href="https://solscan.io/tx/3w5U9bXj8F61J3cNFwbccVzhscyqWP3NewgtxhmUmZFX9fhVDNosjBQtMi1pdpKRrdVtmGzXUDpzfEBbhQffNXap"><code>3w5U9bXj8F61J3cNFwbccVzhscyqWP3NewgtxhmUmZFX9fhVDNosjBQtMi1pdpKRrdVtmGzXUDpzfEBbhQffNXap</code></a></td>
+                  <td>1,266.7 SOL, slot 463015560</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T20:33:29Z</code></td>
+                  <td><a href="https://solscan.io/tx/2z7xv3JU6BCGSFkCtaovquFxn9BhfyL7WK7hmxjj2FtokMxEk1yfnVHfzDmBDQiZ2VZjr4dgwTApRuD4dZ5WhkeC"><code>2z7xv3JU6BCGSFkCtaovquFxn9BhfyL7WK7hmxjj2FtokMxEk1yfnVHfzDmBDQiZ2VZjr4dgwTApRuD4dZ5WhkeC</code></a></td>
+                  <td>1,266.7 SOL, slot 463017014</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="article-section">
+            <h2>Flow of funds</h2>
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Signature</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-10-29T20:10:18Z</code>–<code>20:33:29Z</code></td>
+                  <td>five drain signatures above</td>
+                  <td>970,521.9 SOL source → attacker. Attacker has 0 outgoing txs.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T23:02:30Z</code></td>
+                  <td><a href="https://solscan.io/tx/4AGrhhjkQTCtv8bRSLQuU5884B8YDaEsMxZZ2uht6Bx2ALVY1uvUegaCdgWAdYWEk3iBmsZMjY1HZNLwcuqmCoVy"><code>4AGrhhjkQTCtv8bRSLQuU5884B8YDaEsMxZZ2uht6Bx2ALVY1uvUegaCdgWAdYWEk3iBmsZMjY1HZNLwcuqmCoVy</code></a></td>
+                  <td>155,030.078 SOL plus 5 SPL balances source → <a href="https://solscan.io/account/9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"><code>9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM</code></a>. Normal nonce shape; routine consolidation, not attack flow. Source later held 4.0 SOL.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Status as of 2026-10-30 ~12:10Z: attacker
+              <a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a>
+              still held 970,554.1 SOL. No bridge, swap, or CEX hop. The
+              small excess over 970,521.9 is inbound dust (~32 SOL across
+              291 inbound txs). The attacker also holds spam tokens.
+              No SPL tokens were taken in the drain.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Root cause (reported)</h2>
+            <p>
+              <strong>Reported by Binance:</strong> a compromised DevOps
+              engineer’s laptop led to a service container that submitted
+              unauthorized withdrawals, with “no evidence of any wallet
+              private key leak”. Later updates spoke of “multiple factors”
+              and “additional points of breach”. Those claims are not
+              independently verified here.
+            </p>
+            <p>
+              On-chain, the 5 drains were signed by the hot-wallet key but
+              built outside Binance’s normal durable-nonce withdrawal
+              pipeline. That is consistent with a compromised signing
+              service being handed raw txs. It is equally consistent with
+              direct key use.
+              <strong>Chain cannot tell the two apart</strong> and does not
+              prove that keys were or were not leaked, so “no key leak”
+              stays Binance’s claim. On Ethereum, Binance 14’s own key
+              signed the EIP-7702 authorizations; that also cannot prove
+              the key did not leak.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Lessons</h2>
+            <p>
+              A hot-wallet signer that will sign a bare System transfer is
+              a withdrawal-pipeline bypass. Policy has to sit at the signer
+              (shape, destination, amount), not only in the builder that
+              produces durable-nonce withdrawals. Chain cannot distinguish
+              a compromised signing service from a leaked key.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>How the signing service was induced to sign a bare System transfer is unpublished.</li>
+              <li>Whether the hot-wallet key also leaked cannot be determined on chain.</li>
+              <li>Last normal durable-nonce withdrawal is placed at <code>2026-10-29T20:36:42Z</code>; the signature is not in this draft.</li>
+              <li>Same-route consolidation of 558,998 SOL at 04:20Z that day is described in the chain notes without a signature in this draft.</li>
+              <li>Other labelled Solana wallets showed no drain activity in the window; unlabelled wallets were not scanned.</li>
+              <li>USD is DefiLlama drain-time price, not independently recomputed here.</li>
+              <li>Non-Solana chains are out of scope of this wiki entry (see the living report).</li>
+            </ul>
+          </section>
+
+          <section class="article-section">
+            <h2>References</h2>
+            <p>X posts are pointers only. Hashes come from chain.</p>
+            <ol class="sources-list">
+              <li><a href="https://x.com/_RichardTeng/status/2116072080525656150">Richard Teng (X) — pointer</a></li>
+              <li><a href="https://x.com/binance/status/2116089661408108712">Binance (X) — pointer</a></li>
+              <li><a href="https://x.com/DefimonAlerts/status/2115914252494033098">DefimonAlerts (X) — pointer</a></li>
+              <li><a href="https://x.com/tatthang/status/2115964614668403035">tatthang (X) — pointer</a></li>
+              <li><a href="https://cursor.com/canvas/store-f2c0529a-71b2-4db0-be57-a944c8d477d0/30412674-7b79-4780-9ef2-9212c9274de1">Living report — other chains</a></li>
+              <li><a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9">Solscan — source wallet</a></li>
+              <li><a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU">Solscan — attacker</a></li>
+              <li><a href="https://solscan.io/tx/5YvwLFWubH1ob8JCNDLbPVioC3jtEZ8Maoz5WhNAs5cc8n9V2BjTWbixt6Ny5mddAKkN2SWJUR9y5kzede3ZTqk2">Solscan — 965,455.1 SOL drain</a></li>
+              <li><a href="https://solscan.io/tx/333sZJXN6DQPBAu9QZBw9cBrkA7KFLRVshPLcekDgag8X2dQVWRpcR9hHKfmxabtfkwFcXeD5ihmP6zqmxtMv3Rc">Solscan — 1,266.7 SOL drain (20:10:19Z)</a></li>
+              <li><a href="https://solscan.io/tx/aLaoSjVuU8kjz5UnYxLGviQCEnT5ByStWLuBF4ghpGp62uqAwFpYyLUG5gDuLxXKMY8VBEMk18SRB89178PfxhD">Solscan — 1,266.7 SOL drain (20:26:20Z)</a></li>
+              <li><a href="https://solscan.io/tx/3w5U9bXj8F61J3cNFwbccVzhscyqWP3NewgtxhmUmZFX9fhVDNosjBQtMi1pdpKRrdVtmGzXUDpzfEBbhQffNXap">Solscan — 1,266.7 SOL drain (20:28:16Z)</a></li>
+              <li><a href="https://solscan.io/tx/2z7xv3JU6BCGSFkCtaovquFxn9BhfyL7WK7hmxjj2FtokMxEk1yfnVHfzDmBDQiZ2VZjr4dgwTApRuD4dZ5WhkeC">Solscan — 1,266.7 SOL drain (20:33:29Z)</a></li>
+              <li><a href="https://solscan.io/tx/4AGrhhjkQTCtv8bRSLQuU5884B8YDaEsMxZZ2uht6Bx2ALVY1uvUegaCdgWAdYWEk3iBmsZMjY1HZNLwcuqmCoVy">Solscan — post-incident sweep</a></li>
+              <li><a href="https://solscan.io/account/9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM">Solscan — sweep destination</a></li>
+            </ol>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>
