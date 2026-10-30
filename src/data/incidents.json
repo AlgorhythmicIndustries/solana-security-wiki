@@ -1,5 +1,98 @@
 [
   {
+    "id": "binance-hot-wallet-drain-oct-2026",
+    "title": "Binance hot-wallet drain",
+    "date": "2026-10-29",
+    "category": "application",
+    "severity": "critical",
+    "estimatedLossUsd": 95800000,
+    "lossDescription": "970,521.9 SOL (~$95.8M at drain-time price, DefiLlama). No SPL tokens were taken. Attacker still held 970,554.1 SOL as of 2026-10-30 ~12:10Z; the excess over 970,521.9 is inbound dust. Nothing has been frozen on Solana.",
+    "summary": "On 29 Oct 2026 the Solana hot wallet 5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9 (\"Binance 2\" label; attribution only) sent 970,521.9 SOL (~$95.8M at drain-time price, DefiLlama) to attacker AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU in 5 transfers from 2026-10-29T20:10:18Z to 20:33:29Z. No SPL tokens were taken. The 5 drain txs are bare legacy System transfers; the wallet's 1,125 normal withdrawals in the same window used a durable nonce plus compute-budget instructions, so the drain did not come through Binance's normal withdrawal pipeline. This is the Solana side of a multi-chain incident Binance sized at about $6.3B. Binance reported a compromised DevOps laptop and a service container submitting unauthorized withdrawals, with \"no evidence of any wallet private key leak\". Chain cannot prove no key leaked. TRM and Chainalysis attribute the incident to DPRK with high confidence; there is no government attribution and no public law-enforcement action as of 2026-10-30. As of 2026-10-30 ~12:10Z the attacker still held 970,554.1 SOL and had not moved it.",
+    "details": "Source 5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9 signed and fee-paid all 5 drains. Attacker AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU is a fresh system account whose first tx is the drain; it has never signed a transaction. Drains: 5YvwLFWubH1ob8JCNDLbPVioC3jtEZ8Maoz5WhNAs5cc8n9V2BjTWbixt6Ny5mddAKkN2SWJUR9y5kzede3ZTqk2 at 2026-10-29T20:10:18Z slot 463010532 (965,455.1 SOL; wallet 1,068,373.107 → 102,918.007 SOL); 333sZJXN6DQPBAu9QZBw9cBrkA7KFLRVshPLcekDgag8X2dQVWRpcR9hHKfmxabtfkwFcXeD5ihmP6zqmxtMv3Rc at 2026-10-29T20:10:19Z slot 463010535 (1,266.7 SOL); aLaoSjVuU8kjz5UnYxLGviQCEnT5ByStWLuBF4ghpGp62uqAwFpYyLUG5gDuLxXKMY8VBEMk18SRB89178PfxhD at 2026-10-29T20:26:20Z slot 463015024 (1,266.7 SOL); 3w5U9bXj8F61J3cNFwbccVzhscyqWP3NewgtxhmUmZFX9fhVDNosjBQtMi1pdpKRrdVtmGzXUDpzfEBbhQffNXap at 2026-10-29T20:28:16Z slot 463015560 (1,266.7 SOL); 2z7xv3JU6BCGSFkCtaovquFxn9BhfyL7WK7hmxjj2FtokMxEk1yfnVHfzDmBDQiZ2VZjr4dgwTApRuD4dZ5WhkeC at 2026-10-29T20:33:29Z slot 463017014 (1,266.7 SOL). Total 970,521.9 SOL. No SPL tokens went to the attacker. In the 19:30–22:00Z window the source had 1,125 normal outflows, each using advanceNonce (durable nonce, authority 5tzFki…) plus 2 ComputeBudget instructions plus transfer(s). The 5 drains are the only outflows with a different shape: a legacy tx with one bare System transfer, a recent blockhash, no nonce, no compute budget, and a 5,000-lamport fee. Last normal durable-nonce withdrawal in the notes: 2026-10-29T20:36:42Z (signature not in this draft). At 2026-10-29T23:02:30Z remaining 155,030.078 SOL plus 5 SPL balances were swept to 9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM via 4AGrhhjkQTCtv8bRSLQuU5884B8YDaEsMxZZ2uht6Bx2ALVY1uvUegaCdgWAdYWEk3iBmsZMjY1HZNLwcuqmCoVy (normal nonce shape; routine consolidation route). As of 2026-10-30 ~12:10Z the attacker held 970,554.1 SOL with 0 outgoing txs; excess over 970,521.9 is inbound dust.",
+    "rootCause": "Reported by Binance: a compromised DevOps engineer's laptop led to a service container that submitted unauthorized withdrawals, with \"no evidence of any wallet private key leak\". Later updates spoke of \"multiple factors\" and \"additional points of breach\". On-chain on Solana, the 5 drains were signed by the hot-wallet key but built outside the normal durable-nonce withdrawal pipeline (bare legacy System transfers). That fits a compromised signing service being handed raw txs, or direct key use; the chain cannot tell the two apart, so \"no key leak\" stays Binance's claim. On Ethereum, Binance 14's own key signed the EIP-7702 authorizations; that also cannot prove the key did not leak.",
+    "response": "Binance paused withdrawals. At 2026-10-29T23:02:30Z the source swept remaining 155,030.078 SOL to 9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM (4AGrhhjkQTCtv8bRSLQuU5884B8YDaEsMxZZ2uht6Bx2ALVY1uvUegaCdgWAdYWEk3iBmsZMjY1HZNLwcuqmCoVy). Binance reported that losses will be covered from SAFU and company funds; that coverage is not hashed on Solana in this entry. Nothing has been frozen on Solana. As of 2026-10-30 there is no public law-enforcement action and no government attribution. Public X posts from Richard Teng, Binance, DefimonAlerts, and tatthang are pointers only.",
+    "tags": [
+      "binance",
+      "exchange",
+      "custody",
+      "hot-wallet",
+      "keys"
+    ],
+    "relatedIds": [
+      "upbit-sol-hot-wallet-nov-2025",
+      "swissborg-kiln-sol-staking-sep-2025",
+      "candy-digital-custodial-oct-2026",
+      "bloom-trading-bot-drain-oct-2026",
+      "timefun-backend-signing-mar-2025"
+    ],
+    "sources": [
+      {
+        "label": "Richard Teng (X) — pointer",
+        "url": "https://x.com/_RichardTeng/status/2116072080525656150"
+      },
+      {
+        "label": "Binance (X) — pointer",
+        "url": "https://x.com/binance/status/2116089661408108712"
+      },
+      {
+        "label": "DefimonAlerts (X) — pointer",
+        "url": "https://x.com/DefimonAlerts/status/2115914252494033098"
+      },
+      {
+        "label": "tatthang (X) — pointer",
+        "url": "https://x.com/tatthang/status/2115964614668403035"
+      },
+      {
+        "label": "Living report — other chains",
+        "url": "https://cursor.com/canvas/store-f2c0529a-71b2-4db0-be57-a944c8d477d0/30412674-7b79-4780-9ef2-9212c9274de1"
+      },
+      {
+        "label": "Solscan — source wallet",
+        "url": "https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"
+      },
+      {
+        "label": "Solscan — attacker",
+        "url": "https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"
+      },
+      {
+        "label": "Solscan — 965,455.1 SOL drain",
+        "url": "https://solscan.io/tx/5YvwLFWubH1ob8JCNDLbPVioC3jtEZ8Maoz5WhNAs5cc8n9V2BjTWbixt6Ny5mddAKkN2SWJUR9y5kzede3ZTqk2"
+      },
+      {
+        "label": "Solscan — 1,266.7 SOL drain (20:10:19Z)",
+        "url": "https://solscan.io/tx/333sZJXN6DQPBAu9QZBw9cBrkA7KFLRVshPLcekDgag8X2dQVWRpcR9hHKfmxabtfkwFcXeD5ihmP6zqmxtMv3Rc"
+      },
+      {
+        "label": "Solscan — 1,266.7 SOL drain (20:26:20Z)",
+        "url": "https://solscan.io/tx/aLaoSjVuU8kjz5UnYxLGviQCEnT5ByStWLuBF4ghpGp62uqAwFpYyLUG5gDuLxXKMY8VBEMk18SRB89178PfxhD"
+      },
+      {
+        "label": "Solscan — 1,266.7 SOL drain (20:28:16Z)",
+        "url": "https://solscan.io/tx/3w5U9bXj8F61J3cNFwbccVzhscyqWP3NewgtxhmUmZFX9fhVDNosjBQtMi1pdpKRrdVtmGzXUDpzfEBbhQffNXap"
+      },
+      {
+        "label": "Solscan — 1,266.7 SOL drain (20:33:29Z)",
+        "url": "https://solscan.io/tx/2z7xv3JU6BCGSFkCtaovquFxn9BhfyL7WK7hmxjj2FtokMxEk1yfnVHfzDmBDQiZ2VZjr4dgwTApRuD4dZ5WhkeC"
+      },
+      {
+        "label": "Solscan — post-incident sweep",
+        "url": "https://solscan.io/tx/4AGrhhjkQTCtv8bRSLQuU5884B8YDaEsMxZZ2uht6Bx2ALVY1uvUegaCdgWAdYWEk3iBmsZMjY1HZNLwcuqmCoVy"
+      },
+      {
+        "label": "Solscan — sweep destination",
+        "url": "https://solscan.io/account/9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
+      }
+    ],
+    "lesson": "A hot-wallet signer that will sign a bare System transfer is a withdrawal-pipeline bypass. Policy has to sit at the signer (shape, destination, amount), not only in the builder that produces durable-nonce withdrawals. Chain cannot distinguish a compromised signing service from a leaked key.",
+    "mitigations": [
+      "Reject any hot-wallet signature that is not the normal withdrawal shape (durable nonce plus compute-budget instructions plus expected transfer).",
+      "Enforce destination allowlists and amount/velocity caps at the signing service, independent of the withdrawal builder.",
+      "Alert and auto-pause when an outflow lacks a durable nonce or exceeds size thresholds.",
+      "Isolate the signing service from the withdrawal-service container so a compromised DevOps laptop cannot submit arbitrary payloads.",
+      "Rotate the hot-wallet key after any unauthorized signed outflow; treat \"no key leak\" as unproven until a post-mortem."
+    ]
+  },
+  {
     "id": "bloom-trading-bot-drain-oct-2026",
     "title": "Bloom Trading Telegram bot drain",
     "date": "2026-10-26",
