@@ -226,9 +226,27 @@
               instructions, so the drain did not come through Binance’s
               normal withdrawal pipeline. As of
               <code>2026-11-01T02:04:53Z</code> the attacker still held
-              <strong>970,554.16 SOL</strong> and has signed no transactions.
-              Reported claims that this wallet “sent tokens” to memecoin
-              dev wallets ($NOTSAFU, $LAZARUS, $TT) are false.
+              <strong>970,554.16 SOL</strong> and had signed no transactions.
+              Starting <code>2026-11-01T09:38:28Z</code>,
+              <a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a>
+              signed its first outbound txs. The 7 SOL test and 485,270 SOL
+              went to fresh wallet
+              <a href="https://solscan.io/account/Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD"><code>Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD</code></a>
+              (unmoved). 5,883.78 SOL went to hop wallet
+              <a href="https://solscan.io/account/7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK"><code>7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK</code></a>.
+              As of ~<code>2026-11-01T11:12Z</code>: AffzFD
+              <strong>479,393.39 SOL</strong>, Eze86
+              <strong>485,277.01 SOL</strong>, 7SDu
+              <strong>4,544.19 SOL</strong> (still active),
+              <strong>1.01958279 BTC</strong> at
+              <a href="https://mempool.space/address/bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5"><code>bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5</code></a>,
+              and <strong>0.60722605 BTC</strong> at
+              <a href="https://mempool.space/address/bc1q4xj8j5d5dj3lhk45asqnyf36s9q8azx7rraje7"><code>bc1q4xj8j5d5dj3lhk45asqnyf36s9q8azx7rraje7</code></a>.
+              Lookalike-address dust sent to the hop wallets is third-party
+              address poisoning, not attacker flow. The X claim of
+              “486,970 SOL swapped to BTC via Relay” is not supported on
+              chain. Reported claims that this wallet “sent tokens” to
+              memecoin dev wallets ($NOTSAFU, $LAZARUS, $TT) are false.
             </p>
           </section>
 
@@ -320,7 +338,20 @@
                 </tr>
                 <tr>
                   <td><code>2026-11-01T02:04:53Z</code></td>
-                  <td>Attacker still held 970,554.16 SOL and has signed no transactions. Reported memecoin “hacker sent tokens” claims ($NOTSAFU, $LAZARUS, $TT) are false.</td>
+                  <td>Prior snapshot: attacker still held 970,554.16 SOL and had signed no transactions. Reported memecoin “hacker sent tokens” claims ($NOTSAFU, $LAZARUS, $TT) are false.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01</code></td>
+                  <td>
+                    AffzFD signed its first outbound txs (5 System transfers; 491,160.777274 SOL out; fees ~0.00003 SOL). The 7 SOL test and 485,270 SOL went to fresh wallet <a href="https://solscan.io/account/Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD"><code>Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD</code></a>, which is unmoved. 5,883.78 SOL went to hop wallet <a href="https://solscan.io/account/7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK"><code>7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK</code></a>.
+                    <ol>
+                      <li><code>2026-11-01T09:38:28Z</code> 7.0 SOL (test) → Eze86 — <a href="https://solscan.io/tx/631PmagKNao2aBzHRaRqWmZUQ4tTBTwd9ESxa91wLLwzLQUS7p1K4oEaKFANa1WfoHga2zmGGqteQkGYv2EYgwGV"><code>631PmagKNao2aBzHRaRqWmZUQ4tTBTwd9ESxa91wLLwzLQUS7p1K4oEaKFANa1WfoHga2zmGGqteQkGYv2EYgwGV</code></a></li>
+                      <li><code>2026-11-01T09:39:08Z</code> 485,270.0 SOL → Eze86 — <a href="https://solscan.io/tx/66E4StZmw1pg37uxdGNTTt8gZHQBh3r6nG7ba4TtTJp2ZLSa6HfDAGewFUNE856EYzUpWzkF37T7TpBMUCPk6wkx"><code>66E4StZmw1pg37uxdGNTTt8gZHQBh3r6nG7ba4TtTJp2ZLSa6HfDAGewFUNE856EYzUpWzkF37T7TpBMUCPk6wkx</code></a></li>
+                      <li><code>2026-11-01T10:09:37Z</code> 838.405582951 SOL → 7SDu — <a href="https://solscan.io/tx/4i9jYzQtoervrw1P4YoLLtYsaBBLMonkvV4Q3BBdSh9YtzbXkFWdGHi1GLWEYnGDxFZ1DLDqFNVSzWcH49Gv9kaJ"><code>4i9jYzQtoervrw1P4YoLLtYsaBBLMonkvV4Q3BBdSh9YtzbXkFWdGHi1GLWEYnGDxFZ1DLDqFNVSzWcH49Gv9kaJ</code></a></li>
+                      <li><code>2026-11-01T10:26:33Z</code> 854.919634625 SOL → 7SDu — <a href="https://solscan.io/tx/3joFqGpBiC8kgRbRR8njJTjmqxFYqLLDd7sAzDYDRMydifuWbT5EjdTdvA9TMoJdtVKpJ3AM5ZEBmddm2sDMK557"><code>3joFqGpBiC8kgRbRR8njJTjmqxFYqLLDd7sAzDYDRMydifuWbT5EjdTdvA9TMoJdtVKpJ3AM5ZEBmddm2sDMK557</code></a></li>
+                      <li><code>2026-11-01T10:38:25Z</code> 4,190.452056484 SOL → 7SDu — <a href="https://solscan.io/tx/BEH3hoFe9BDsrVdA5B8V66zngXUVQmgdJ4VPnunwUcz5E3TPyCzkA64xjVBnTeDzhsjnhGmbUu36FK8ie3cECnL"><code>BEH3hoFe9BDsrVdA5B8V66zngXUVQmgdJ4VPnunwUcz5E3TPyCzkA64xjVBnTeDzhsjnhGmbUu36FK8ie3cECnL</code></a></li>
+                    </ol>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -335,8 +366,18 @@
               shape. Public figures that cite 965,455 SOL are the first tx
               alone; 970,500 is rounded. As of
               <code>2026-11-01T02:04:53Z</code> the attacker held
-              <strong>970,554.16 SOL</strong> and has signed no
-              transactions. Nothing has been frozen on Solana.
+              <strong>970,554.16 SOL</strong> and had signed no
+              transactions (prior snapshot). As of
+              ~<code>2026-11-01T11:12Z</code>: AffzFD
+              <strong>479,393.39 SOL</strong>, Eze86
+              <strong>485,277.01 SOL</strong> (unmoved), 7SDu
+              <strong>4,544.19 SOL</strong> (still active),
+              <strong>1.01958279 BTC</strong> at
+              <a href="https://mempool.space/address/bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5"><code>bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5</code></a>,
+              and <strong>0.60722605 BTC</strong> at
+              <a href="https://mempool.space/address/bc1q4xj8j5d5dj3lhk45asqnyf36s9q8azx7rraje7"><code>bc1q4xj8j5d5dj3lhk45asqnyf36s9q8azx7rraje7</code></a>.
+              1,338.157475 SOL became 1.62681826 BTC via Relay. Nothing has
+              been frozen on Solana.
             </p>
           </section>
 
@@ -371,7 +412,31 @@
                 </tr>
                 <tr>
                   <td>Attacker (FBI TraderTraitor list — the only Solana address published)</td>
-                  <td><a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a> (fresh system account; first tx is the drain; has signed no transactions)</td>
+                  <td><a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a> (fresh system account; first tx is the drain; first outbound txs at <code>2026-11-01T09:38:28Z</code>)</td>
+                </tr>
+                <tr>
+                  <td>Fresh destination (unmoved)</td>
+                  <td><a href="https://solscan.io/account/Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD"><code>Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD</code></a> (7 SOL test + 485,270 SOL; no outbound tx as of ~<code>2026-11-01T11:12Z</code>)</td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (inference: attacker-controlled; funded only by AffzFD, signs its own transfers, not on Relay’s published addresses)</td>
+                  <td><a href="https://solscan.io/account/7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK"><code>7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK</code></a> (5,883.78 SOL in; still active)</td>
+                </tr>
+                <tr>
+                  <td>Relay Solana depository program (Relay chains API)</td>
+                  <td><a href="https://solscan.io/account/99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2"><code>99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2</code></a></td>
+                </tr>
+                <tr>
+                  <td>Relay BTC solver (Relay chains API)</td>
+                  <td><a href="https://mempool.space/address/bc1qq2mvrp4g3ugd424dw4xv53rgsf8szkrv853jrc"><code>bc1qq2mvrp4g3ugd424dw4xv53rgsf8szkrv853jrc</code></a></td>
+                </tr>
+                <tr>
+                  <td>BTC resting (1.01958279 BTC, unspent)</td>
+                  <td><a href="https://mempool.space/address/bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5"><code>bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5</code></a></td>
+                </tr>
+                <tr>
+                  <td>BTC resting (0.60722605 BTC, unspent)</td>
+                  <td><a href="https://mempool.space/address/bc1q4xj8j5d5dj3lhk45asqnyf36s9q8azx7rraje7"><code>bc1q4xj8j5d5dj3lhk45asqnyf36s9q8azx7rraje7</code></a></td>
                 </tr>
                 <tr>
                   <td>Post-incident sweep destination (attribution only)</td>
@@ -424,25 +489,111 @@
                 <tr>
                   <td><code>2026-10-29T20:10:18Z</code>–<code>20:33:29Z</code></td>
                   <td>five drain signatures above</td>
-                  <td>970,521.9 SOL source → attacker. Attacker has 0 outgoing txs.</td>
+                  <td>970,521.9 SOL source → attacker. Attacker had 0 outgoing txs until <code>2026-11-01T09:38:28Z</code>.</td>
                 </tr>
                 <tr>
                   <td><code>2026-10-29T23:02:30Z</code></td>
                   <td><a href="https://solscan.io/tx/4AGrhhjkQTCtv8bRSLQuU5884B8YDaEsMxZZ2uht6Bx2ALVY1uvUegaCdgWAdYWEk3iBmsZMjY1HZNLwcuqmCoVy"><code>4AGrhhjkQTCtv8bRSLQuU5884B8YDaEsMxZZ2uht6Bx2ALVY1uvUegaCdgWAdYWEk3iBmsZMjY1HZNLwcuqmCoVy</code></a></td>
                   <td>155,030.078 SOL plus 5 SPL balances source → <a href="https://solscan.io/account/9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"><code>9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM</code></a>. Normal nonce shape; routine consolidation, not attack flow. Source later held 4.0 SOL.</td>
                 </tr>
+                <tr>
+                  <td><code>2026-11-01T09:38:28Z</code>–<code>10:38:25Z</code></td>
+                  <td>five AffzFD outbound signatures in the timeline</td>
+                  <td>491,160.777274 SOL out of AffzFD. 7 + 485,270 SOL resting at Eze86. 5,883.78 SOL to hop 7SDu.</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>SOL → BTC via Relay</h3>
+            <p>
+              Hop wallets each made one <code>DepositNative</code> into Relay’s
+              Solana depository program
+              <a href="https://solscan.io/account/99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2"><code>99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2</code></a>.
+              1,338.157475 SOL became 1.62681826 BTC, paid by Relay solver
+              <a href="https://mempool.space/address/bc1qq2mvrp4g3ugd424dw4xv53rgsf8szkrv853jrc"><code>bc1qq2mvrp4g3ugd424dw4xv53rgsf8szkrv853jrc</code></a>,
+              with deposit-id / OP_RETURN matches. Four of five Relay
+              Requests v2 records returned <code>success</code> with matching
+              in/out hashes; the 398.4 SOL deposit was rate-limited and is
+              linked by on-chain deposit id
+              <code>0x22c7be65b200ce5585187b95a8759da40b34bf4b54ad430ff82b242296772ef6</code>
+              plus OP_RETURN (inference of the Relay request record only;
+              the BTC fill is on chain). BTC resting addresses:
+              <a href="https://mempool.space/address/bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5"><code>bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5</code></a>
+              (1.01958279 BTC; four fills swept at
+              <code>2026-11-01T10:24:44Z</code> in
+              <a href="https://mempool.space/tx/c3aeaaae206fb948119cd64aa3a3812bf75d9ec32f03f2770335841f0616c818"><code>c3aeaaae206fb948119cd64aa3a3812bf75d9ec32f03f2770335841f0616c818</code></a>)
+              and
+              <a href="https://mempool.space/address/bc1q4xj8j5d5dj3lhk45asqnyf36s9q8azx7rraje7"><code>bc1q4xj8j5d5dj3lhk45asqnyf36s9q8azx7rraje7</code></a>
+              (0.60722605 BTC). Both unspent at the snapshot. None of these
+              BTC addresses appear in the FBI alert address list.
+            </p>
+            <table class="hash-table">
+              <thead>
+                <tr>
+                  <th>Solana deposit (UTC)</th>
+                  <th>SOL</th>
+                  <th>BTC payout txid</th>
+                  <th>BTC</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-11-01T10:11:10Z</code> <a href="https://solscan.io/tx/2wxg2ZTJSF1Rcs8LcG4Ugcg3bQhV2yLL8PwNbQtBHNDvHqAZHsfZpv4QxW1RQUre7cX2CCdBvtVfvpj3RTQtcfU7"><code>2wxg2ZTJSF1Rcs8LcG4Ugcg3bQhV2yLL8PwNbQtBHNDvHqAZHsfZpv4QxW1RQUre7cX2CCdBvtVfvpj3RTQtcfU7</code></a></td>
+                  <td>39.957475</td>
+                  <td><a href="https://mempool.space/tx/a1a32f22458e315f4ecd62ad56c44e0a24b509361256184b4d456e1a4c2e9e76"><code>a1a32f22458e315f4ecd62ad56c44e0a24b509361256184b4d456e1a4c2e9e76</code></a></td>
+                  <td>0.04861269</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T10:12:14Z</code> <a href="https://solscan.io/tx/25PuNxmMHpw2P6cgZ1vt1r7a313pW7hX39PtY5Mhr8uiXsxQr9DNag77AW8oQoDb49qxmZW2cuDr8nEzvPA4ztmn"><code>25PuNxmMHpw2P6cgZ1vt1r7a313pW7hX39PtY5Mhr8uiXsxQr9DNag77AW8oQoDb49qxmZW2cuDr8nEzvPA4ztmn</code></a></td>
+                  <td>99.95</td>
+                  <td><a href="https://mempool.space/tx/5baa01052c4f8068afd8468813f4c7550ea813dfc8e4c3d0acdc9a677170a32e"><code>5baa01052c4f8068afd8468813f4c7550ea813dfc8e4c3d0acdc9a677170a32e</code></a></td>
+                  <td>0.12157009</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T10:12:58Z</code> <a href="https://solscan.io/tx/5q8uUzAABkqK7LGE7zhVornu8Y23Qb6XJXu4BGuN7VU2RdkudPSu4VkPFAaRjS5jbT2mbQ6j33d2P2w2d1ssNhpQ"><code>5q8uUzAABkqK7LGE7zhVornu8Y23Qb6XJXu4BGuN7VU2RdkudPSu4VkPFAaRjS5jbT2mbQ6j33d2P2w2d1ssNhpQ</code></a></td>
+                  <td>299.95</td>
+                  <td><a href="https://mempool.space/tx/28de989f6a65027914190fc74634de4bc49dabb1c3a50f59a073205d1cc235f6"><code>28de989f6a65027914190fc74634de4bc49dabb1c3a50f59a073205d1cc235f6</code></a></td>
+                  <td>0.36480899</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T10:14:17Z</code> <a href="https://solscan.io/tx/2yroeAajHB8vpKgywGBQ2tLh9tRkTHMiM7bHj5Gi8PhsX1dDHKpWHrBdQmNXBRm2xQCyDtj1YLuDjZztLHQAGTRZ"><code>2yroeAajHB8vpKgywGBQ2tLh9tRkTHMiM7bHj5Gi8PhsX1dDHKpWHrBdQmNXBRm2xQCyDtj1YLuDjZztLHQAGTRZ</code></a></td>
+                  <td>398.4</td>
+                  <td><a href="https://mempool.space/tx/6b58b1ff717760c1789e86abef2818579aac3327df554d216a6b1e4654f5d201"><code>6b58b1ff717760c1789e86abef2818579aac3327df554d216a6b1e4654f5d201</code></a></td>
+                  <td>0.48460044</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T10:39:16Z</code> <a href="https://solscan.io/tx/4x1SwmsDBYHrhBmTmyvccywxZZJ5zGQdUT64Veg7yGoReymqAg8urxp35F6JLfF85uTF4RccfjwsUDKDS9BVJ7mE"><code>4x1SwmsDBYHrhBmTmyvccywxZZJ5zGQdUT64Veg7yGoReymqAg8urxp35F6JLfF85uTF4RccfjwsUDKDS9BVJ7mE</code></a></td>
+                  <td>499.9</td>
+                  <td><a href="https://mempool.space/tx/bb15e619c2642c8121551068f6e613cc3131f019dcc5717d22309b1ff90d73a9"><code>bb15e619c2642c8121551068f6e613cc3131f019dcc5717d22309b1ff90d73a9</code></a></td>
+                  <td>0.60722605</td>
+                </tr>
               </tbody>
             </table>
             <p>
-              Status as of <code>2026-11-01T02:04:53Z</code>: attacker
-              <a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a>
-              still held 970,554.16 SOL and has signed no transactions.
-              No bridge, swap, or CEX hop. The small excess over 970,521.9
-              is inbound dust. Reported claims that this wallet “sent
-              tokens” to memecoin dev wallets ($NOTSAFU, $LAZARUS, $TT)
-              are false: recent signatures are third-party dust / ATA /
-              memecoin-bait ops, not by the holder. The attacker also holds
-              spam tokens. No SPL tokens were taken in the drain.
+              Holdings as of ~<code>2026-11-01T11:12Z</code>: AffzFD
+              479,393.39 SOL (unchanged since its last outbound at
+              <code>2026-11-01T10:38:25Z</code>); Eze86 485,277.01 SOL
+              (includes ~0.0101 SOL third-party dust); 7SDu 4,544.19 SOL
+              (still active); 1.01958279 BTC at
+              <code>bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5</code>;
+              0.60722605 BTC at
+              <code>bc1q4xj8j5d5dj3lhk45asqnyf36s9q8azx7rraje7</code>.
+              Prior snapshot at <code>2026-11-01T02:04:53Z</code>: AffzFD
+              still held 970,554.16 SOL and had signed no transactions.
+              The small excess over 970,521.9 on that earlier snapshot is
+              inbound dust.
+            </p>
+            <p>
+              Lookalike-address dust sent to the hop wallets is third-party
+              address poisoning, not attacker flow. The X claim of
+              “486,970 SOL swapped to BTC via Relay” is not supported on
+              chain: the 485,277 SOL lot at Eze86 has not moved, only
+              1,338.157475 SOL went through Relay to BTC from the 7SDu
+              branch, and no on-chain figure equals 486,970. Reported
+              claims that AffzFD “sent tokens” to memecoin dev wallets
+              ($NOTSAFU, $LAZARUS, $TT) are false: those signatures are
+              third-party dust / ATA / memecoin-bait ops, not by the
+              holder. The attacker also holds spam tokens. No SPL tokens
+              were taken in the drain.
             </p>
           </section>
 
@@ -490,7 +641,10 @@
               <li>Same-route consolidation of 558,998 SOL at 04:20Z that day is described in the chain notes without a signature in this draft.</li>
               <li>Other labelled Solana wallets showed no drain activity in the window; unlabelled wallets were not scanned.</li>
               <li>USD is DefiLlama drain-time price, not independently recomputed here.</li>
-              <li>Non-Solana chains are out of scope of this wiki entry (see the living report).</li>
+              <li>Non-Solana chains are out of scope of this wiki entry (see the living report), except the five Relay BTC fills hashed above.</li>
+              <li>The Relay API record for the 398.4 SOL request was rate-limited; that link rests on the deposit-id / OP_RETURN match plus amount and timing.</li>
+              <li>No ownership or exchange label is known for the BTC recipient addresses; they are not on the FBI alert list.</li>
+              <li>Activity is ongoing: 7SDu still held 4,544.19 SOL as of ~<code>2026-11-01T11:12Z</code>.</li>
             </ul>
           </section>
 
@@ -515,6 +669,17 @@
               <li><a href="https://solscan.io/tx/2z7xv3JU6BCGSFkCtaovquFxn9BhfyL7WK7hmxjj2FtokMxEk1yfnVHfzDmBDQiZ2VZjr4dgwTApRuD4dZ5WhkeC">Solscan — 1,266.7 SOL drain (20:33:29Z)</a></li>
               <li><a href="https://solscan.io/tx/4AGrhhjkQTCtv8bRSLQuU5884B8YDaEsMxZZ2uht6Bx2ALVY1uvUegaCdgWAdYWEk3iBmsZMjY1HZNLwcuqmCoVy">Solscan — post-incident sweep</a></li>
               <li><a href="https://solscan.io/account/9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM">Solscan — sweep destination</a></li>
+              <li><a href="https://solscan.io/account/Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD">Solscan — Eze86 (unmoved)</a></li>
+              <li><a href="https://solscan.io/account/7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK">Solscan — 7SDu hop</a></li>
+              <li><a href="https://solscan.io/account/99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2">Solscan — Relay Solana depository program</a></li>
+              <li><a href="https://solscan.io/tx/631PmagKNao2aBzHRaRqWmZUQ4tTBTwd9ESxa91wLLwzLQUS7p1K4oEaKFANa1WfoHga2zmGGqteQkGYv2EYgwGV">Solscan — 7 SOL test to Eze86</a></li>
+              <li><a href="https://solscan.io/tx/66E4StZmw1pg37uxdGNTTt8gZHQBh3r6nG7ba4TtTJp2ZLSa6HfDAGewFUNE856EYzUpWzkF37T7TpBMUCPk6wkx">Solscan — 485,270 SOL to Eze86</a></li>
+              <li><a href="https://solscan.io/tx/4i9jYzQtoervrw1P4YoLLtYsaBBLMonkvV4Q3BBdSh9YtzbXkFWdGHi1GLWEYnGDxFZ1DLDqFNVSzWcH49Gv9kaJ">Solscan — 838.405582951 SOL to 7SDu</a></li>
+              <li><a href="https://solscan.io/tx/3joFqGpBiC8kgRbRR8njJTjmqxFYqLLDd7sAzDYDRMydifuWbT5EjdTdvA9TMoJdtVKpJ3AM5ZEBmddm2sDMK557">Solscan — 854.919634625 SOL to 7SDu</a></li>
+              <li><a href="https://solscan.io/tx/BEH3hoFe9BDsrVdA5B8V66zngXUVQmgdJ4VPnunwUcz5E3TPyCzkA64xjVBnTeDzhsjnhGmbUu36FK8ie3cECnL">Solscan — 4,190.452056484 SOL to 7SDu</a></li>
+              <li><a href="https://mempool.space/address/bc1qq2mvrp4g3ugd424dw4xv53rgsf8szkrv853jrc">mempool.space — Relay BTC solver</a></li>
+              <li><a href="https://mempool.space/address/bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5">mempool.space — BTC resting 1.01958279</a></li>
+              <li><a href="https://mempool.space/address/bc1q4xj8j5d5dj3lhk45asqnyf36s9q8azx7rraje7">mempool.space — BTC resting 0.60722605</a></li>
             </ol>
           </section>
 
