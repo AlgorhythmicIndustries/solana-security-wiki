@@ -225,8 +225,10 @@
               same window used a durable nonce plus compute-budget
               instructions, so the drain did not come through Binance’s
               normal withdrawal pipeline. As of
-              <code>2026-10-30</code> ~12:10Z the attacker still held
-              <strong>970,554.1 SOL</strong> and had not moved it.
+              <code>2026-11-01T02:04:53Z</code> the attacker still held
+              <strong>970,554.16 SOL</strong> and has signed no transactions.
+              Reported claims that this wallet “sent tokens” to memecoin
+              dev wallets ($NOTSAFU, $LAZARUS, $TT) are false.
             </p>
           </section>
 
@@ -253,10 +255,18 @@
               authorizations. The chain cannot prove no key leaked.
             </p>
             <p>
-              <strong>Attribution (claim, not a government finding):</strong>
-              TRM and Chainalysis attribute the incident to DPRK with high
-              confidence. There is no government attribution yet. There is
-              no public law-enforcement action as of 2026-10-30.
+              <strong>Attribution:</strong>
+              On 2026-10-31 the FBI, together with USSS and IRS-CI,
+              attributed the theft of more than $6B from Binance (on or
+              about 2026-10-29) to the Democratic People’s Republic of
+              Korea (North Korea). The FBI names this activity
+              “TraderTraitor”. The FBI’s published address list includes
+              exactly one Solana address,
+              <a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a>,
+              the Solana drain recipient (alongside 608 ETH and 19 BTC
+              addresses). Earlier TRM and Chainalysis claims attributing
+              the incident to DPRK with high confidence are now consistent
+              with the FBI attribution.
             </p>
           </section>
 
@@ -300,6 +310,18 @@
                   <td><code>2026-10-30</code> ~12:10Z</td>
                   <td>Attacker still held 970,554.1 SOL. No outgoing txs. Excess over 970,521.9 is inbound dust.</td>
                 </tr>
+                <tr>
+                  <td><code>2026-10-31T14:30Z</code></td>
+                  <td>Binance Security Incident Update #3 (reported): SOL is 100% backed in reserves; ~90% of stolen assets replenished from SAFU, futures insurance fund, and corporate treasury. Withdrawals targeted Nov 1. <a href="https://x.com/binance/status/2116538196259684457">X pointer</a>.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-31</code></td>
+                  <td>FBI (with USSS and IRS-CI) attributed the theft of more than $6B from Binance to DPRK, naming the activity “TraderTraitor”. Published address list: 608 ETH, 19 BTC, and exactly one Solana address — the drain recipient. <a href="https://www.fbi.gov/investigate/cyber/alerts/2026/north-korea-responsible-for-6-billion-binance-attack">FBI Cyber Alert</a>. <a href="https://x.com/FBICyberBranch/status/2116660730745299426">FBI Cyber X pointer</a> (~22:36Z).</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T02:04:53Z</code></td>
+                  <td>Attacker still held 970,554.16 SOL and has signed no transactions. Reported memecoin “hacker sent tokens” claims ($NOTSAFU, $LAZARUS, $TT) are false.</td>
+                </tr>
               </tbody>
             </table>
           </section>
@@ -311,9 +333,10 @@
               (~$95.8M at drain-time price, DefiLlama). No SPL tokens were
               taken; token outflows in the window have the normal withdrawal
               shape. Public figures that cite 965,455 SOL are the first tx
-              alone; 970,500 is rounded. As of 2026-10-30 ~12:10Z the
-              attacker held <strong>970,554.1 SOL</strong>. Nothing has been
-              frozen on Solana.
+              alone; 970,500 is rounded. As of
+              <code>2026-11-01T02:04:53Z</code> the attacker held
+              <strong>970,554.16 SOL</strong> and has signed no
+              transactions. Nothing has been frozen on Solana.
             </p>
           </section>
 
@@ -347,8 +370,8 @@
                   <td><a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"><code>5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9</code></a></td>
                 </tr>
                 <tr>
-                  <td>Attacker</td>
-                  <td><a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a> (fresh system account; first tx is the drain; has never signed a transaction)</td>
+                  <td>Attacker (FBI TraderTraitor list — the only Solana address published)</td>
+                  <td><a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a> (fresh system account; first tx is the drain; has signed no transactions)</td>
                 </tr>
                 <tr>
                   <td>Post-incident sweep destination (attribution only)</td>
@@ -411,12 +434,15 @@
               </tbody>
             </table>
             <p>
-              Status as of 2026-10-30 ~12:10Z: attacker
+              Status as of <code>2026-11-01T02:04:53Z</code>: attacker
               <a href="https://solscan.io/account/AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU"><code>AffzFDKZbyMiU11zmVBoAqD25ugpr7xoWWyRyGigBEaU</code></a>
-              still held 970,554.1 SOL. No bridge, swap, or CEX hop. The
-              small excess over 970,521.9 is inbound dust (~32 SOL across
-              291 inbound txs). The attacker also holds spam tokens.
-              No SPL tokens were taken in the drain.
+              still held 970,554.16 SOL and has signed no transactions.
+              No bridge, swap, or CEX hop. The small excess over 970,521.9
+              is inbound dust. Reported claims that this wallet “sent
+              tokens” to memecoin dev wallets ($NOTSAFU, $LAZARUS, $TT)
+              are false: recent signatures are third-party dust / ATA /
+              memecoin-bait ops, not by the holder. The attacker also holds
+              spam tokens. No SPL tokens were taken in the drain.
             </p>
           </section>
 
@@ -472,6 +498,9 @@
             <h2>References</h2>
             <p>X posts are pointers only. Hashes come from chain.</p>
             <ol class="sources-list">
+              <li><a href="https://www.fbi.gov/investigate/cyber/alerts/2026/north-korea-responsible-for-6-billion-binance-attack">FBI Cyber Alert — North Korea Responsible for $6 Billion+ Binance Attack (primary)</a></li>
+              <li><a href="https://x.com/FBICyberBranch/status/2116660730745299426">FBI Cyber (X) — pointer</a></li>
+              <li><a href="https://x.com/binance/status/2116538196259684457">Binance Security Incident Update #3 (X) — pointer</a></li>
               <li><a href="https://x.com/_RichardTeng/status/2116072080525656150">Richard Teng (X) — pointer</a></li>
               <li><a href="https://x.com/binance/status/2116089661408108712">Binance (X) — pointer</a></li>
               <li><a href="https://x.com/DefimonAlerts/status/2115914252494033098">DefimonAlerts (X) — pointer</a></li>
