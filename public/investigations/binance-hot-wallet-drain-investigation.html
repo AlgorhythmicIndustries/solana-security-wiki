@@ -287,11 +287,52 @@
               <a href="https://solscan.io/account/6H7GCfCx8JMUACbmSYZjConeJGzViPHhMvvYak5SDDBe"><code>6H7GCfCx8JMUACbmSYZjConeJGzViPHhMvvYak5SDDBe</code></a>
               (busy unlabeled wallet that forwards funds on; pattern fits a
               custodial service deposit address; not identified). As of
-              ~<code>2026-11-01T21:12Z</code>: AffzFD
+              ~<code>2026-11-01T21:12Z</code> (prior snapshot): AffzFD
               <strong>466,693.66 SOL</strong>, Eze86
               <strong>485,277.01 SOL</strong> (unmoved), 7SDu
               <strong>4,473.33 SOL</strong> (idle since
               <code>16:14Z</code>).
+              After ~<code>2026-11-01T21:12Z</code> AffzFD signed 4 more
+              System transfers totalling <strong>19,704.23 SOL</strong>
+              to three new wallets:
+              <a href="https://solscan.io/account/Fw9P2sFuSRg5VC3nGyh7tx9F76TYVDvQWpaazWpp6848"><code>Fw9P2sFuSRg5VC3nGyh7tx9F76TYVDvQWpaazWpp6848</code></a>
+              (13,463.96 SOL in two transfers),
+              <a href="https://solscan.io/account/Fz1iggGioypykdhtxKt6a5gKHciuceps6pZrGK93q8WE"><code>Fz1iggGioypykdhtxKt6a5gKHciuceps6pZrGK93q8WE</code></a>
+              (168.80 SOL), and
+              <a href="https://solscan.io/account/86incTwCCSzRdc1idREAR5eZNeEJ9a4iSyeik8oxtMQF"><code>86incTwCCSzRdc1idREAR5eZNeEJ9a4iSyeik8oxtMQF</code></a>
+              (6,071.47 SOL). Total out of AffzFD since
+              <code>2026-11-01T09:38Z</code>:
+              <strong>523,564.75 SOL</strong> in 17 transfers.
+              First DEX use on Solana: Fw9P2 swapped 10,018 SOL into
+              948,841.78 USDC via Jupiter
+              (<a href="https://solscan.io/account/JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"><code>JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4</code></a>),
+              delivered to a separate wallet
+              <a href="https://solscan.io/account/ARk92boxCbssS2p8AL3x9GvLzZYxcRFueXvpUnGGZciQ"><code>ARk92boxCbssS2p8AL3x9GvLzZYxcRFueXvpUnGGZciQ</code></a>.
+              Within ~2 minutes ARk92box swapped 830,000 USDC back into
+              8,716.70 SOL and sent 118,841.78 USDC to
+              <a href="https://solscan.io/account/6nBooPf9yUnp3JiuuNpdhFG4BCyHzxEEUUL41hsQc1Jb"><code>6nBooPf9yUnp3JiuuNpdhFG4BCyHzxEEUUL41hsQc1Jb</code></a>,
+              which split 121,324 USDC into 88 transfers to 86 wallets
+              (<code>04:52:43Z</code>–<code>04:58:06Z</code>). Solana USDC
+              is Circle-freezable; no freeze observed on these wallets as
+              of ~<code>05:10Z</code>. Fz1igg sent 10 SOL to
+              <a href="https://solscan.io/account/BfUX7UY6BmPiEWobza8Z9xyrDR1FSUMbfiRMzGAU1vX"><code>BfUX7UY6BmPiEWobza8Z9xyrDR1FSUMbfiRMzGAU1vX</code></a>;
+              that hop sent 9.9 SOL to
+              <a href="https://solscan.io/account/EVMMUpGAknWuhvQARrNzoHu8qi2Pd7H9EzzkzM5o6y4d"><code>EVMMUpGAknWuhvQARrNzoHu8qi2Pd7H9EzzkzM5o6y4d</code></a>;
+              unlabeled J1QUU ran an instruction on unlabeled program
+              AusZPVX and 9.899599250 SOL came back to BfUX7U (same
+              deposit-and-return pattern as the 4ZpYMF test; inference
+              only). No new Relay deposits or refunds. 15.26804118 BTC
+              from Relay fills still unspent. As of
+              ~<code>2026-11-02T05:10Z</code>: AffzFD
+              <strong>446,989.43 SOL</strong>, Eze86
+              <strong>485,277.01 SOL</strong> (unmoved), ARk92box
+              <strong>8,716.29 SOL</strong>, 86incT
+              <strong>6,071.47 SOL</strong>, 7SDu
+              <strong>4,473.33 SOL</strong> (idle since
+              <code>16:14Z</code>), Fw9P2s
+              <strong>3,445.95 SOL</strong>, Fz1igg
+              <strong>137.80 SOL</strong>; total attacker SOL
+              ≈ <strong>954,111</strong>.
               Lookalike-address dust sent to the hop wallets is third-party
               address poisoning, not attacker flow. Press (Lookonchain, via
               crypto.news) said 486,970 SOL was being swapped to BTC via
@@ -437,6 +478,28 @@
                     </ol>
                   </td>
                 </tr>
+                <tr>
+                  <td><code>2026-11-02</code> ~05:10Z</td>
+                  <td>
+                    After ~<code>21:12Z</code> AffzFD signed 4 more System transfers totalling 19,704.23 SOL to three new wallets. Total out of AffzFD since <code>2026-11-01T09:38Z</code>: 523,564.75 SOL in 17 transfers. Eze86 still unmoved. First DEX use on Solana: Fw9P2 swapped 10,018 SOL into 948,841.78 USDC via Jupiter, delivered to ARk92box. ARk92box swapped 830,000 USDC back into 8,716.70 SOL and sent 118,841.78 USDC to 6nBoo, which split 121,324 USDC into 88 transfers to 86 wallets. Fz1igg ran a 9.9 SOL test deposit that came back via unlabeled program AusZPVX (same pattern as 4ZpYMF). No new Relay deposits or refunds; 15.26804118 BTC still unspent. Solana USDC is Circle-freezable; no freeze observed as of ~<code>05:10Z</code>.
+                    <ol>
+                      <li><code>2026-11-02T04:14:12Z</code> 3.242394673 SOL → Fw9P2s — <a href="https://solscan.io/tx/2ueAGrd99mcfWkEHeXWxpMJpzimd6A1saRMLk5sMGxDnhy283eYqRV9x3c8qwqxLVMomanbVc1QurJ6gcKTZkC7h"><code>2ueAGrd99mcfWkEHeXWxpMJpzimd6A1saRMLk5sMGxDnhy283eYqRV9x3c8qwqxLVMomanbVc1QurJ6gcKTZkC7h</code></a></li>
+                      <li><code>2026-11-02T04:14:44Z</code> 168.804924789 SOL → Fz1igg — <a href="https://solscan.io/tx/36aobXXhzkc4Af2KQVUgVH3s3iWgDo1KUYzyrza9FhebDDEacrv9zHiiQS6RsvF1vZdSxnDsc9kme17fRS27jjL9"><code>36aobXXhzkc4Af2KQVUgVH3s3iWgDo1KUYzyrza9FhebDDEacrv9zHiiQS6RsvF1vZdSxnDsc9kme17fRS27jjL9</code></a></li>
+                      <li><code>2026-11-02T04:15:13Z</code> 13,460.714165223 SOL → Fw9P2s — <a href="https://solscan.io/tx/4T8pbtaGnAMUb5DxRoq9zq6Jn7XwwMuwZv7u7ZXVwsyv9DsJdvjZL1KWini6UZwvFxaeA7ADQMG5CNL3NiurmHRd"><code>4T8pbtaGnAMUb5DxRoq9zq6Jn7XwwMuwZv7u7ZXVwsyv9DsJdvjZL1KWini6UZwvFxaeA7ADQMG5CNL3NiurmHRd</code></a> (two-transfer total to Fw9P2s: 13,463.96 SOL)</li>
+                      <li><code>2026-11-02T04:49:12Z</code> Fw9P2 swapped 18 SOL → 1,705.79 USDC via Jupiter, delivered to ARk92box — <a href="https://solscan.io/tx/2XUytqjRChD5ojYxVrEMVrbdqJTaBLBRq5R31oKZzaUy7oNnAXPLu8vetmD1jwdnp4g7opNeq2kcBSZpDkyxeYMt"><code>2XUytqjRChD5ojYxVrEMVrbdqJTaBLBRq5R31oKZzaUy7oNnAXPLu8vetmD1jwdnp4g7opNeq2kcBSZpDkyxeYMt</code></a></li>
+                      <li><code>2026-11-02T04:49:56Z</code> Fw9P2 swapped 10,000 SOL → 947,135.98 USDC via Jupiter, delivered to ARk92box — <a href="https://solscan.io/tx/43C5oRRLS4acjm8Lfo6HNzm2hFsbyHsBLFwhrDMvWDdw7CYViqmXme8vZcd2U9DHhrUvJbon6wpt2SVu9XZfguWv"><code>43C5oRRLS4acjm8Lfo6HNzm2hFsbyHsBLFwhrDMvWDdw7CYViqmXme8vZcd2U9DHhrUvJbon6wpt2SVu9XZfguWv</code></a>. Two-swap total: 10,018 SOL → 948,841.78 USDC</li>
+                      <li><code>2026-11-02T04:50:45Z</code> ARk92box swapped 80,000 USDC → 839.77 SOL via Jupiter — <a href="https://solscan.io/tx/4Z18MBU4TMqnRtz1kbwJCxdq6PbxtcSdd1hhpMEH9Fd4t4d5uQNzZLdAQC9zxk26NkwXN9uGR63vJnMh6o8Jd766"><code>4Z18MBU4TMqnRtz1kbwJCxdq6PbxtcSdd1hhpMEH9Fd4t4d5uQNzZLdAQC9zxk26NkwXN9uGR63vJnMh6o8Jd766</code></a></li>
+                      <li><code>2026-11-02T04:51:30Z</code> ARk92box swapped 150,000 USDC → 1,575.04 SOL — <a href="https://solscan.io/tx/4PufYT8mLoYF8Vq5BPgKjW6sMEXzQUzumJwh6cwjinLvHHicj314p1DZX2uDYaKXgCSRLaWsbAc45JwqaTQWb5Xk"><code>4PufYT8mLoYF8Vq5BPgKjW6sMEXzQUzumJwh6cwjinLvHHicj314p1DZX2uDYaKXgCSRLaWsbAc45JwqaTQWb5Xk</code></a></li>
+                      <li><code>2026-11-02T04:51:40Z</code> ARk92box swapped 600,000 USDC → 6,301.89 SOL — <a href="https://solscan.io/tx/3ukFmtvAXBD5j9R4eKJfhQdH6aJjJDTDbhsbNBQsCEvq9ksmG2kkF257GHArYPeyypfzXLDtXhTrtGHHyeTxGP3t"><code>3ukFmtvAXBD5j9R4eKJfhQdH6aJjJDTDbhsbNBQsCEvq9ksmG2kkF257GHArYPeyypfzXLDtXhTrtGHHyeTxGP3t</code></a>. Three-swap total: 830,000 USDC → 8,716.70 SOL</li>
+                      <li><code>2026-11-02T04:52:09Z</code> 118,841.775544 USDC ARk92box → 6nBoo — <a href="https://solscan.io/tx/2ikZa3mpa2VVxsFzBjE4waa7Ph51g3oFLzGqnYrfTE86xBVNymi2y4FyAdqUPUdvPQrL7ujkc2eNYjXMk2CdMKR9"><code>2ikZa3mpa2VVxsFzBjE4waa7Ph51g3oFLzGqnYrfTE86xBVNymi2y4FyAdqUPUdvPQrL7ujkc2eNYjXMk2CdMKR9</code></a></li>
+                      <li><code>2026-11-02T04:52:36Z</code> 6,071.469325805 SOL → 86incT — <a href="https://solscan.io/tx/4mDuKQjw1ju3orSQTbKfuaG7Q67PH8dLQUV9BoFmbpNN5QdPbQRJUFesZBTb54geRxwkFk9X99PvcbUq7ASbA3nd"><code>4mDuKQjw1ju3orSQTbKfuaG7Q67PH8dLQUV9BoFmbpNN5QdPbQRJUFesZBTb54geRxwkFk9X99PvcbUq7ASbA3nd</code></a></li>
+                      <li><code>2026-11-02T04:52:43Z</code>–<code>04:58:06Z</code> 6nBoo sent 121,324 USDC in 88 transfers to 86 wallets (e.g. <a href="https://solscan.io/tx/5qL1LQpKG3Bt2QCx4qFi9nMfN95D2YtD7MYvwk9KjkZTTjthor5dTowywcnRPcf3hFeiTndBTGR5VJ1Kw97JuiFk"><code>5qL1LQpKG3Bt2QCx4qFi9nMfN95D2YtD7MYvwk9KjkZTTjthor5dTowywcnRPcf3hFeiTndBTGR5VJ1Kw97JuiFk</code></a>; remaining signatures not in this draft)</li>
+                      <li><code>2026-11-02T04:53:40Z</code> Fz1igg sent 10 SOL to BfUX7U — <a href="https://solscan.io/tx/5zqwjUTWPXuUt7Cg3pRG58Md5mgkJJZEJrDQ4P1T3PzMtG5sRwZDG6reS8CYDXwTE6iYFsGXbbf22jk6FGog2V9h"><code>5zqwjUTWPXuUt7Cg3pRG58Md5mgkJJZEJrDQ4P1T3PzMtG5sRwZDG6reS8CYDXwTE6iYFsGXbbf22jk6FGog2V9h</code></a></li>
+                      <li><code>2026-11-02T05:02:01Z</code> BfUX7U sent 9.9 SOL to EVMMUp — <a href="https://solscan.io/tx/5b7h9Nmw1k5FVuSE1nGs7xC2G765o3B84HtxSoFTbiRbwy7QcbsGC8tvWMLRm4jukuTPjc7djbTyPFL1RomMRpVT"><code>5b7h9Nmw1k5FVuSE1nGs7xC2G765o3B84HtxSoFTbiRbwy7QcbsGC8tvWMLRm4jukuTPjc7djbTyPFL1RomMRpVT</code></a></li>
+                      <li><code>2026-11-02T05:04:57Z</code> unlabeled J1QUU ran an instruction on unlabeled program AusZPVX and 9.899599250 SOL came back to BfUX7U — <a href="https://solscan.io/tx/32TYVaxNXg29RcSzfeyULXxn31b4jBQQUG49B6r4tFXr71GdLNrczofSJvcFPEngTtBTehcFJ629PpJzWKrkCVvB"><code>32TYVaxNXg29RcSzfeyULXxn31b4jBQQUG49B6r4tFXr71GdLNrczofSJvcFPEngTtBTehcFJ629PpJzWKrkCVvB</code></a> (inference only: same deposit-address order that came back as the 4ZpYMF test)</li>
+                    </ol>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </section>
@@ -468,12 +531,26 @@
               <strong>466,693.66 SOL</strong>, Eze86
               <strong>485,277.01 SOL</strong> (unmoved), 7SDu
               <strong>4,473.33 SOL</strong> (idle since
-              <code>16:14Z</code>). Total out of AffzFD on 2026-11-01:
-              503,860.52 SOL. Cumulative via Relay: 11,136.247475 SOL
-              became 13.51090233 BTC (25 successful requests). Relay BTC
-              recipients were swept into 6 fresh unspent addresses;
-              15.26804118 BTC rests in this branch. Nothing has been frozen
-              on Solana.
+              <code>16:14Z</code>) (prior snapshot). Total out of AffzFD on 2026-11-01:
+              503,860.52 SOL. After ~<code>2026-11-01T21:12Z</code> AffzFD
+              signed 4 more transfers totalling 19,704.23 SOL. Total out
+              of AffzFD since <code>2026-11-01T09:38Z</code>:
+              523,564.75 SOL. As of ~<code>2026-11-02T05:10Z</code>:
+              AffzFD <strong>446,989.43 SOL</strong>, Eze86
+              <strong>485,277.01 SOL</strong> (unmoved), ARk92box
+              <strong>8,716.29 SOL</strong>, 86incT
+              <strong>6,071.47 SOL</strong>, 7SDu
+              <strong>4,473.33 SOL</strong> (idle since
+              <code>16:14Z</code>), Fw9P2s
+              <strong>3,445.95 SOL</strong>, Fz1igg
+              <strong>137.80 SOL</strong>; total attacker SOL
+              ≈ 954,111. Cumulative via Relay: 11,136.247475 SOL
+              became 13.51090233 BTC (25 successful requests); no new
+              Relay deposits or refunds. Relay BTC recipients were swept
+              into 6 fresh unspent addresses; 15.26804118 BTC still rests
+              unspent in this branch. Solana USDC is Circle-freezable; no
+              freeze observed on these wallets as of ~<code>05:10Z</code>.
+              Nothing has been frozen on Solana.
             </p>
           </section>
 
@@ -512,15 +589,47 @@
                 </tr>
                 <tr>
                   <td>Fresh destination (unmoved)</td>
-                  <td><a href="https://solscan.io/account/Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD"><code>Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD</code></a> (7 SOL test + 485,270 SOL; no outbound tx as of ~<code>2026-11-01T21:12Z</code>; 485,277.0101252 SOL)</td>
+                  <td><a href="https://solscan.io/account/Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD"><code>Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD</code></a> (7 SOL test + 485,270 SOL; no outbound tx as of ~<code>2026-11-02T05:10Z</code>; 485,277.0101252 SOL)</td>
                 </tr>
                 <tr>
                   <td>Hop wallet (inference: attacker-controlled; funded only by AffzFD, signs its own transfers, not on Relay’s published addresses)</td>
-                  <td><a href="https://solscan.io/account/7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK"><code>7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK</code></a> (4,473.329628098 SOL; last outbound <code>2026-11-01T16:14:23Z</code>; idle since)</td>
+                  <td><a href="https://solscan.io/account/7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK"><code>7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK</code></a> (4,473.329628098 SOL; last outbound <code>2026-11-01T16:14:23Z</code>; idle since; no new Relay deposits)</td>
                 </tr>
                 <tr>
                   <td>Hop wallet (new; funded by AffzFD 10 SOL)</td>
                   <td><a href="https://solscan.io/account/4ZpYMF7LqtZ6t6HN7rytWrZBCKBLHJWBudZzPLXyiQ4Y"><code>4ZpYMF7LqtZ6t6HN7rytWrZBCKBLHJWBudZzPLXyiQ4Y</code></a> (holds 9.9995 SOL as of ~<code>2026-11-01T21:12Z</code>)</td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 13,463.96 SOL)</td>
+                  <td><a href="https://solscan.io/account/Fw9P2sFuSRg5VC3nGyh7tx9F76TYVDvQWpaazWpp6848"><code>Fw9P2sFuSRg5VC3nGyh7tx9F76TYVDvQWpaazWpp6848</code></a> (holds 3,445.95 SOL as of ~<code>2026-11-02T05:10Z</code>; signed the first Solana DEX swaps)</td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 6,071.47 SOL)</td>
+                  <td><a href="https://solscan.io/account/86incTwCCSzRdc1idREAR5eZNeEJ9a4iSyeik8oxtMQF"><code>86incTwCCSzRdc1idREAR5eZNeEJ9a4iSyeik8oxtMQF</code></a> (holds 6,071.47 SOL as of ~<code>2026-11-02T05:10Z</code>; no outflow)</td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 168.80 SOL)</td>
+                  <td><a href="https://solscan.io/account/Fz1iggGioypykdhtxKt6a5gKHciuceps6pZrGK93q8WE"><code>Fz1iggGioypykdhtxKt6a5gKHciuceps6pZrGK93q8WE</code></a> (holds 137.80 SOL as of ~<code>2026-11-02T05:10Z</code>)</td>
+                </tr>
+                <tr>
+                  <td>USDC delivery / reverse-swap wallet</td>
+                  <td><a href="https://solscan.io/account/ARk92boxCbssS2p8AL3x9GvLzZYxcRFueXvpUnGGZciQ"><code>ARk92boxCbssS2p8AL3x9GvLzZYxcRFueXvpUnGGZciQ</code></a> (received 948,841.78 USDC from Fw9P2 Jupiter swaps; holds 8,716.29 SOL as of ~<code>2026-11-02T05:10Z</code>)</td>
+                </tr>
+                <tr>
+                  <td>USDC fan-out wallet</td>
+                  <td><a href="https://solscan.io/account/6nBooPf9yUnp3JiuuNpdhFG4BCyHzxEEUUL41hsQc1Jb"><code>6nBooPf9yUnp3JiuuNpdhFG4BCyHzxEEUUL41hsQc1Jb</code></a> (118,841.78 USDC in from ARk92box; 121,324 USDC out in 88 transfers to 86 wallets; ~0.78 USDC remaining, not frozen)</td>
+                </tr>
+                <tr>
+                  <td>Hop from Fz1igg (9.9 SOL test)</td>
+                  <td><a href="https://solscan.io/account/BfUX7UY6BmPiEWobza8Z9xyrDR1FSUMbfiRMzGAU1vX"><code>BfUX7UY6BmPiEWobza8Z9xyrDR1FSUMbfiRMzGAU1vX</code></a> (10 SOL in from Fz1igg; sent 9.9 SOL to EVMMUp; 9.899599250 SOL returned via AusZPVX)</td>
+                </tr>
+                <tr>
+                  <td>Unlabeled deposit hop (not identified)</td>
+                  <td><a href="https://solscan.io/account/EVMMUpGAknWuhvQARrNzoHu8qi2Pd7H9EzzkzM5o6y4d"><code>EVMMUpGAknWuhvQARrNzoHu8qi2Pd7H9EzzkzM5o6y4d</code></a> (9.9 SOL in from BfUX7U at <code>05:02:01Z</code>)</td>
+                </tr>
+                <tr>
+                  <td>Jupiter v6 program</td>
+                  <td><a href="https://solscan.io/account/JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"><code>JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4</code></a> (first DEX use on Solana from this tree)</td>
                 </tr>
                 <tr>
                   <td>Fresh hop from 4ZpYMF (unlabeled)</td>
@@ -725,7 +834,7 @@
                 <tr>
                   <td><code>2026-11-01T15:07:53Z</code>–<code>15:19Z</code></td>
                   <td>three BLOCKED_WALLET deposit/refund pairs in the timeline</td>
-                  <td>Hbqv2 499.9 SOL, GfT1c 499.9 SOL, and Eyj97 299.9 SOL deposited into Relay. Relay’s Requests API reports each as failure with reason <code>BLOCKED_WALLET</code>. Each refunded on chain within ~3 minutes. All three named BTC recipient <a href="https://mempool.space/address/bc1q67dk8h92dqx5fcxgqwjdg73806mfefdk9rqxeg"><code>bc1q67dk8h92dqx5fcxgqwjdg73806mfefdk9rqxeg</code></a>. Refunds returned to 7SDu at <code>15:19Z</code> (return signatures not in this draft). Four refusals in total including CyLS1. No Relay deposits from this wallet tree after <code>15:15Z</code>.</td>
+                  <td>Hbqv2 499.9 SOL, GfT1c 499.9 SOL, and Eyj97 299.9 SOL deposited into Relay. Relay’s Requests API reports each as failure with reason <code>BLOCKED_WALLET</code>. Each refunded on chain within ~3 minutes. All three named BTC recipient <a href="https://mempool.space/address/bc1q67dk8h92dqx5fcxgqwjdg73806mfefdk9rqxeg"><code>bc1q67dk8h92dqx5fcxgqwjdg73806mfefdk9rqxeg</code></a>. Refunds returned to 7SDu at <code>15:19Z</code> (return signatures not in this draft). Four refusals in total including CyLS1. No Relay deposits from this wallet tree after <code>15:15Z</code> (still none as of ~<code>05:10Z</code>).</td>
                 </tr>
                 <tr>
                   <td><code>2026-11-01T18:56:13Z</code></td>
@@ -736,6 +845,31 @@
                   <td><code>2026-11-01T19:01:16Z</code>–<code>19:04:39Z</code></td>
                   <td><a href="https://solscan.io/tx/2465stZJu9MHqWToCdwKfy89HWpzaYar7mkqp4mWiQGbbffWFf9eY7A3izaNDsNxtgCQG3eX9j36V7XKtB5bnHme"><code>2465stZJu9MHqWToCdwKfy89HWpzaYar7mkqp4mWiQGbbffWFf9eY7A3izaNDsNxtgCQG3eX9j36V7XKtB5bnHme</code></a>; return <a href="https://solscan.io/tx/464JNz5SaV56735Q1zARRZxhjPwzLkk6cc7oFA7PxHmgxySs85U74Pxkk2H2X4DDbKgshJZP7g1yDbgAHh8NCuUj"><code>464JNz5SaV56735Q1zARRZxhjPwzLkk6cc7oFA7PxHmgxySs85U74Pxkk2H2X4DDbKgshJZP7g1yDbgAHh8NCuUj</code></a></td>
                   <td>4ZpYMF sent 3 SOL to fresh HZjFu7. Unlabeled J1QUU ran <code>FetchNative</code> on unlabeled program AusZPVX and sent 2.99959925 SOL back to 4ZpYMF. Inference only: a deposit-address order that came back; J1QUU and the program are not identified. 4ZpYMF holds 9.9995 SOL.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-02T04:14:12Z</code>–<code>04:52:36Z</code></td>
+                  <td>four AffzFD outbound signatures in the ~05:10Z timeline</td>
+                  <td>19,704.23 SOL out of AffzFD to three new wallets: 13,463.96 SOL to Fw9P2s (two transfers), 168.80 SOL to Fz1igg, 6,071.47 SOL to 86incT. Total out of AffzFD since <code>2026-11-01T09:38Z</code>: 523,564.75 SOL in 17 transfers. Eze86 still unmoved.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-02T04:49:12Z</code>–<code>04:49:56Z</code></td>
+                  <td><a href="https://solscan.io/tx/2XUytqjRChD5ojYxVrEMVrbdqJTaBLBRq5R31oKZzaUy7oNnAXPLu8vetmD1jwdnp4g7opNeq2kcBSZpDkyxeYMt"><code>2XUytqjRChD5ojYxVrEMVrbdqJTaBLBRq5R31oKZzaUy7oNnAXPLu8vetmD1jwdnp4g7opNeq2kcBSZpDkyxeYMt</code></a>; <a href="https://solscan.io/tx/43C5oRRLS4acjm8Lfo6HNzm2hFsbyHsBLFwhrDMvWDdw7CYViqmXme8vZcd2U9DHhrUvJbon6wpt2SVu9XZfguWv"><code>43C5oRRLS4acjm8Lfo6HNzm2hFsbyHsBLFwhrDMvWDdw7CYViqmXme8vZcd2U9DHhrUvJbon6wpt2SVu9XZfguWv</code></a></td>
+                  <td>First DEX use on Solana: Fw9P2 swapped 10,018 SOL into 948,841.78 USDC via Jupiter program <a href="https://solscan.io/account/JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"><code>JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4</code></a>, delivered to a separate wallet ARk92box (18 SOL at <code>04:49:12Z</code>, 10,000 SOL at <code>04:49:56Z</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-02T04:50:45Z</code>–<code>04:52:09Z</code></td>
+                  <td>three reverse-swap signatures and the USDC send in the timeline</td>
+                  <td>ARk92box swapped 830,000 USDC back into 8,716.70 SOL (80,000 → 839.77 via Jupiter; 150,000 → 1,575.04; 600,000 → 6,301.89) and sent 118,841.775544 USDC to 6nBoo.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-02T04:52:43Z</code>–<code>04:58:06Z</code></td>
+                  <td>88 transfers (e.g. <a href="https://solscan.io/tx/5qL1LQpKG3Bt2QCx4qFi9nMfN95D2YtD7MYvwk9KjkZTTjthor5dTowywcnRPcf3hFeiTndBTGR5VJ1Kw97JuiFk"><code>5qL1LQpKG3Bt2QCx4qFi9nMfN95D2YtD7MYvwk9KjkZTTjthor5dTowywcnRPcf3hFeiTndBTGR5VJ1Kw97JuiFk</code></a>; remaining signatures not in this draft)</td>
+                  <td>6nBoo split 121,324 USDC into 88 transfers to 86 wallets. Solana USDC is Circle-freezable; no freeze observed on ARk92box or 6nBoo token accounts as of ~<code>05:10Z</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-02T04:53:40Z</code>–<code>05:04:57Z</code></td>
+                  <td><a href="https://solscan.io/tx/5zqwjUTWPXuUt7Cg3pRG58Md5mgkJJZEJrDQ4P1T3PzMtG5sRwZDG6reS8CYDXwTE6iYFsGXbbf22jk6FGog2V9h"><code>5zqwjUTWPXuUt7Cg3pRG58Md5mgkJJZEJrDQ4P1T3PzMtG5sRwZDG6reS8CYDXwTE6iYFsGXbbf22jk6FGog2V9h</code></a>; 9.9 SOL <a href="https://solscan.io/tx/5b7h9Nmw1k5FVuSE1nGs7xC2G765o3B84HtxSoFTbiRbwy7QcbsGC8tvWMLRm4jukuTPjc7djbTyPFL1RomMRpVT"><code>5b7h9Nmw1k5FVuSE1nGs7xC2G765o3B84HtxSoFTbiRbwy7QcbsGC8tvWMLRm4jukuTPjc7djbTyPFL1RomMRpVT</code></a>; return <a href="https://solscan.io/tx/32TYVaxNXg29RcSzfeyULXxn31b4jBQQUG49B6r4tFXr71GdLNrczofSJvcFPEngTtBTehcFJ629PpJzWKrkCVvB"><code>32TYVaxNXg29RcSzfeyULXxn31b4jBQQUG49B6r4tFXr71GdLNrczofSJvcFPEngTtBTehcFJ629PpJzWKrkCVvB</code></a></td>
+                  <td>Fz1igg sent 10 SOL to BfUX7U. BfUX7U sent 9.9 SOL to EVMMUp. Unlabeled J1QUU ran an instruction on unlabeled program AusZPVX and 9.899599250 SOL came back to BfUX7U. Inference only: same deposit-address order that came back as the 4ZpYMF test.</td>
                 </tr>
               </tbody>
             </table>
@@ -911,7 +1045,7 @@
               Refunds returned to 7SDu at <code>15:19Z</code>. Four
               <code>BLOCKED_WALLET</code> refusals in total (CyLS1, Hbqv2,
               GfT1c, Eyj97). No Relay deposits from this wallet tree after
-              <code>15:15Z</code>.
+              <code>15:15Z</code> (still none as of ~<code>05:10Z</code>).
             </p>
             <p>
               Correction versus the ~<code>13:05Z</code> snapshot: Relay
@@ -953,9 +1087,17 @@
               464102627, prior snapshot): AffzFD 472,824.611408 SOL; Eze86
               485,277.010123 SOL (unmoved); 7SDu 3,861.971900 SOL (still
               active). Holdings as of ~<code>2026-11-01T21:12Z</code> (slot
-              464235029): AffzFD 466,693.65585991 SOL; Eze86 485,277.0101252
+              464235029, prior snapshot): AffzFD 466,693.65585991 SOL; Eze86 485,277.0101252
               SOL (unmoved); 7SDu 4,473.329628098 SOL (idle since
-              <code>16:14:23Z</code>); 4ZpYMF 9.9995 SOL. Prior snapshot at
+              <code>16:14:23Z</code>); 4ZpYMF 9.9995 SOL. Holdings as of
+              ~<code>2026-11-02T05:10Z</code> (slot 464371513): AffzFD
+              446,989.425 SOL; Eze86 485,277.0101252 SOL (unmoved);
+              ARk92box 8,716.29 SOL; 86incT 6,071.47 SOL; 7SDu
+              4,473.329628098 SOL (idle since <code>16:14:23Z</code>);
+              Fw9P2s 3,445.95 SOL; Fz1igg 137.80 SOL; total attacker SOL
+              ≈ 954,111. No new Relay deposits or refunds after
+              <code>15:15Z</code>. 15.26804118 BTC from Relay fills still
+              unspent. Prior snapshot at
               <code>2026-11-01T02:04:53Z</code>: AffzFD still held
               970,554.16 SOL and had signed no transactions. The small
               excess over 970,521.9 on that earlier snapshot is inbound
@@ -998,7 +1140,9 @@
               prove that keys were or were not leaked, so “no key leak”
               stays Binance’s claim. On Ethereum, Binance 14’s own key
               signed the EIP-7702 authorizations; that also cannot prove
-              the key did not leak.
+              the key did not leak. Binance has not published a
+              root-cause statement specific to its Solana hot wallet
+              <a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"><code>5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9</code></a>.
             </p>
           </section>
 
@@ -1028,8 +1172,12 @@
               <li>BTC sweep txids into the 6 fresh unspent addresses are not in this draft. The ~<code>12:48Z</code> sweep into <code>bc1qr90qulgpa5pmuy24njkz3fe0cqrfcmye4feeuy</code> had 9 inputs, 3 from this set; the other 6 inputs were not traced.</li>
               <li>No ownership or exchange label is known for the BTC recipient or sweep addresses; they are not on the FBI alert list.</li>
               <li><a href="https://solscan.io/account/6H7GCfCx8JMUACbmSYZjConeJGzViPHhMvvYak5SDDBe"><code>6H7GCfCx8JMUACbmSYZjConeJGzViPHhMvvYak5SDDBe</code></a> is unlabeled and not identified; signatures for the 12 later memo transfers (1,710 SOL) are not in this draft; the return signature taking the CyLS1 refund from CyLS1 back to 7SDu at <code>13:04:12Z</code> is not in this draft; return signatures taking the Hbqv2 / GfT1c / Eyj97 refunds back to 7SDu at <code>15:19Z</code> are not in this draft.</li>
-              <li><a href="https://solscan.io/account/J1QUUqWHE39CHN6iep8EmrXS4EnMexULZHKxSiZa9ZLp"><code>J1QUUqWHE39CHN6iep8EmrXS4EnMexULZHKxSiZa9ZLp</code></a> and program <a href="https://solscan.io/account/AusZPVXPoUM8QJJ2SL4KwvRGCQ22cDg6Y4rg7EvFrxi7"><code>AusZPVXPoUM8QJJ2SL4KwvRGCQ22cDg6Y4rg7EvFrxi7</code></a> are unlabeled and not identified; the “deposit-address order that came back” reading of the 4ZpYMF <code>FetchNative</code> bounce is inference only.</li>
-              <li>Activity is ongoing: as of ~<code>2026-11-01T21:12Z</code> AffzFD still held 466,693.66 SOL; Eze86 485,277.01 SOL unmoved; 7SDu 4,473.33 SOL idle since <code>16:14Z</code>; 4ZpYMF 9.9995 SOL.</li>
+              <li><a href="https://solscan.io/account/J1QUUqWHE39CHN6iep8EmrXS4EnMexULZHKxSiZa9ZLp"><code>J1QUUqWHE39CHN6iep8EmrXS4EnMexULZHKxSiZa9ZLp</code></a> and program <a href="https://solscan.io/account/AusZPVXPoUM8QJJ2SL4KwvRGCQ22cDg6Y4rg7EvFrxi7"><code>AusZPVXPoUM8QJJ2SL4KwvRGCQ22cDg6Y4rg7EvFrxi7</code></a> are unlabeled and not identified; the “deposit-address order that came back” reading of the 4ZpYMF <code>FetchNative</code> bounce and of the Fz1igg/BfUX7U 9.9 SOL bounce is inference only.</li>
+              <li>Activity is ongoing: as of ~<code>2026-11-02T05:10Z</code> AffzFD still held 446,989.43 SOL; Eze86 485,277.01 SOL unmoved; ARk92box 8,716.29 SOL; 86incT 6,071.47 SOL; 7SDu 4,473.33 SOL idle since <code>16:14Z</code>; Fw9P2s 3,445.95 SOL; Fz1igg 137.80 SOL; total attacker SOL ≈ 954,111.</li>
+              <li>Signatures for 87 of the 88 6nBoo USDC fan-out transfers are not in this draft (one example is linked). 6nBoo’s 121,324 USDC out exceeds the 118,841.78 USDC received from ARk92box; the extra inflow is not traced here.</li>
+              <li>The aggregator/program for ARk92box’s 150,000 and 600,000 USDC reverse swaps is not Jupiter v6; it is not identified in this draft.</li>
+              <li>Solana USDC is Circle-freezable; no freeze was observed on ARk92box or 6nBoo token accounts as of ~<code>05:10Z</code>. Later freezes are not checked here.</li>
+              <li>Binance has not published a root-cause statement specific to its Solana hot wallet <a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"><code>5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9</code></a>.</li>
             </ul>
           </section>
 
@@ -1090,6 +1238,28 @@
               <li><a href="https://solscan.io/account/Eyj97npG8bwCkvTt1s58gzWXjXNH3tsCmbcfgPSae377">Solscan — Eyj97 hop</a></li>
               <li><a href="https://solscan.io/tx/2dG87jzLXSHd2J68fhrwBvYE5VB2riTxSnfpmc3QxtywUyDRFPbk6Eec4N6Boe33aaLFJyz2Dx2X2QKHC688ta4k">Solscan — Eyj97 299.9 SOL Relay deposit</a></li>
               <li><a href="https://solscan.io/tx/5YUbunSEGVMrZm3x7d3aa5SvCWf16urpXiB8oZ2a9UvdmQeac8btdQZyLw76HSS8ue1SNDd9uhKh6fjvMXZKxKUq">Solscan — Eyj97 Relay refund</a></li>
+              <li><a href="https://solscan.io/tx/2ueAGrd99mcfWkEHeXWxpMJpzimd6A1saRMLk5sMGxDnhy283eYqRV9x3c8qwqxLVMomanbVc1QurJ6gcKTZkC7h">Solscan — 3.242394673 SOL to Fw9P2s</a></li>
+              <li><a href="https://solscan.io/tx/36aobXXhzkc4Af2KQVUgVH3s3iWgDo1KUYzyrza9FhebDDEacrv9zHiiQS6RsvF1vZdSxnDsc9kme17fRS27jjL9">Solscan — 168.804924789 SOL to Fz1igg</a></li>
+              <li><a href="https://solscan.io/tx/4T8pbtaGnAMUb5DxRoq9zq6Jn7XwwMuwZv7u7ZXVwsyv9DsJdvjZL1KWini6UZwvFxaeA7ADQMG5CNL3NiurmHRd">Solscan — 13,460.714165223 SOL to Fw9P2s</a></li>
+              <li><a href="https://solscan.io/tx/4mDuKQjw1ju3orSQTbKfuaG7Q67PH8dLQUV9BoFmbpNN5QdPbQRJUFesZBTb54geRxwkFk9X99PvcbUq7ASbA3nd">Solscan — 6,071.469325805 SOL to 86incT</a></li>
+              <li><a href="https://solscan.io/account/Fw9P2sFuSRg5VC3nGyh7tx9F76TYVDvQWpaazWpp6848">Solscan — Fw9P2s hop</a></li>
+              <li><a href="https://solscan.io/account/Fz1iggGioypykdhtxKt6a5gKHciuceps6pZrGK93q8WE">Solscan — Fz1igg hop</a></li>
+              <li><a href="https://solscan.io/account/86incTwCCSzRdc1idREAR5eZNeEJ9a4iSyeik8oxtMQF">Solscan — 86incT hop</a></li>
+              <li><a href="https://solscan.io/tx/2XUytqjRChD5ojYxVrEMVrbdqJTaBLBRq5R31oKZzaUy7oNnAXPLu8vetmD1jwdnp4g7opNeq2kcBSZpDkyxeYMt">Solscan — Jupiter 18 SOL to USDC (ARk92box)</a></li>
+              <li><a href="https://solscan.io/tx/43C5oRRLS4acjm8Lfo6HNzm2hFsbyHsBLFwhrDMvWDdw7CYViqmXme8vZcd2U9DHhrUvJbon6wpt2SVu9XZfguWv">Solscan — Jupiter 10,000 SOL to USDC (ARk92box)</a></li>
+              <li><a href="https://solscan.io/account/JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4">Solscan — Jupiter v6 program</a></li>
+              <li><a href="https://solscan.io/account/ARk92boxCbssS2p8AL3x9GvLzZYxcRFueXvpUnGGZciQ">Solscan — ARk92box (USDC delivery / reverse-swap)</a></li>
+              <li><a href="https://solscan.io/tx/4Z18MBU4TMqnRtz1kbwJCxdq6PbxtcSdd1hhpMEH9Fd4t4d5uQNzZLdAQC9zxk26NkwXN9uGR63vJnMh6o8Jd766">Solscan — 80,000 USDC to 839.77 SOL</a></li>
+              <li><a href="https://solscan.io/tx/4PufYT8mLoYF8Vq5BPgKjW6sMEXzQUzumJwh6cwjinLvHHicj314p1DZX2uDYaKXgCSRLaWsbAc45JwqaTQWb5Xk">Solscan — 150,000 USDC to 1,575.04 SOL</a></li>
+              <li><a href="https://solscan.io/tx/3ukFmtvAXBD5j9R4eKJfhQdH6aJjJDTDbhsbNBQsCEvq9ksmG2kkF257GHArYPeyypfzXLDtXhTrtGHHyeTxGP3t">Solscan — 600,000 USDC to 6,301.89 SOL</a></li>
+              <li><a href="https://solscan.io/tx/2ikZa3mpa2VVxsFzBjE4waa7Ph51g3oFLzGqnYrfTE86xBVNymi2y4FyAdqUPUdvPQrL7ujkc2eNYjXMk2CdMKR9">Solscan — 118,841.775544 USDC to 6nBoo</a></li>
+              <li><a href="https://solscan.io/account/6nBooPf9yUnp3JiuuNpdhFG4BCyHzxEEUUL41hsQc1Jb">Solscan — 6nBoo (USDC fan-out)</a></li>
+              <li><a href="https://solscan.io/tx/5qL1LQpKG3Bt2QCx4qFi9nMfN95D2YtD7MYvwk9KjkZTTjthor5dTowywcnRPcf3hFeiTndBTGR5VJ1Kw97JuiFk">Solscan — example 6nBoo USDC fan-out</a></li>
+              <li><a href="https://solscan.io/tx/5zqwjUTWPXuUt7Cg3pRG58Md5mgkJJZEJrDQ4P1T3PzMtG5sRwZDG6reS8CYDXwTE6iYFsGXbbf22jk6FGog2V9h">Solscan — 10 SOL Fz1igg to BfUX7U</a></li>
+              <li><a href="https://solscan.io/account/BfUX7UY6BmPiEWobza8Z9xyrDR1FSUMbfiRMzGAU1vX">Solscan — BfUX7U hop</a></li>
+              <li><a href="https://solscan.io/tx/5b7h9Nmw1k5FVuSE1nGs7xC2G765o3B84HtxSoFTbiRbwy7QcbsGC8tvWMLRm4jukuTPjc7djbTyPFL1RomMRpVT">Solscan — 9.9 SOL BfUX7U to EVMMUp</a></li>
+              <li><a href="https://solscan.io/account/EVMMUpGAknWuhvQARrNzoHu8qi2Pd7H9EzzkzM5o6y4d">Solscan — EVMMUp (unlabeled)</a></li>
+              <li><a href="https://solscan.io/tx/32TYVaxNXg29RcSzfeyULXxn31b4jBQQUG49B6r4tFXr71GdLNrczofSJvcFPEngTtBTehcFJ629PpJzWKrkCVvB">Solscan — 9.899599250 SOL return to BfUX7U</a></li>
               <li><a href="https://mempool.space/address/bc1qq2mvrp4g3ugd424dw4xv53rgsf8szkrv853jrc">mempool.space — Relay BTC solver</a></li>
               <li><a href="https://mempool.space/address/bc1q67dk8h92dqx5fcxgqwjdg73806mfefdk9rqxeg">mempool.space — named blocked-request BTC recipient</a></li>
               <li><a href="https://mempool.space/address/bc1q8xnarcqhjkg3v77dtzy4x9vrqst9e7z4n04ps5">mempool.space — BTC still unswept 1.01958634</a></li>
