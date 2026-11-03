@@ -405,7 +405,7 @@
               that a 200 SOL 7SDu peel chain ended at 7xRJ… → 6H7G… at
               <code>19:38</code>–<code>19:50Z</code> is not verified here.
               As of ~<code>2026-11-02T21:00Z</code> (slot ~464638415,
-              ~<code>20:55Z</code>): AffzFD
+              ~<code>20:55Z</code>) (prior snapshot): AffzFD
               <strong>413,372.61 SOL</strong>, Eze86
               <strong>485,277.01 SOL</strong> (unmoved), 7SDu
               <strong>3,052.33 SOL</strong>, DdwZZs
@@ -413,13 +413,71 @@
               <strong>518.49 SOL</strong> (new, unmoved), Fz1igg
               <strong>323.45 SOL</strong>; tracked resting SOL
               ~<strong>905,113</strong>.
+              After ~<code>2026-11-02T21:00Z</code> AffzFD signed 41 more
+              System transfers totalling <strong>121,804.79 SOL</strong>
+              (<code>2026-11-03T01:37:19Z</code>–<code>12:59:12Z</code>)
+              to 28 first-hop wallets. AffzFD signed nothing between
+              <code>15:43Z</code> Nov 2 and <code>01:37Z</code> Nov 3.
+              Total out of AffzFD since
+              <code>2026-11-01T09:38Z</code>:
+              <strong>~679,000 SOL</strong> (557,191.96 + 121,804.79).
+              AffzFD holds <strong>291,567.83 SOL</strong>
+              (slot ~464.909M, ~<code>13:05Z</code>). Eze86 remains
+              unmoved at <strong>485,277.01 SOL</strong>. 7SDu emptied:
+              6 sends totalling <strong>3,052.33 SOL</strong>
+              (<code>05:33:05Z</code>–<code>06:28:17Z</code>); 7SDu now
+              holds <strong>0.000658 SOL</strong>.
+              FoRNTj
+              <a href="https://solscan.io/account/FoRNTjJmZZ7Sd8tEdfJHM8nSHufM6Ko9PubPnJhAx8qh"><code>FoRNTjJmZZ7Sd8tEdfJHM8nSHufM6Ko9PubPnJhAx8qh</code></a>
+              sent 2,005.54 SOL → 183,212.90 USDC via RFQ program
+              <a href="https://solscan.io/account/61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"><code>61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH</code></a>,
+              Circle CCTP to Noble (domain 4), dYdX chain subaccount
+              deposit and withdrawal, IBC to Noble Orbiter, CCTP back to
+              Solana (domain 5), then 183,211.0 USDC → 2,003.0125 SOL.
+              Net: ~2,005.5 SOL around Noble/dYdX and back to ~2,003.0 SOL
+              within ~6 minutes. This is a <strong>layering loop, not an
+              exit</strong>; the USDC was on Solana again, so no Circle
+              freeze was attempted or visible. FoRNTj later
+              (<code>12:31:33Z</code>) sent 8,723.8195 SOL to
+              <a href="https://solscan.io/account/7EuBfbiNpco3EQWNm9az5nb4MB3HKYWqs9v3yawPvY8T"><code>7EuBfbiNpco3EQWNm9az5nb4MB3HKYWqs9v3yawPvY8T</code></a>,
+              which still holds it. Two more Mayan whETH orders were
+              refunded (same pattern as Nov 2); no Mayan fill to an EVM
+              address was seen. Program
+              <a href="https://solscan.io/account/9fhQBbumKEFuXtMBDw8AaQyAjCorLGJQiS3skWZdQyQD"><code>9fhQBbumKEFuXtMBDw8AaQyAjCorLGJQiS3skWZdQyQD</code></a>
+              /
+              <a href="https://solscan.io/account/L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95"><code>L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95</code></a>
+              took 480.9 SOL (X labels this Bridgers; label unverified);
+              BTC side not traced. Marinade mSOL laddering is churn, with
+              no exit seen. No Relay deposits from the walked wallets in
+              this window; no Bridgers program ID confirmed; no CEX
+              deposit address identified. A reported X claim (@wirisrk)
+              that Cw1XRJ swapped 2,409 SOL for 222,235 USDC then CCTP,
+              and that “~37,179 SOL [was] off Solana at
+              <code>04:59Z</code>”, is not verified here.
+              Burn-and-reissue applies only to issuer tokens. Native SOL
+              cannot be frozen or burned by an issuer. USDC could be
+              frozen by Circle only while it sits on Solana or EVM; none
+              was frozen here.
+              As of ~<code>2026-11-03T13:05Z</code> (slot ~464.909M):
+              AffzFD <strong>291,567.83 SOL</strong>, Eze86
+              <strong>485,277.01 SOL</strong> (unmoved), 7SDu emptied
+              (<strong>0.000658 SOL</strong>); largest resting
+              second-level 7EuBfbi <strong>8,723.82 SOL</strong>, 9xwuN97
+              <strong>5,275.22 SOL</strong>, CihyoEKF
+              <strong>721.03 SOL</strong>, GaBzy3
+              <strong>619.22 SOL</strong>, HZfEqES
+              <strong>300 SOL</strong>, Fz1igg
+              <strong>298.45 SOL</strong>, AxoJYH8
+              <strong>190 SOL</strong>; third-level of the 32 biggest
+              second-level wallets ~5,935 SOL. 25 of 28 first-hop wallets
+              are empty (&lt;0.03 SOL).
               Lookalike-address dust sent to the hop wallets is third-party
               address poisoning, not attacker flow. Press (Lookonchain, via
               crypto.news) said 486,970 SOL was being swapped to BTC via
               Relay; that is not supported on chain. A reported 1,012,715
               SOL cumulative out of AffzFD is not supported on chain:
               AffzFD out since <code>2026-11-01T09:38Z</code> is
-              ~557,191.96 SOL. Reported claims that
+              ~679,000 SOL (557,191.96 + 121,804.79). Reported claims that
               this wallet “sent tokens” to memecoin dev wallets ($NOTSAFU,
               $LAZARUS, $TT) are false.
             </p>
@@ -642,6 +700,37 @@
                     </ol>
                   </td>
                 </tr>
+                <tr>
+                  <td><code>2026-11-03</code> ~13:05Z</td>
+                  <td>
+                    After ~<code>21:00Z</code> Nov 2 AffzFD signed 41 more System transfers totalling 121,804.79 SOL to 28 first-hop wallets (<code>01:37:19Z</code>–<code>12:59:12Z</code>). AffzFD signed nothing between <code>15:43Z</code> Nov 2 and <code>01:37Z</code> Nov 3. Total out of AffzFD since <code>2026-11-01T09:38Z</code>: ~679,000 SOL (557,191.96 + 121,804.79). AffzFD holds 291,567.83 SOL (slot ~464.909M, ~13:05Z). Eze86 still unmoved at 485,277.01 SOL. 7SDu emptied (3,052.33 SOL in 6 sends; now 0.000658 SOL). FoRNTj Noble/dYdX CCTP path is a layering loop, not an exit (~2,005.54 SOL → 183,212.90 USDC → Noble → dYdX → IBC to Noble Orbiter → CCTP back to Solana → 2,003.01 SOL). Two more Mayan whETH orders were refunded. Program 9fhQBbum…/L2TExMFK… took 480.9 SOL (X Bridgers label unverified). Marinade mSOL laddering is churn. No Relay deposits; no CEX deposit address identified. 25 of 28 first-hop wallets are empty (&lt;0.03 SOL).
+                    <ol>
+                      <li><code>2026-11-03T01:37:19Z</code> 14,035.65 SOL → H381HE — <a href="https://solscan.io/tx/2krnYJW1828TxZr4s6VpLzasYP7k6JrTjAvwCHuAVJY1ofoqDYWEMDurXndKpgETuibr459FttXuGPF5SrUVsrgX"><code>2krnYJW1828TxZr4s6VpLzasYP7k6JrTjAvwCHuAVJY1ofoqDYWEMDurXndKpgETuibr459FttXuGPF5SrUVsrgX</code></a></li>
+                      <li><code>2026-11-03T03:18:23Z</code> 6,459.88 SOL → GadT2M — <a href="https://solscan.io/tx/3NuXo7VGKbrB7TKFwrsL1HYSAZpaB27f284ZTKt3DUM1Tm5XC1GfsqczHyipY1cqN4sQft7oFQHN4snmKULCM8jP"><code>3NuXo7VGKbrB7TKFwrsL1HYSAZpaB27f284ZTKt3DUM1Tm5XC1GfsqczHyipY1cqN4sQft7oFQHN4snmKULCM8jP</code></a></li>
+                      <li><code>2026-11-03T03:53:45Z</code> 5,283.29 SOL → EYNsnn — <a href="https://solscan.io/tx/S9LCKkhhGhnLv3SrFn4ntygEdQpojwsNvzp3fQiUMKnuFVjjQW1gDFvxLoqUYGoBg6iAhfz85ngwEtJo2xj9GLS"><code>S9LCKkhhGhnLv3SrFn4ntygEdQpojwsNvzp3fQiUMKnuFVjjQW1gDFvxLoqUYGoBg6iAhfz85ngwEtJo2xj9GLS</code></a></li>
+                      <li><code>2026-11-03T05:13:10Z</code>–<code>09:39:52Z</code> GaBzy3 received eight transfers (864.60 + 1,727.59 + 865.55 + 1,734.53 + 1,075.33 + 2,592.64 + 1,730.60 + 2,595.00 SOL); GaBzy3 now 619.22 SOL. First of those: <a href="https://solscan.io/tx/5XXMpQEPq7osMGzdWMVar1G5X6qLE3ASkqn5wrzcsnBLizD8Md6Bs56PERvosBrrt9uXokqMHdvgYYAZQ9GRUZgN"><code>5XXMpQEPq7osMGzdWMVar1G5X6qLE3ASkqn5wrzcsnBLizD8Md6Bs56PERvosBrrt9uXokqMHdvgYYAZQ9GRUZgN</code></a> (864.60 SOL)</li>
+                      <li><code>2026-11-03T05:33:05Z</code>–<code>06:28:17Z</code> 7SDu 6 sends totalling 3,052.33 SOL (emptied, after last 600 SOL send at <code>20:12Z</code> Nov 2): 500 → hDKPza — <a href="https://solscan.io/tx/2q1KnpZ44yoZ8dStRSFcDQkoUMMbeTwdm8f2vJ7TNbHNSP5Cz8BLFiy9qSLnCg7T3p9s6JgV5ewtNckc5Jvu6msY"><code>2q1KnpZ44yoZ8dStRSFcDQkoUMMbeTwdm8f2vJ7TNbHNSP5Cz8BLFiy9qSLnCg7T3p9s6JgV5ewtNckc5Jvu6msY</code></a>; 500 → ArjqGb — <a href="https://solscan.io/tx/2guLErubNs4ihSvJ8TPQv9vuPCKQphZtsrXoezvbtNFzEBXyivsBBLTo6f39zA7ALpaCPp3WxsEsJmhNfiwCwu7w"><code>2guLErubNs4ihSvJ8TPQv9vuPCKQphZtsrXoezvbtNFzEBXyivsBBLTo6f39zA7ALpaCPp3WxsEsJmhNfiwCwu7w</code></a>; 550 → FpdeB1 — <a href="https://solscan.io/tx/3Z8TMzrbkNoCbWxGoaVYtneGFPDQRc2t96HBMGRGXiJ1hKDaaQKzBquWXp4TAuzbGmcHtncDKe7AgJCAgrjg1aEA"><code>3Z8TMzrbkNoCbWxGoaVYtneGFPDQRc2t96HBMGRGXiJ1hKDaaQKzBquWXp4TAuzbGmcHtncDKe7AgJCAgrjg1aEA</code></a>; 480 → 9DyGEV — <a href="https://solscan.io/tx/3dNMpVAGHQHmcpGnoPDUBKyjMo9hbHzzgpA8aZMqbh8QCHJ1EtrAfSexf3L9jCVt5yNJrmHbNiJ8GDGERcV9USGn"><code>3dNMpVAGHQHmcpGnoPDUBKyjMo9hbHzzgpA8aZMqbh8QCHJ1EtrAfSexf3L9jCVt5yNJrmHbNiJ8GDGERcV9USGn</code></a>; 533 → 5tyxZ5 — <a href="https://solscan.io/tx/mijBRxDWiCMbJXBG7SRLi6TkvSuLCvqguutfxnuRCEJmKLaD2Mj6yUJ59DWJcmNcbXuVG6xid7rd4FZZMbmHnAr"><code>mijBRxDWiCMbJXBG7SRLi6TkvSuLCvqguutfxnuRCEJmKLaD2Mj6yUJ59DWJcmNcbXuVG6xid7rd4FZZMbmHnAr</code></a>; 489.33 → 93X5eK — <a href="https://solscan.io/tx/FwUodssZi6JiVKrZ26fSygLe2rCZN1k9va517k9KTKD8gs9wLxAFuxHj6TjS9sDeAT9sr1oiyKvrVmiVSKcnLCi"><code>FwUodssZi6JiVKrZ26fSygLe2rCZN1k9va517k9KTKD8gs9wLxAFuxHj6TjS9sDeAT9sr1oiyKvrVmiVSKcnLCi</code></a>. 7SDu now 0.000658 SOL</li>
+                      <li><code>2026-11-03T05:34:01Z</code> 6,702.45 SOL → 4yuZZk — <a href="https://solscan.io/tx/pLgnbbheFgvp78zkydbKdyF8SZ6pRbhfi9tYot7wvV2chereKJiinvKcbhfAfNErcFsxvnxCfxMDjMdkkTsZDb7"><code>pLgnbbheFgvp78zkydbKdyF8SZ6pRbhfi9tYot7wvV2chereKJiinvKcbhfAfNErcFsxvnxCfxMDjMdkkTsZDb7</code></a></li>
+                      <li><code>2026-11-03T05:37:51Z</code>–<code>09:37:40Z</code> 9xwuN97 received four transfers (872.53 + 5,589.60 + 5,407.50 + 3,205.59 SOL); now 5,275.22 SOL. Largest: <a href="https://solscan.io/tx/5eHRxC64xXzih1xcHFvTjPKDqXCuh5m7irNA9L9dVsv4jpsH5hjp2Xt7D4Xd5gBvnTXptSqESpVffA4k3R65XbKa"><code>5eHRxC64xXzih1xcHFvTjPKDqXCuh5m7irNA9L9dVsv4jpsH5hjp2Xt7D4Xd5gBvnTXptSqESpVffA4k3R65XbKa</code></a> (5,589.60) and <a href="https://solscan.io/tx/5i1UvtvNBhbct3jjA8mV3wQQCa89z8dZE7QSyTFLjpTW7QCHPFhUbZRNDtdr1uoqFLEKTZXyy6EeW3ktxp7eM2q"><code>5i1UvtvNBhbct3jjA8mV3wQQCa89z8dZE7QSyTFLjpTW7QCHPFhUbZRNDtdr1uoqFLEKTZXyy6EeW3ktxp7eM2q</code></a> (5,407.50)</li>
+                      <li><code>2026-11-03T05:45:58Z</code> 6,012.76 SOL → 8T3EUo — <a href="https://solscan.io/tx/3th4aWUz5Gheq3jEd4Xqszcf2ghNet8PF8jXhMu9hQj9PRJ58JbWYngGbB8tc7tvWd3pMC2EdWQtWC7NBe2GfdFJ"><code>3th4aWUz5Gheq3jEd4Xqszcf2ghNet8PF8jXhMu9hQj9PRJ58JbWYngGbB8tc7tvWd3pMC2EdWQtWC7NBe2GfdFJ</code></a></li>
+                      <li><code>2026-11-03T05:58:54Z</code> 14,585.57 SOL → CveMg1 — <a href="https://solscan.io/tx/3ngivDkjGbd1iFRN7PmzwbhsuT544xdgih4BHfNTabGdsRi5dJFdpdDZ1N89W14ph7sgz5oGVe5Gus7teCP6bf1F"><code>3ngivDkjGbd1iFRN7PmzwbhsuT544xdgih4BHfNTabGdsRi5dJFdpdDZ1N89W14ph7sgz5oGVe5Gus7teCP6bf1F</code></a></li>
+                      <li><code>2026-11-03T06:56:40Z</code>–<code>07:37:14Z</code> Noble/dYdX CCTP layering loop (not an exit). FoRNTj gathered +4,584.66 SOL — <a href="https://solscan.io/tx/3t3DrHAQckL13tfc5wZ8QbvCL448bFQNww1zKJe32AVQayTPMzNrajvixqJDct5sKo59gMLreCnRtj2ohvZ8E4T1"><code>3t3DrHAQckL13tfc5wZ8QbvCL448bFQNww1zKJe32AVQayTPMzNrajvixqJDct5sKo59gMLreCnRtj2ohvZ8E4T1</code></a>. <code>06:57:23Z</code> 2,005.54 SOL → 183,212.90 USDC via RFQ 61DFfeTKM7… — <a href="https://solscan.io/tx/33k4MAFVSECGs3BGBHGEhmxhWGDq4mmT14CTMYamvKgFjPRVFnii5XcTor6qbaufXEMKjEmu9mhChLpqLfF1WvZ7"><code>33k4MAFVSECGs3BGBHGEhmxhWGDq4mmT14CTMYamvKgFjPRVFnii5XcTor6qbaufXEMKjEmu9mhChLpqLfF1WvZ7</code></a>. <code>06:58:03Z</code> CCTP DepositForBurnWithCaller 88,521.98 USDC to Noble domain 4, mint recipient <code>noble18z9fzzde66uy7w25w4kwm0jd6dawe2fjf0854s</code> — <a href="https://solscan.io/tx/5kDhgdqTtHxnh6u1A68GeEEnGyWXBr6jWSx2oX31u6jAepL8G5ktdkUwvAMDDh3VBYaVkULqbYNuxF17AWATswex"><code>5kDhgdqTtHxnh6u1A68GeEEnGyWXBr6jWSx2oX31u6jAepL8G5ktdkUwvAMDDh3VBYaVkULqbYNuxF17AWATswex</code></a>. <code>07:01:02Z</code> same, 94,690.88 USDC — <a href="https://solscan.io/tx/3k8iLpFEiJEDTRdk7ULeYoC956ss72sRJMUApDif8Wj3LxPw23H6rQVqDPzj2yocesgcqTSqzHjNbQNKYqGqoRGp"><code>3k8iLpFEiJEDTRdk7ULeYoC956ss72sRJMUApDif8Wj3LxPw23H6rQVqDPzj2yocesgcqTSqzHjNbQNKYqGqoRGp</code></a>. Noble <a href="https://www.mintscan.io/noble/tx/0607CEDD8E5B6F570097F5C5A02AD3E47172BA63EFEBFD8C2EA55216A892816C"><code>0607CEDD8E5B6F570097F5C5A02AD3E47172BA63EFEBFD8C2EA55216A892816C</code></a> (<code>06:58:42Z</code>) mints 88,521.98 USDC and registers the forwarding account on channel-33 to <code>dydx1vkjhx4gw0hr54tfuw98zahj340ufjdnsypwgw3</code>; Noble <a href="https://www.mintscan.io/noble/tx/499FCA41A52728F9280ECA88BBEEB49B991E6B2F0D7BD3C0EB50D6A953B26B43"><code>499FCA41A52728F9280ECA88BBEEB49B991E6B2F0D7BD3C0EB50D6A953B26B43</code></a> (<code>07:01:42Z</code>) mints 94,690.88 USDC. dYdX MsgDepositToSubaccount <a href="https://www.mintscan.io/dydx/tx/B539FBEAB80DD4719B023A1C2A50DCADD9541365EE8F7EEE648BD025027E8D71"><code>B539FBEAB80DD4719B023A1C2A50DCADD9541365EE8F7EEE648BD025027E8D71</code></a> (88,520.73 USDC) and <a href="https://www.mintscan.io/dydx/tx/0F8A6001C5EDDA490D8F10F0439EA58E43092912F9DE41260F702B87773758AD"><code>0F8A6001C5EDDA490D8F10F0439EA58E43092912F9DE41260F702B87773758AD</code></a> (94,690.87 USDC); immediately withdrawn over IBC channel-0 to Noble Orbiter <code>noble15xt7kx5mles58vkkfxvf0lq78sw04jajvfgd4d</code> (<a href="https://www.mintscan.io/dydx/tx/04824832A7C460937951141005897623B6291C9427352398FC116AB9BD5628A9"><code>04824832A7C460937951141005897623B6291C9427352398FC116AB9BD5628A9</code></a> 87,555.00 USDC; <a href="https://www.mintscan.io/dydx/tx/1C9FBE58633B3CD44F6A41D3E0459552DA65567998D199E476C19C24B149FE2C"><code>1C9FBE58633B3CD44F6A41D3E0459552DA65567998D199E476C19C24B149FE2C</code></a> 95,656.599401 USDC). IBC memos instruct Orbiter to CCTP-burn to domain 5 (Solana), mint recipient token account <code>96HM9V6oEfiwKZTWj9uxxdQvButSJCGLRivdTAsmgZ2u</code> owned by <a href="https://solscan.io/account/4fnQuArGVZ5FxiieLq3iMa8icgFDQezLdieW2ZWys355"><code>4fnQuArGVZ5FxiieLq3iMa8icgFDQezLdieW2ZWys355</code></a>. <code>07:03:35Z</code> 183,211.0 USDC → 2,003.0125 SOL — <a href="https://solscan.io/tx/2nBcPmJrH2fjMqyBREyqnYe2yzZWrgTHrpSi3GkWggeH6yJVpJQ7ffG9VH7C47irtxtQ64NRriaRRZ8D42dtRFkd"><code>2nBcPmJrH2fjMqyBREyqnYe2yzZWrgTHrpSi3GkWggeH6yJVpJQ7ffG9VH7C47irtxtQ64NRriaRRZ8D42dtRFkd</code></a>. Then 1,000.2 SOL to pVdqaag (<code>07:26:50Z</code> <a href="https://solscan.io/tx/4nNLqWBYU53yCSs3DtKhMujAmNLrqSfUCHgb8fw4TF3x7BtzJEYGXhLhuZxqS7Rwjf6dJsCLtxLXae2UVmNtaED2"><code>4nNLqWBYU53yCSs3DtKhMujAmNLrqSfUCHgb8fw4TF3x7BtzJEYGXhLhuZxqS7Rwjf6dJsCLtxLXae2UVmNtaED2</code></a>) and 1,002.98 SOL to nfkGcDh (<code>07:37:14Z</code> <a href="https://solscan.io/tx/4yywC4EcLC9X7HWAPcoJgTPkNCFZ8QLV18xcjAygmttvbTbEUw65YtuaXGsE7i25ufubddTFZ3uzHHNJ2k8TQCjZ"><code>4yywC4EcLC9X7HWAPcoJgTPkNCFZ8QLV18xcjAygmttvbTbEUw65YtuaXGsE7i25ufubddTFZ3uzHHNJ2k8TQCjZ</code></a>). USDC was on Solana again; no Circle freeze was attempted or visible</li>
+                      <li><code>2026-11-03T07:49:47Z</code> 6,945.33 SOL → A7sos2 — <a href="https://solscan.io/tx/29K7A9gfc4QBsWDLaCJtwgCGMdFMXvFe8S98X8canjpUtqUFdGxKUDQuuRrS5rBokFzNVJsvHgjVZa8X3XJLfDvU"><code>29K7A9gfc4QBsWDLaCJtwgCGMdFMXvFe8S98X8canjpUtqUFdGxKUDQuuRrS5rBokFzNVJsvHgjVZa8X3XJLfDvU</code></a></li>
+                      <li><code>2026-11-03T09:39:28Z</code> 4,885.12 SOL → 56wmUx (later +1,327.49 at <code>11:25:33Z</code>) — <a href="https://solscan.io/tx/3kwGQuiankMqdoeDvaWYDAkhW3V8GJSF4kkXq7CAH1fUnQWTbZhraT7qbthxRgeG6dtE6oyaGaVb4M1zBEvM4n3f"><code>3kwGQuiankMqdoeDvaWYDAkhW3V8GJSF4kkXq7CAH1fUnQWTbZhraT7qbthxRgeG6dtE6oyaGaVb4M1zBEvM4n3f</code></a></li>
+                      <li><code>2026-11-03T10:14:39Z</code> 1,406.29 SOL → 4BcRUc (later +890.32 at <code>11:20:57Z</code>) — <a href="https://solscan.io/tx/3DsyUWKNcMrcUYb5isdxFi3UHmnL82iPqwpJXEmcate5SJWeBR6BF1Pmo2Y8qdVXyMCy9RK7QBmMN7xCyRpEMTqj"><code>3DsyUWKNcMrcUYb5isdxFi3UHmnL82iPqwpJXEmcate5SJWeBR6BF1Pmo2Y8qdVXyMCy9RK7QBmMN7xCyRpEMTqj</code></a></li>
+                      <li><code>2026-11-03T10:34:12Z</code> 239.31 SOL → 2gEKwi — <a href="https://solscan.io/tx/yPxTLPmMHsnvvBuBboEUrfybQj5wuhCzbB2MhQjpUVThNucnGAf7hhsraVBnji6xB6MghMHMDKYXSP6uB2ME46S"><code>yPxTLPmMHsnvvBuBboEUrfybQj5wuhCzbB2MhQjpUVThNucnGAf7hhsraVBnji6xB6MghMHMDKYXSP6uB2ME46S</code></a>; 2gEKwi later sent 10 + 100 + 129 SOL into program-owned 4AV2Qzp</li>
+                      <li><code>2026-11-03T11:22:58Z</code>–<code>12:20:45Z</code> two more Mayan attempts, both refunded (same pattern as Nov 2). GaBzy3 10 SOL → 923.40 USDC → 0.4075 whETH — <a href="https://solscan.io/tx/Wfvqfa2BQu7fFbxssCVV7CoibzDDH8fTTC39Rg8C5caqhwnAPw8Qh98vEkQHKRM3UiNT4v9mq3iG3ctkLHWQDfN"><code>Wfvqfa2BQu7fFbxssCVV7CoibzDDH8fTTC39Rg8C5caqhwnAPw8Qh98vEkQHKRM3UiNT4v9mq3iG3ctkLHWQDfN</code></a>; Mayan order <a href="https://solscan.io/tx/4NJBjLbmVEXPgDnRARkPFdAJty1k4KuYhRTJ6RwxEXRZ5GLNSWCzsVLFCxkvn2eGHYEdJDtSqku6RiySGLDdtLwo"><code>4NJBjLbmVEXPgDnRARkPFdAJty1k4KuYhRTJ6RwxEXRZ5GLNSWCzsVLFCxkvn2eGHYEdJDtSqku6RiySGLDdtLwo</code></a>; 0.4074 whETH returned <code>12:00:34Z</code> (signed by third party FRoK4LMV…) — <a href="https://solscan.io/tx/23aTvxcxzAVSJVgV5nnCPAkN9nsa9mGsbUTtghy87ffQCGbb8VAUzGMELKNcyt2yMrUPVFTkx6bf2SECU879d5ds"><code>23aTvxcxzAVSJVgV5nnCPAkN9nsa9mGsbUTtghy87ffQCGbb8VAUzGMELKNcyt2yMrUPVFTkx6bf2SECU879d5ds</code></a>; swapped back to 9.94 SOL — <a href="https://solscan.io/tx/5hsvkm31e19nrtA1xN2Y2AWth51xNfzcDepZRNa9MU53gy74o5Ly4hxb2WkhLByXqVE3ctbu8U199VKwQk79Jf7r"><code>5hsvkm31e19nrtA1xN2Y2AWth51xNfzcDepZRNa9MU53gy74o5Ly4hxb2WkhLByXqVE3ctbu8U199VKwQk79Jf7r</code></a>. Second: 10 SOL, 0.4078 whETH at <code>11:38:51Z</code> — <a href="https://solscan.io/tx/2VqtuiYzZrTJXwmQB16Gx7pUrFkQAbns8k5zdG6CpYgKuHCCTsQQPpeR91kCcwrR8FtbHqt8uqZVMPvNQ7gCWiWP"><code>2VqtuiYzZrTJXwmQB16Gx7pUrFkQAbns8k5zdG6CpYgKuHCCTsQQPpeR91kCcwrR8FtbHqt8uqZVMPvNQ7gCWiWP</code></a>; refunded <code>12:19:47Z</code> — <a href="https://solscan.io/tx/4heA2QSE8b1X8uw8zS7crieJ7HGGwCDYV5Lzj3e8MdgPHWtb3xNBP6oMwJh5RpaPKtGP6Ch7gr9UwC3AhusqjpW8"><code>4heA2QSE8b1X8uw8zS7crieJ7HGGwCDYV5Lzj3e8MdgPHWtb3xNBP6oMwJh5RpaPKtGP6Ch7gr9UwC3AhusqjpW8</code></a>; swapped back to 9.92 SOL — <a href="https://solscan.io/tx/33BHHHvSHd8CYhZ1yMd4bYzZr6kZ9wGkfFiAytrEnY9Uv5N2H9kVLJJtBDpe1RFK7uWxdDBqe1VgkrXFJm9HAdTg"><code>33BHHHvSHd8CYhZ1yMd4bYzZr6kZ9wGkfFiAytrEnY9Uv5N2H9kVLJJtBDpe1RFK7uWxdDBqe1VgkrXFJm9HAdTg</code></a>. No Mayan fill to an EVM address was seen</li>
+                      <li><code>2026-11-03T11:01:57Z</code>–<code>12:20:56Z</code> program 9fhQBbum…/L2TExMFK… (X Bridgers label unverified): 2gEKwi 10 + 100 + 129 SOL and 77st56x 120 + 121.9 SOL into <a href="https://solscan.io/account/4AV2Qzp3N4c9RfzyEbNZs2wqWfW4EwKnnxFAZCndvfGh"><code>4AV2Qzp3N4c9RfzyEbNZs2wqWfW4EwKnnxFAZCndvfGh</code></a> (480.9 SOL total). BTC side not traced. Example: <a href="https://solscan.io/tx/3YciyGbHwUTNRXuVBVxYiwie4HX9B5ohRQweKkAt579TKWvaUzAmWaFrLU61NT9u9DXfjtDkk9S9TnTM4p9wak1p"><code>3YciyGbHwUTNRXuVBVxYiwie4HX9B5ohRQweKkAt579TKWvaUzAmWaFrLU61NT9u9DXfjtDkk9S9TnTM4p9wak1p</code></a></li>
+                      <li><code>2026-11-03T11:55:49Z</code> 4,823.44 SOL → 4fMYVT — <a href="https://solscan.io/tx/32sNCUxScK4VFC6vpLZV31rM6eqBdDt62Ls6sQKCQiVFq4qgh1U9gw1frSoeAnUYapofZW7saZxgT7Utep6PFCec"><code>32sNCUxScK4VFC6vpLZV31rM6eqBdDt62Ls6sQKCQiVFq4qgh1U9gw1frSoeAnUYapofZW7saZxgT7Utep6PFCec</code></a></li>
+                      <li><code>2026-11-03T11:56:16Z</code> 3,587.20 SOL → FoRNTj — <a href="https://solscan.io/tx/zc7CtDKAriKuspceWgBxkWtfJ6EK8iLDEv7nFS65BUKd1oniqzX4ZKs8UDr86EYiQiLyn1sbA1895gznDyJBVzL"><code>zc7CtDKAriKuspceWgBxkWtfJ6EK8iLDEv7nFS65BUKd1oniqzX4ZKs8UDr86EYiQiLyn1sbA1895gznDyJBVzL</code></a></li>
+                      <li><code>2026-11-03T12:18:00Z</code> 242.04 SOL → 77st56x — <a href="https://solscan.io/tx/23RNsPd9xmKb5YW8hybwZGeAf8nnN4V73UH1dqvKz4acP66m1gfLiHxVxupr4nMjNgadx8aE7LA5KbEjMf7JQB8i"><code>23RNsPd9xmKb5YW8hybwZGeAf8nnN4V73UH1dqvKz4acP66m1gfLiHxVxupr4nMjNgadx8aE7LA5KbEjMf7JQB8i</code></a></li>
+                      <li><code>2026-11-03T12:31:33Z</code> FoRNTj sent 8,723.8195 SOL to 7EuBfbi (still holding) — <a href="https://solscan.io/tx/2G5mfq7tcPcCUHcSSEHS3yQNXakVg2sEpLrx8pxnVVXSAPkJmQqKMGsQjK4mMXHfbnKzRTf7u8cKzWTSTRe6dDQJ"><code>2G5mfq7tcPcCUHcSSEHS3yQNXakVg2sEpLrx8pxnVVXSAPkJmQqKMGsQjK4mMXHfbnKzRTf7u8cKzWTSTRe6dDQJ</code></a></li>
+                      <li>Remaining AffzFD first-hop transfers (each under 5,000 SOL) went to 3e4QNk (861.28), Fiz2yD (8.66), 2d62RRY (864.00), HsiKbJ (884.75), 4uhvmh (1,419.67), C7toit (1,462.55), GmuA2e (1,735.76), BKX9Ph (1,360.68), GL9SKY (1,501.60 + 1,501.60), 9ed3C8 (1,399.14), 125GiP (1,543.72), 2XcCvd (1,439.29), and Cqf6X1 (134.88). Full 41-signature list is in the ~13:00Z Nov 3 findings</li>
+                      <li>Marinade mSOL laddering: ~278 MarBmsSg… interactions since <code>18:32Z</code> Nov 2 across hubs 71JD6x, <a href="https://solscan.io/account/7cnDvFe3HX7T3NWwfgKKDCFqGFCbL4tH1vYLwPM9cepu"><code>7cnDvFe3HX7T3NWwfgKKDCFqGFCbL4tH1vYLwPM9cepu</code></a>, <a href="https://solscan.io/account/CihyoEKFbf3hUhntb2cRrP16iyCLCqhqzo8UvN2VTdAC"><code>CihyoEKFbf3hUhntb2cRrP16iyCLCqhqzo8UvN2VTdAC</code></a> (721.03 SOL resting), and <a href="https://solscan.io/account/GtZgYki9hri6kdtm2w2Y6wAbWgvVdU6o1jPSGxFiuDAn"><code>GtZgYki9hri6kdtm2w2Y6wAbWgvVdU6o1jPSGxFiuDAn</code></a>; 40–500 SOL deposit/withdraw cycles; mSOL via EyaSjUtS… not walked. This is churn, with no exit seen. 2d62RRY staked via Marinade; 2gEKwi native-staked/swapped small amounts</li>
+                      <li>Not seen / not verified: no Relay (99vQwt…) deposits from the walked wallets in this window; no Bridgers program ID confirmed; no CEX deposit address identified. X claim (@wirisrk) that Cw1XRJ swapped 2,409 SOL for 222,235 USDC then CCTP (Cw1XRJ now 0.327 SOL, last tx ~<code>04:34Z</code> Nov 3, not walked), and “~37,179 SOL off Solana at <code>04:59Z</code>”, is not verified here; the one CCTP path decoded above came back to Solana. Level-3+ destinations of the many empty second-level wallets were not exhaustively walked</li>
+                    </ol>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </section>
@@ -709,19 +798,42 @@
               <strong>2,568.97 SOL</strong> (no outflow), 5bYdY9
               <strong>518.49 SOL</strong> (new, unmoved), Fz1igg
               <strong>323.45 SOL</strong>; tracked resting SOL
-              ~905,113. Cumulative via Relay BTC: 11,136.247475 SOL
-              became 13.51090233 BTC (25 successful requests). Three new
-              Relay fills this window (no <code>BLOCKED_WALLET</code>
-              refunds): 9.99 SOL → 930.286236 USDT on Tron, 0.01 SOL →
-              0.000338 ETH, and 6,444.794319 USDC → Ethereum
-              <code>0x7b86…29De</code> (still holding 6,444.79 USDC;
-              Circle-freezable). Relay BTC recipients were swept into 6
-              fresh unspent addresses; 15.26804118 BTC still rests
+              ~905,113 (prior snapshot). Cumulative via Relay BTC:
+              11,136.247475 SOL became 13.51090233 BTC (25 successful
+              requests). Three new Relay fills this window (no
+              <code>BLOCKED_WALLET</code> refunds): 9.99 SOL → 930.286236
+              USDT on Tron, 0.01 SOL → 0.000338 ETH, and 6,444.794319 USDC
+              → Ethereum <code>0x7b86…29De</code> (still holding 6,444.79
+              USDC; Circle-freezable). Relay BTC recipients were swept into
+              6 fresh unspent addresses; 15.26804118 BTC still rests
               unspent in this branch. Solana USDC is Circle-freezable; no
               freeze observed on the 33 next-hop USDC token accounts or the
               86 6nBoo recipients as of ~<code>13:00Z</code>; new USDC
               one-time wallets not freeze-checked.
-              Nothing has been frozen on Solana.
+              After ~<code>2026-11-02T21:00Z</code> AffzFD signed 41 more
+              System transfers totalling <strong>121,804.79 SOL</strong>
+              to 28 first-hop wallets. Total out of AffzFD since
+              <code>2026-11-01T09:38Z</code>: ~679,000 SOL (557,191.96 +
+              121,804.79). As of ~<code>2026-11-03T13:05Z</code> (slot
+              ~464.909M): AffzFD <strong>291,567.83 SOL</strong>, Eze86
+              <strong>485,277.01 SOL</strong> (unmoved), 7SDu emptied
+              (<strong>0.000658 SOL</strong>; 3,052.33 SOL out in 6 sends).
+              Largest resting second-level: 7EuBfbi
+              <strong>8,723.82 SOL</strong>, 9xwuN97
+              <strong>5,275.22 SOL</strong>, CihyoEKF
+              <strong>721.03 SOL</strong>, GaBzy3
+              <strong>619.22 SOL</strong>, HZfEqES
+              <strong>300 SOL</strong>, Fz1igg
+              <strong>298.45 SOL</strong>, AxoJYH8
+              <strong>190 SOL</strong>. 25 of 28 first-hop wallets are
+              empty (&lt;0.03 SOL). FoRNTj Noble/dYdX CCTP path is a
+              layering loop, not an exit (~2,005.54 SOL → 183,212.90 USDC
+              → Noble → dYdX → IBC to Noble Orbiter → CCTP back to Solana
+              → 2,003.01 SOL). Burn-and-reissue applies only to issuer
+              tokens. Native SOL cannot be frozen or burned by an issuer.
+              USDC could be frozen by Circle only while it sits on Solana
+              or EVM; none was frozen here. Nothing has been frozen on
+              Solana.
             </p>
           </section>
 
@@ -752,7 +864,7 @@
               <tbody>
                 <tr>
                   <td>Source hot wallet (“Binance 2” label; attribution only)</td>
-                  <td><a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"><code>5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9</code></a></td>
+                  <td><a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"><code>5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9</code></a> (4.0456 SOL as of ~<code>2026-11-03T13:05Z</code>; no root-cause statement specific to it found)</td>
                 </tr>
                 <tr>
                   <td>Attacker (FBI TraderTraitor list — the only Solana address published)</td>
@@ -760,11 +872,11 @@
                 </tr>
                 <tr>
                   <td>Fresh destination (unmoved)</td>
-                  <td><a href="https://solscan.io/account/Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD"><code>Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD</code></a> (7 SOL test + 485,270 SOL; no outbound tx as of ~<code>2026-11-02T21:00Z</code>; 485,277.01 SOL; only third-party-signed zero-value txs)</td>
+                  <td><a href="https://solscan.io/account/Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD"><code>Eze86Ngj2Ue4xKBbTHgXbhm22xnVF4aTxKrhUuVNDrrD</code></a> (7 SOL test + 485,270 SOL; no outbound tx as of ~<code>2026-11-03T13:05Z</code>; 485,277.01 SOL; only third-party-signed zero-value txs)</td>
                 </tr>
                 <tr>
                   <td>Hop wallet (inference: attacker-controlled; funded only by AffzFD, signs its own transfers, not on Relay’s published addresses)</td>
-                  <td><a href="https://solscan.io/account/7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK"><code>7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK</code></a> (3,052.33 SOL as of ~<code>2026-11-02T21:00Z</code>; first outflow since <code>2026-11-01T16:14:23Z</code>; 1,421 SOL out in 8 sends <code>16:03:53Z</code>–<code>20:12:31Z</code>)</td>
+                  <td><a href="https://solscan.io/account/7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK"><code>7SDuVQ2SkaHBURbxzyXAr8coNcLV2ZuSLkteoRYfQ2fK</code></a> (emptied as of ~<code>2026-11-03T13:05Z</code>; 0.000658 SOL; 3,052.33 SOL out in 6 sends <code>05:33:05Z</code>–<code>06:28:17Z</code> Nov 3 after last 600 SOL send at <code>20:12Z</code> Nov 2)</td>
                 </tr>
                 <tr>
                   <td>Hop wallet (new; funded by AffzFD 10 SOL)</td>
@@ -780,7 +892,7 @@
                 </tr>
                 <tr>
                   <td>Hop wallet (new; funded by AffzFD 168.80 SOL)</td>
-                  <td><a href="https://solscan.io/account/Fz1iggGioypykdhtxKt6a5gKHciuceps6pZrGK93q8WE"><code>Fz1iggGioypykdhtxKt6a5gKHciuceps6pZrGK93q8WE</code></a> (holds 323.45 SOL as of ~<code>2026-11-02T21:00Z</code>; received a further 322.499672 SOL at <code>10:00:28Z</code>; small 2–50 SOL sends)</td>
+                  <td><a href="https://solscan.io/account/Fz1iggGioypykdhtxKt6a5gKHciuceps6pZrGK93q8WE"><code>Fz1iggGioypykdhtxKt6a5gKHciuceps6pZrGK93q8WE</code></a> (holds 298.45 SOL as of ~<code>2026-11-03T13:05Z</code>; was 323.45 at ~21:00Z Nov 2)</td>
                 </tr>
                 <tr>
                   <td>USDC delivery / reverse-swap wallet</td>
@@ -800,7 +912,7 @@
                 </tr>
                 <tr>
                   <td>Hop wallet / peel hub (new; funded by AffzFD in four transfers)</td>
-                  <td><a href="https://solscan.io/account/4BcRUcGUwTyDxkC954VCHs7VkdpLES8U3cjoowGHXrFi"><code>4BcRUcGUwTyDxkC954VCHs7VkdpLES8U3cjoowGHXrFi</code></a> (holds 5.69 SOL as of ~<code>2026-11-02T13:00Z</code>; ~40–46 SOL lots <code>11:09Z</code>–<code>12:58Z</code>; not re-checked at ~21:00Z)</td>
+                  <td><a href="https://solscan.io/account/4BcRUcGUwTyDxkC954VCHs7VkdpLES8U3cjoowGHXrFi"><code>4BcRUcGUwTyDxkC954VCHs7VkdpLES8U3cjoowGHXrFi</code></a> (holds 5.69 SOL as of ~<code>2026-11-02T13:00Z</code>; ~40–46 SOL lots <code>11:09Z</code>–<code>12:58Z</code>; received a further 1,406.29 + 890.32 SOL at <code>10:14:39Z</code> / <code>11:20:57Z</code> Nov 3; resting not re-checked at ~13:05Z)</td>
                 </tr>
                 <tr>
                   <td>Hop wallet (new; funded by AffzFD 5,684.916598 SOL)</td>
@@ -808,7 +920,7 @@
                 </tr>
                 <tr>
                   <td>Hop wallet (new; funded by AffzFD 1,714.09 SOL in two transfers, then 854.88 SOL more)</td>
-                  <td><a href="https://solscan.io/account/DdwZZsx2WW58NcRLnyYWNejZGPShK48aeTnhGbGKxMXK"><code>DdwZZsx2WW58NcRLnyYWNejZGPShK48aeTnhGbGKxMXK</code></a> (holds 2,568.97 SOL as of ~<code>2026-11-02T21:00Z</code>; received a further 854.88 SOL at <code>15:23:30Z</code>; no outflow)</td>
+                  <td><a href="https://solscan.io/account/DdwZZsx2WW58NcRLnyYWNejZGPShK48aeTnhGbGKxMXK"><code>DdwZZsx2WW58NcRLnyYWNejZGPShK48aeTnhGbGKxMXK</code></a> (holds 2,568.97 SOL as of ~<code>2026-11-02T21:00Z</code>; received a further 854.88 SOL at <code>15:23:30Z</code>; no outflow as of that snapshot; not re-checked at ~13:05Z Nov 3)</td>
                 </tr>
                 <tr>
                   <td>Hop wallet (new; funded by AffzFD 319.53 SOL in three transfers; now empty)</td>
@@ -816,11 +928,11 @@
                 </tr>
                 <tr>
                   <td>Hop wallet (new; funded by AffzFD 856.08 SOL)</td>
-                  <td><a href="https://solscan.io/account/GaBzy3KuQAGHBsdsJiu4UhtvnHoCSihTyThaZL5AVV8K"><code>GaBzy3KuQAGHBsdsJiu4UhtvnHoCSihTyThaZL5AVV8K</code></a> (holds 46.13 SOL as of ~<code>2026-11-02T21:00Z</code>, incl. 46.08 returned from 71JD6x)</td>
+                  <td><a href="https://solscan.io/account/GaBzy3KuQAGHBsdsJiu4UhtvnHoCSihTyThaZL5AVV8K"><code>GaBzy3KuQAGHBsdsJiu4UhtvnHoCSihTyThaZL5AVV8K</code></a> (holds 619.22 SOL as of ~<code>2026-11-03T13:05Z</code>; eight further AffzFD transfers 864.60 + 1,727.59 + 865.55 + 1,734.53 + 1,075.33 + 2,592.64 + 1,730.60 + 2,595.00 SOL; Mayan 10 SOL order refunded)</td>
                 </tr>
                 <tr>
                   <td>Hop wallet (new; funded by AffzFD 518.49 SOL; unmoved)</td>
-                  <td><a href="https://solscan.io/account/5bYdY9yKfuRLnsfrdFvvMvc3GuRqYkV55Fy1393iAk8v"><code>5bYdY9yKfuRLnsfrdFvvMvc3GuRqYkV55Fy1393iAk8v</code></a> (holds 518.49 SOL as of ~<code>2026-11-02T21:00Z</code>)</td>
+                  <td><a href="https://solscan.io/account/5bYdY9yKfuRLnsfrdFvvMvc3GuRqYkV55Fy1393iAk8v"><code>5bYdY9yKfuRLnsfrdFvvMvc3GuRqYkV55Fy1393iAk8v</code></a> (holds 518.49 SOL as of ~<code>2026-11-02T21:00Z</code>; not re-checked at ~13:05Z Nov 3)</td>
                 </tr>
                 <tr>
                   <td>Hop wallet (new; funded by AffzFD 186.594630 SOL)</td>
@@ -928,7 +1040,7 @@
                 </tr>
                 <tr>
                   <td>Marinade deposit hop (300 SOL → ~247 mSOL)</td>
-                  <td><a href="https://solscan.io/account/71JD6xhjvxVfBaZfqH4gZCkVMdGNdD3JMzmFqwhBF4P2"><code>71JD6xhjvxVfBaZfqH4gZCkVMdGNdD3JMzmFqwhBF4P2</code></a> (mSOL passed on to EyaSjUtS…; destination not walked; 46.08 SOL back to GaBzy3)</td>
+                  <td><a href="https://solscan.io/account/71JD6xhjvxVfBaZfqH4gZCkVMdGNdD3JMzmFqwhBF4P2"><code>71JD6xhjvxVfBaZfqH4gZCkVMdGNdD3JMzmFqwhBF4P2</code></a> (Marinade hub; mSOL passed on to EyaSjUtS…; destination not walked; 46.08 SOL back to GaBzy3; ~278 MarBmsSg… interactions since <code>18:32Z</code> Nov 2 across this and other hubs is churn)</td>
                 </tr>
                 <tr>
                   <td>Relay hop from 7SDu (10 SOL → Tron USDT)</td>
@@ -1081,6 +1193,134 @@
                 <tr>
                   <td>Relay BTC fill recipient (later swept; 0.60485692)</td>
                   <td><a href="https://mempool.space/address/bc1qsrwnxsc7eptfz0v4a48ve6uka4539vpttklssv"><code>bc1qsrwnxsc7eptfz0v4a48ve6uka4539vpttklssv</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 14,035.65 SOL)</td>
+                  <td><a href="https://solscan.io/account/H381HEjs48WWwZEoGzmNqv7sTQNxNnYEjiM3ud2iChvk"><code>H381HEjs48WWwZEoGzmNqv7sTQNxNnYEjiM3ud2iChvk</code></a> (14,035.65 SOL at <code>01:37:19Z</code> Nov 3)</td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 14,585.57 SOL)</td>
+                  <td><a href="https://solscan.io/account/CveMg1V9f2EvjL1vcwsGkdYYZ5v9kHm1RQiKGghkLz7n"><code>CveMg1V9f2EvjL1vcwsGkdYYZ5v9kHm1RQiKGghkLz7n</code></a> (14,585.57 SOL at <code>05:58:54Z</code> Nov 3)</td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 872.53 + 5,589.60 + 5,407.50 + 3,205.59 SOL)</td>
+                  <td><a href="https://solscan.io/account/9xwuN97BtSFuSKGBe1AaB2vsmSXLXo7w25wQDnd3tWdg"><code>9xwuN97BtSFuSKGBe1AaB2vsmSXLXo7w25wQDnd3tWdg</code></a> (holds 5,275.22 SOL as of ~<code>2026-11-03T13:05Z</code>)</td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 6,945.33 SOL)</td>
+                  <td><a href="https://solscan.io/account/A7sos2pEpLpiL3txGdpoo3jiigzvDBToG8iuLFEuHYch"><code>A7sos2pEpLpiL3txGdpoo3jiigzvDBToG8iuLFEuHYch</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 6,702.45 SOL)</td>
+                  <td><a href="https://solscan.io/account/4yuZZkkuoo8KRvqxH2weGnhcQTYyBgeefWkXUH5NFAq8"><code>4yuZZkkuoo8KRvqxH2weGnhcQTYyBgeefWkXUH5NFAq8</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 6,459.88 SOL)</td>
+                  <td><a href="https://solscan.io/account/GadT2MS9xNkaRq9bxrkg3WDARqRSRwxm78MapFnaBCUD"><code>GadT2MS9xNkaRq9bxrkg3WDARqRSRwxm78MapFnaBCUD</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 6,012.76 SOL)</td>
+                  <td><a href="https://solscan.io/account/8T3EUoin1aasnTb8UCGx69XDuTN2Wgghcramd3vu2JVd"><code>8T3EUoin1aasnTb8UCGx69XDuTN2Wgghcramd3vu2JVd</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 4,885.12 + 1,327.49 SOL)</td>
+                  <td><a href="https://solscan.io/account/56wmUxFmgzozzEyq5NejJ2d2Mn219BxBedrmQRHB24Qr"><code>56wmUxFmgzozzEyq5NejJ2d2Mn219BxBedrmQRHB24Qr</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 5,283.29 SOL)</td>
+                  <td><a href="https://solscan.io/account/EYNsnnmz6mmbT91EQSSzr7Fxf4KwLP5v1FP7AePtRK8s"><code>EYNsnnmz6mmbT91EQSSzr7Fxf4KwLP5v1FP7AePtRK8s</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 4,823.44 SOL)</td>
+                  <td><a href="https://solscan.io/account/4fMYVTJDMJqY9og8uCd7vvA3ivj9NjEKuWBxQGWKgsSv"><code>4fMYVTJDMJqY9og8uCd7vvA3ivj9NjEKuWBxQGWKgsSv</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 3,587.20 SOL; CCTP loop origin)</td>
+                  <td><a href="https://solscan.io/account/FoRNTjJmZZ7Sd8tEdfJHM8nSHufM6Ko9PubPnJhAx8qh"><code>FoRNTjJmZZ7Sd8tEdfJHM8nSHufM6Ko9PubPnJhAx8qh</code></a> (gathered SOL from many hops; 2,005.54 SOL → 183,212.90 USDC via RFQ then CCTP loop; later 8,723.8195 SOL to 7EuBfbi)</td>
+                </tr>
+                <tr>
+                  <td>Hop from FoRNTj (resting 8,723.82 SOL)</td>
+                  <td><a href="https://solscan.io/account/7EuBfbiNpco3EQWNm9az5nb4MB3HKYWqs9v3yawPvY8T"><code>7EuBfbiNpco3EQWNm9az5nb4MB3HKYWqs9v3yawPvY8T</code></a> (8,723.8195 SOL in at <code>12:31:33Z</code>; still holds it)</td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 1,501.60 + 1,501.60 SOL)</td>
+                  <td><a href="https://solscan.io/account/GL9SKYsA81n1M1xEzu1S4R2AF5yCieQcA7rU8Hss2rKJ"><code>GL9SKYsA81n1M1xEzu1S4R2AF5yCieQcA7rU8Hss2rKJ</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 239.31 SOL)</td>
+                  <td><a href="https://solscan.io/account/2gEKwi4JuKWEk71rj9xvL142qmXfFLe9xCVFdTghqTzU"><code>2gEKwi4JuKWEk71rj9xvL142qmXfFLe9xCVFdTghqTzU</code></a> (sent 10 + 100 + 129 SOL into program-owned 4AV2Qzp; also native-staked/swapped small amounts)</td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 242.04 SOL)</td>
+                  <td><a href="https://solscan.io/account/77st56xEnQLr96VQCoeJFVxuDLJME9sXoX3L4VS4KrFM"><code>77st56xEnQLr96VQCoeJFVxuDLJME9sXoX3L4VS4KrFM</code></a> (sent 120 + 121.9 SOL into program-owned 4AV2Qzp)</td>
+                </tr>
+                <tr>
+                  <td>Hop wallet (new; funded by AffzFD 864.00 SOL; Marinade stake)</td>
+                  <td><a href="https://solscan.io/account/2d62RRYedRHEfPkjq3XyXoNGNZ3BQex5wDbULbDPv4Xb"><code>2d62RRYedRHEfPkjq3XyXoNGNZ3BQex5wDbULbDPv4Xb</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop from 7SDu (emptied; 500 SOL)</td>
+                  <td><a href="https://solscan.io/account/hDKPzaNqoKMNpU482gzwGS18n9Sk1xK87FMYMcBcsET"><code>hDKPzaNqoKMNpU482gzwGS18n9Sk1xK87FMYMcBcsET</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop from 7SDu (emptied; 500 SOL)</td>
+                  <td><a href="https://solscan.io/account/ArjqGbEmQZfiiKEFvqcvJL9fnAVnooAWaAZMNEvKbJ1F"><code>ArjqGbEmQZfiiKEFvqcvJL9fnAVnooAWaAZMNEvKbJ1F</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop from 7SDu (emptied; 550 SOL)</td>
+                  <td><a href="https://solscan.io/account/FpdeB1kaswE9NK6pMzgoJiyyNGYu1TSWcNv9Vi4CbUxd"><code>FpdeB1kaswE9NK6pMzgoJiyyNGYu1TSWcNv9Vi4CbUxd</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop from 7SDu (emptied; 480 SOL)</td>
+                  <td><a href="https://solscan.io/account/9DyGEVET71U9ps6TU9dzPxcs4qvRLUuX1ZSsgUFrrJLC"><code>9DyGEVET71U9ps6TU9dzPxcs4qvRLUuX1ZSsgUFrrJLC</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop from 7SDu (emptied; 533 SOL)</td>
+                  <td><a href="https://solscan.io/account/5tyxZ5mAd5DwZCGWvwj7GdbR1ujfW7bAAYdKkHuDnvE9"><code>5tyxZ5mAd5DwZCGWvwj7GdbR1ujfW7bAAYdKkHuDnvE9</code></a></td>
+                </tr>
+                <tr>
+                  <td>Hop from 7SDu (emptied; 489.33 SOL)</td>
+                  <td><a href="https://solscan.io/account/93X5eKN1CPdsB4hX2zhR3QMaGdfVSNMr98RnYJpwgygt"><code>93X5eKN1CPdsB4hX2zhR3QMaGdfVSNMr98RnYJpwgygt</code></a></td>
+                </tr>
+                <tr>
+                  <td>CCTP mint-recipient owner (loop return)</td>
+                  <td><a href="https://solscan.io/account/4fnQuArGVZ5FxiieLq3iMa8icgFDQezLdieW2ZWys355"><code>4fnQuArGVZ5FxiieLq3iMa8icgFDQezLdieW2ZWys355</code></a> (USDC token account 96HM9V6oEfiwKZTWj9uxxdQvButSJCGLRivdTAsmgZ2u; swapped 183,211.0 USDC → 2,003.0125 SOL)</td>
+                </tr>
+                <tr>
+                  <td>SOL from CCTP loop return (1,000.2 SOL)</td>
+                  <td><a href="https://solscan.io/account/pVdqaag36z8Azn5Czcx2xZPEMLUymVMKH2NXB8z1Ybc"><code>pVdqaag36z8Azn5Czcx2xZPEMLUymVMKH2NXB8z1Ybc</code></a></td>
+                </tr>
+                <tr>
+                  <td>SOL from CCTP loop return (1,002.98 SOL)</td>
+                  <td><a href="https://solscan.io/account/nfkGcDhLTVq51GG3BNSuZzrNyNKkZiTtDzWYoPuFNpL"><code>nfkGcDhLTVq51GG3BNSuZzrNyNKkZiTtDzWYoPuFNpL</code></a></td>
+                </tr>
+                <tr>
+                  <td>Program 9fhQBbum…/L2TExMFK… (X Bridgers label unverified)</td>
+                  <td><a href="https://solscan.io/account/9fhQBbumKEFuXtMBDw8AaQyAjCorLGJQiS3skWZdQyQD"><code>9fhQBbumKEFuXtMBDw8AaQyAjCorLGJQiS3skWZdQyQD</code></a> / <a href="https://solscan.io/account/L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95"><code>L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95</code></a>; program-owned <a href="https://solscan.io/account/4AV2Qzp3N4c9RfzyEbNZs2wqWfW4EwKnnxFAZCndvfGh"><code>4AV2Qzp3N4c9RfzyEbNZs2wqWfW4EwKnnxFAZCndvfGh</code></a> took 480.9 SOL; BTC side not traced</td>
+                </tr>
+                <tr>
+                  <td>RFQ program 61DFfeTKM7… (full id; FoRNTj CCTP loop + prior 500 SOL)</td>
+                  <td><a href="https://solscan.io/account/61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"><code>61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH</code></a> (FoRNTj 2,005.54 SOL → 183,212.90 USDC; 4fnQuArG 183,211.0 USDC → 2,003.0125 SOL)</td>
+                </tr>
+                <tr>
+                  <td>Marinade hub (721.03 SOL resting)</td>
+                  <td><a href="https://solscan.io/account/CihyoEKFbf3hUhntb2cRrP16iyCLCqhqzo8UvN2VTdAC"><code>CihyoEKFbf3hUhntb2cRrP16iyCLCqhqzo8UvN2VTdAC</code></a> (40–500 SOL deposit/withdraw cycles; churn)</td>
+                </tr>
+                <tr>
+                  <td>Marinade hub</td>
+                  <td><a href="https://solscan.io/account/7cnDvFe3HX7T3NWwfgKKDCFqGFCbL4tH1vYLwPM9cepu"><code>7cnDvFe3HX7T3NWwfgKKDCFqGFCbL4tH1vYLwPM9cepu</code></a></td>
+                </tr>
+                <tr>
+                  <td>Marinade hub</td>
+                  <td><a href="https://solscan.io/account/GtZgYki9hri6kdtm2w2Y6wAbWgvVdU6o1jPSGxFiuDAn"><code>GtZgYki9hri6kdtm2w2Y6wAbWgvVdU6o1jPSGxFiuDAn</code></a></td>
+                </tr>
+                <tr>
+                  <td>Second-level resting (300 SOL)</td>
+                  <td><a href="https://solscan.io/account/HZfEqESAziTMQLa4d5n6Zz9WJ2LwKNBcpWxWNzkyT6Zj"><code>HZfEqESAziTMQLa4d5n6Zz9WJ2LwKNBcpWxWNzkyT6Zj</code></a></td>
+                </tr>
+                <tr>
+                  <td>Second-level resting (190 SOL)</td>
+                  <td><a href="https://solscan.io/account/AxoJYH8iwpXtpmLBj5pTrPAK9vdwjHNwJcRQLFdobRwy"><code>AxoJYH8iwpXtpmLBj5pTrPAK9vdwjHNwJcRQLFdobRwy</code></a></td>
                 </tr>
                 <tr>
                   <td>Post-incident sweep destination (attribution only)</td>
@@ -1259,6 +1499,41 @@
                   <td><code>2026-11-02T18:32Z</code>–<code>18:40Z</code></td>
                   <td>4 Marinade deposits (signatures not in this draft)</td>
                   <td>71JD6x deposited 300 SOL into Marinade (MarBms…) for ~247 mSOL; mSOL passed on to EyaSjUtS… (destination not walked). 46.08 SOL returned to GaBzy3 at <code>19:05:57Z</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-03T01:37:19Z</code>–<code>12:59:12Z</code></td>
+                  <td>41 AffzFD outbound signatures in the ~13:05Z timeline (largest listed individually; remaining first-hop peels summarized)</td>
+                  <td>121,804.79 SOL out of AffzFD to 28 first-hop wallets. AffzFD signed nothing between <code>15:43Z</code> Nov 2 and <code>01:37Z</code> Nov 3. Total out of AffzFD since <code>2026-11-01T09:38Z</code>: ~679,000 SOL (557,191.96 + 121,804.79) in 78 transfers. AffzFD 291,567.83 SOL. Eze86 still unmoved at 485,277.01 SOL. 25 of 28 first-hop wallets are empty (&lt;0.03 SOL); SOL was forwarded to ~77 second-level and ~230 third-level addresses (walked to level 3 only for the 32 biggest second-level wallets).</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-03T05:33:05Z</code>–<code>06:28:17Z</code></td>
+                  <td>six 7SDu send signatures in the ~13:05Z timeline</td>
+                  <td>7SDu emptied: 3,052.33 SOL in 6 sends (500 / 500 / 550 / 480 / 533 / 489.33) after its last 600 SOL send at <code>20:12Z</code> Nov 2. 7SDu now 0.000658 SOL.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-03T06:56:40Z</code>–<code>07:37:14Z</code></td>
+                  <td>FoRNTj gather <a href="https://solscan.io/tx/3t3DrHAQckL13tfc5wZ8QbvCL448bFQNww1zKJe32AVQayTPMzNrajvixqJDct5sKo59gMLreCnRtj2ohvZ8E4T1"><code>3t3DrHAQckL13tfc5wZ8QbvCL448bFQNww1zKJe32AVQayTPMzNrajvixqJDct5sKo59gMLreCnRtj2ohvZ8E4T1</code></a>; RFQ <a href="https://solscan.io/tx/33k4MAFVSECGs3BGBHGEhmxhWGDq4mmT14CTMYamvKgFjPRVFnii5XcTor6qbaufXEMKjEmu9mhChLpqLfF1WvZ7"><code>33k4MAFVSECGs3BGBHGEhmxhWGDq4mmT14CTMYamvKgFjPRVFnii5XcTor6qbaufXEMKjEmu9mhChLpqLfF1WvZ7</code></a>; CCTP burns <a href="https://solscan.io/tx/5kDhgdqTtHxnh6u1A68GeEEnGyWXBr6jWSx2oX31u6jAepL8G5ktdkUwvAMDDh3VBYaVkULqbYNuxF17AWATswex"><code>5kDhgdqTtHxnh6u1A68GeEEnGyWXBr6jWSx2oX31u6jAepL8G5ktdkUwvAMDDh3VBYaVkULqbYNuxF17AWATswex</code></a> and <a href="https://solscan.io/tx/3k8iLpFEiJEDTRdk7ULeYoC956ss72sRJMUApDif8Wj3LxPw23H6rQVqDPzj2yocesgcqTSqzHjNbQNKYqGqoRGp"><code>3k8iLpFEiJEDTRdk7ULeYoC956ss72sRJMUApDif8Wj3LxPw23H6rQVqDPzj2yocesgcqTSqzHjNbQNKYqGqoRGp</code></a>; Noble <a href="https://www.mintscan.io/noble/tx/0607CEDD8E5B6F570097F5C5A02AD3E47172BA63EFEBFD8C2EA55216A892816C"><code>0607CEDD8E5B6F570097F5C5A02AD3E47172BA63EFEBFD8C2EA55216A892816C</code></a> / <a href="https://www.mintscan.io/noble/tx/499FCA41A52728F9280ECA88BBEEB49B991E6B2F0D7BD3C0EB50D6A953B26B43"><code>499FCA41A52728F9280ECA88BBEEB49B991E6B2F0D7BD3C0EB50D6A953B26B43</code></a>; dYdX deposits <a href="https://www.mintscan.io/dydx/tx/B539FBEAB80DD4719B023A1C2A50DCADD9541365EE8F7EEE648BD025027E8D71"><code>B539FBEAB80DD4719B023A1C2A50DCADD9541365EE8F7EEE648BD025027E8D71</code></a> / <a href="https://www.mintscan.io/dydx/tx/0F8A6001C5EDDA490D8F10F0439EA58E43092912F9DE41260F702B87773758AD"><code>0F8A6001C5EDDA490D8F10F0439EA58E43092912F9DE41260F702B87773758AD</code></a>; IBC <a href="https://www.mintscan.io/dydx/tx/04824832A7C460937951141005897623B6291C9427352398FC116AB9BD5628A9"><code>04824832A7C460937951141005897623B6291C9427352398FC116AB9BD5628A9</code></a> / <a href="https://www.mintscan.io/dydx/tx/1C9FBE58633B3CD44F6A41D3E0459552DA65567998D199E476C19C24B149FE2C"><code>1C9FBE58633B3CD44F6A41D3E0459552DA65567998D199E476C19C24B149FE2C</code></a>; return swap <a href="https://solscan.io/tx/2nBcPmJrH2fjMqyBREyqnYe2yzZWrgTHrpSi3GkWggeH6yJVpJQ7ffG9VH7C47irtxtQ64NRriaRRZ8D42dtRFkd"><code>2nBcPmJrH2fjMqyBREyqnYe2yzZWrgTHrpSi3GkWggeH6yJVpJQ7ffG9VH7C47irtxtQ64NRriaRRZ8D42dtRFkd</code></a></td>
+                  <td>Noble/dYdX CCTP layering loop, not an exit. FoRNTj 2,005.54 SOL → 183,212.90 USDC via RFQ program 61DFfeTKM7…; Circle CCTP DepositForBurnWithCaller of 88,521.98 + 94,690.88 USDC to Noble domain 4 (mint recipient noble18z9fzzde66uy7w25w4kwm0jd6dawe2fjf0854s); dYdX subaccount deposit and immediate withdrawal over IBC (channel-0) to Noble Orbiter noble15xt7kx5mles58vkkfxvf0lq78sw04jajvfgd4d; CCTP-burn back to Solana domain 5 (mint recipient token account 96HM9V6o… owned by 4fnQuArG); 183,211.0 USDC → 2,003.0125 SOL. Then 1,000.2 SOL to pVdqaag and 1,002.98 SOL to nfkGcDh. Net: ~2,005.5 SOL around Noble/dYdX and back to ~2,003.0 SOL within ~6 minutes. The USDC was on Solana again, so no Circle freeze was attempted or visible.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-03T12:31:33Z</code></td>
+                  <td><a href="https://solscan.io/tx/2G5mfq7tcPcCUHcSSEHS3yQNXakVg2sEpLrx8pxnVVXSAPkJmQqKMGsQjK4mMXHfbnKzRTf7u8cKzWTSTRe6dDQJ"><code>2G5mfq7tcPcCUHcSSEHS3yQNXakVg2sEpLrx8pxnVVXSAPkJmQqKMGsQjK4mMXHfbnKzRTf7u8cKzWTSTRe6dDQJ</code></a></td>
+                  <td>FoRNTj sent 8,723.8195 SOL to 7EuBfbi, which still holds it.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-03T11:22:58Z</code>–<code>12:20:45Z</code></td>
+                  <td>two Mayan attempt / refund / reverse-swap sets in the ~13:05Z timeline</td>
+                  <td>Two more Mayan whETH orders, both apparently refunded (same pattern as Nov 2). GaBzy3 10 SOL → 923.40 USDC → 0.4075 whETH; 0.4074 whETH returned (signed by third party FRoK4LMV…); swapped back to 9.94 SOL. Second attempt 10 SOL → 0.4078 whETH; refunded; swapped back to 9.92 SOL. No Mayan fill to an EVM address was seen.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-03T11:01:57Z</code>–<code>12:20:56Z</code></td>
+                  <td>five deposits into program-owned 4AV2Qzp (signatures in the ~13:05Z timeline)</td>
+                  <td>Program 9fhQBbumKEFuXtMBDw8AaQyAjCorLGJQiS3skWZdQyQD / L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 (X labels this Bridgers; label unverified) took 480.9 SOL (2gEKwi 10 + 100 + 129; 77st56x 120 + 121.9). BTC side not traced. Distinct from the earlier truncated FDF8AxHB… deposits.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-02T18:32Z</code>–<code>2026-11-03T13:05Z</code></td>
+                  <td>~278 Marinade (MarBmsSg…) interactions (individual signatures not in this draft)</td>
+                  <td>mSOL laddering across hubs 71JD6x, 7cnDvFe, CihyoEKF (721.03 SOL resting), and GtZgYki; each does 40–500 SOL deposit/withdraw cycles. mSOL via EyaSjUtS… (destination not walked). Also 2d62RRY staked via Marinade and 2gEKwi native-staked/swapped small amounts. This is churn, with no exit seen.</td>
                 </tr>
               </tbody>
             </table>
@@ -1523,13 +1798,21 @@
               No new Relay deposits or refunds after <code>15:15Z</code>
               as of that snapshot. Holdings as of
               ~<code>2026-11-02T21:00Z</code> (slot ~464638415,
-              ~20:55Z): AffzFD 413,372.61 SOL; Eze86 485,277.01 SOL
-              (unmoved); 7SDu 3,052.33 SOL; DdwZZs 2,568.97 SOL (no
-              outflow); 5bYdY9 518.49 SOL (new, unmoved); Fz1igg 323.45
-              SOL; tracked resting SOL ~905,113. Three new Relay fills
-              after <code>15:15Z</code> (all FILLED; no
-              <code>BLOCKED_WALLET</code> refunds). 15.26804118 BTC from
-              earlier Relay fills still unspent. Prior snapshot at
+              ~20:55Z, prior snapshot): AffzFD 413,372.61 SOL; Eze86
+              485,277.01 SOL (unmoved); 7SDu 3,052.33 SOL; DdwZZs
+              2,568.97 SOL (no outflow); 5bYdY9 518.49 SOL (new,
+              unmoved); Fz1igg 323.45 SOL; tracked resting SOL ~905,113.
+              Three new Relay fills after <code>15:15Z</code> (all FILLED;
+              no <code>BLOCKED_WALLET</code> refunds). Holdings as of
+              ~<code>2026-11-03T13:05Z</code> (slot ~464.909M): AffzFD
+              291,567.829762 SOL; Eze86 485,277.01 SOL (unmoved); 7SDu
+              0.000658 SOL (emptied); largest resting second-level
+              7EuBfbi 8,723.82 SOL, 9xwuN97 5,275.22 SOL, CihyoEKF
+              721.03 SOL, GaBzy3 619.22 SOL, HZfEqES 300 SOL, Fz1igg
+              298.45 SOL, AxoJYH8 190 SOL; third-level of the 32 biggest
+              second-level wallets ~5,935 SOL. 15.26804118 BTC from
+              earlier Relay fills still unspent. No Relay deposits from
+              the walked wallets in this window. Prior snapshot at
               <code>2026-11-01T02:04:53Z</code>: AffzFD still held
               970,554.16 SOL and had signed no transactions. The small
               excess over 970,521.9 on that earlier snapshot is inbound
@@ -1545,7 +1828,8 @@
               to BTC from the 7SDu branch, and no on-chain figure equals
               486,970.               A reported 1,012,715 SOL cumulative out of AffzFD
               is not supported on chain: AffzFD out since
-              <code>2026-11-01T09:38Z</code> is ~557,191.96 SOL. Reported
+              <code>2026-11-01T09:38Z</code> is ~679,000 SOL
+              (557,191.96 + 121,804.79). Reported
               claims that AffzFD “sent tokens” to
               memecoin dev wallets ($NOTSAFU, $LAZARUS, $TT) are false:
               those signatures are third-party dust / ATA / memecoin-bait
@@ -1608,10 +1892,10 @@
               <li>No ownership or exchange label is known for the BTC recipient or sweep addresses; they are not on the FBI alert list.</li>
               <li><a href="https://solscan.io/account/6H7GCfCx8JMUACbmSYZjConeJGzViPHhMvvYak5SDDBe"><code>6H7GCfCx8JMUACbmSYZjConeJGzViPHhMvvYak5SDDBe</code></a> is unlabeled and not identified; signatures for the 12 later memo transfers (1,710 SOL) are not in this draft; the return signature taking the CyLS1 refund from CyLS1 back to 7SDu at <code>13:04:12Z</code> is not in this draft; return signatures taking the Hbqv2 / GfT1c / Eyj97 refunds back to 7SDu at <code>15:19Z</code> are not in this draft.</li>
               <li><a href="https://solscan.io/account/J1QUUqWHE39CHN6iep8EmrXS4EnMexULZHKxSiZa9ZLp"><code>J1QUUqWHE39CHN6iep8EmrXS4EnMexULZHKxSiZa9ZLp</code></a> and program <a href="https://solscan.io/account/AusZPVXPoUM8QJJ2SL4KwvRGCQ22cDg6Y4rg7EvFrxi7"><code>AusZPVXPoUM8QJJ2SL4KwvRGCQ22cDg6Y4rg7EvFrxi7</code></a> are unlabeled and not identified; the “deposit-address order that came back” reading of the 4ZpYMF <code>FetchNative</code> bounce and of the Fz1igg/BfUX7U 9.9 SOL bounce is inference only.</li>
-              <li>Activity is ongoing: as of ~<code>2026-11-02T21:00Z</code> (slot ~464638415, ~20:55Z) AffzFD still held 413,372.61 SOL; Eze86 485,277.01 SOL unmoved; 7SDu 3,052.33 SOL; DdwZZs 2,568.97 SOL (no outflow); 5bYdY9 518.49 SOL (new, unmoved); Fz1igg 323.45 SOL; tracked resting SOL ~905,113.</li>
+              <li>Activity is ongoing: as of ~<code>2026-11-03T13:05Z</code> (slot ~464.909M) AffzFD still held 291,567.83 SOL; Eze86 485,277.01 SOL unmoved; 7SDu emptied (0.000658 SOL). 25 of 28 first-hop wallets are empty (&lt;0.03 SOL). DdwZZs (2,568.97 SOL as of ~21:00Z Nov 2) and 5bYdY9 (518.49 SOL as of that snapshot) were not re-checked at ~13:05Z.</li>
               <li>Signatures for 87 of the 88 6nBoo USDC fan-out transfers are not in this draft (one example is linked). 6nBoo’s 121,324 USDC out exceeds the 118,841.78 USDC received from ARk92box; the extra inflow is not traced here.</li>
               <li>The aggregator/program for ARk92box’s 150,000 and 600,000 USDC reverse swaps is not Jupiter v6; it is not identified in this draft.</li>
-              <li>Solana USDC is Circle-freezable; no freeze was observed on the 33 next-hop USDC token accounts or the 86 6nBoo recipients as of ~<code>13:00Z</code>. New USDC one-time wallets in the ~21:00Z window (8HTfJ7Ks…, 21bzoeTL…, BP8rJLSD…, 7qeAhd, and others) were not freeze-checked. Ethereum USDC at 0x7b86 is Circle-freezable and still held there as of ~20:55Z (nonce 0); no freeze observed in this draft.</li>
+              <li>Solana USDC is Circle-freezable; no freeze was observed on the 33 next-hop USDC token accounts or the 86 6nBoo recipients as of ~<code>13:00Z</code>. New USDC one-time wallets in the ~21:00Z window (8HTfJ7Ks…, 21bzoeTL…, BP8rJLSD…, 7qeAhd, and others) were not freeze-checked. Ethereum USDC at 0x7b86 is Circle-freezable and still held there as of ~20:55Z (nonce 0); no freeze observed in this draft. The FoRNTj CCTP USDC (183,212.90) returned to Solana; no Circle freeze was attempted or visible on that USDC. None was frozen here as of ~<code>2026-11-03T13:05Z</code>.</li>
               <li>The HWjso reverse-swap to ~5,564 SOL at <code>06:21:49Z</code> has no signature in this draft. One signature is cited for both Fw9P2s swaps at <code>07:13:47Z</code> / <code>07:14:12Z</code>; a second signature if distinct is not in this draft.</li>
               <li>The 3KdCVV 6,201 SOL send at <code>10:31:35Z</code>, the 10 Gcxmbc split signatures, the 4BcRUc peel-lot signatures, hop-3 peel / remaining Jupiter reverse-swap signatures, the 9.9987 SOL third-party inbound at <code>08:10:52Z</code>, the full 10:54Z third-party signature 4Hn2Cqw3…, the 33 next-hop wallet addresses, and the full G7VLTXkMVa… funder address are not in this draft.</li>
               <li>No CEX/bridge exit identified yet at hop 3.</li>
@@ -1620,8 +1904,14 @@
               <li>7SDu’s 8 send signatures other than the hashed Relay deposits are not in this draft. Third-level destinations 4G8iMH (500 SOL), 3ux5vu (600 SOL), and FC1Sc (199.99 SOL) were not walked. Truncated 7SDu hop ids include 3g2Ufm…, 72PtKf…, EfQQxv…, ERaBVwLC…, Mqsh…, 41VFo6…, 3YyQGb…, and 5xbp6K….</li>
               <li>mSOL at EyaSjUtS… (from 71JD6x’s 4 Marinade deposits into MarBms…) was not walked; those 4 deposit signatures are not in this draft. AmkFno’s 5 sends to 62dhtC and the later 40.1 / 10.1 / 41 / 115.185 SOL sends (GwQvbp…, 6SQWzL…, FwF8Cv…, FkSKWj) lack signatures in this draft. EhWiCX’s 30 SOL multi-DEX swap signature is truncated (3JVueefg…). 6SQWzL’s 5 SOL → 460.08 USDC Jupiter swap to C55EEi3W… is not hashed. GaBzy3 onward hops rg5xRd… and 5H4tcN… are truncated.</li>
               <li>A reported X claim (@wirisrk) that a 200 SOL 7SDu peel chain ended at 7xRJ… → 6H7G… at <code>19:38</code>–<code>19:50Z</code> is not verified here.</li>
-              <li>The TJap3i → TVjuTE Tron onward txid is truncated (949ff0332b7c9dcd…). 4BcRUc’s 5.69 SOL balance was not re-checked at ~21:00Z.</li>
-              <li>Binance has not published a root-cause statement specific to its Solana hot wallet <a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"><code>5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9</code></a>.</li>
+              <li>The TJap3i → TVjuTE Tron onward txid is truncated (949ff0332b7c9dcd…). 4BcRUc’s 5.69 SOL balance was not re-checked at ~21:00Z; 4BcRUc received a further 1,406.29 + 890.32 SOL on Nov 3 and its resting balance is not in this snapshot.</li>
+              <li>No Relay (99vQwt…) deposits from the walked wallets in the ~13:05Z Nov 3 window; no Bridgers program ID confirmed; no CEX deposit address identified.</li>
+              <li>A reported X claim (@wirisrk) that Cw1XRJ78LPFLh9P7bpGUSMjkgut1KUCotmjPDotpDaMG swapped its last 2,409 SOL for 222,235 USDC then CCTP (Cw1XRJ now 0.327 SOL, last tx ~04:34Z Nov 3, not walked), and that “~37,179 SOL [was] off Solana at 04:59Z”, is not verified here. The one CCTP path decoded in this window came back to Solana.</li>
+              <li>Level-3+ destinations of the many empty second-level wallets were not exhaustively walked. Walked to level 3 only for the 32 biggest second-level wallets (those third-level balances ~5,935 SOL, spread thin; only UefNb6z6… 11.0 and GyCMG9hQ… 101.5 hold more than 10). Remaining first-hop peel signatures under 5,000 SOL are listed in the ~13:05Z timeline; second-level forwarding of the 28 first-hop wallets is not hashed here except FoRNTj → 7EuBfbi and the 4AV2Qzp deposits.</li>
+              <li>Program 9fhQBbum…/L2TExMFK… (full ids in this draft) is labeled Bridgers on X; that label is unverified. BTC side not traced. Do not conflate with the earlier truncated FDF8AxHB… deposits (~244.3 SOL).</li>
+              <li>Marinade mSOL laddering (~278 MarBmsSg… interactions since 18:32Z Nov 2) is churn; individual deposit/withdraw signatures and the EyaSjUtS… destination were not walked.</li>
+              <li>Burn-and-reissue applies only to issuer tokens. Native SOL cannot be frozen or burned by an issuer. USDC could be frozen by Circle only while it sits on Solana or EVM; none was frozen here, including the FoRNTj CCTP USDC that returned to Solana.</li>
+              <li>Binance has not published a root-cause statement specific to its Solana hot wallet <a href="https://solscan.io/account/5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9"><code>5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9</code></a> (4.0456 SOL as of ~13:05Z).</li>
             </ul>
           </section>
 
@@ -1802,6 +2092,74 @@
               <li><a href="https://mempool.space/address/bc1qcwx0tqtknjdtsmja55evx92jynu43s36dkd3zu">mempool.space — Relay BTC fill recipient (later swept) 0.60482302</a></li>
               <li><a href="https://mempool.space/address/bc1qpf948kuvgmr9pe54daqcyd6h247f2u84p8qx09">mempool.space — Relay BTC fill recipient (later swept) 0.60464431</a></li>
               <li><a href="https://mempool.space/address/bc1qsrwnxsc7eptfz0v4a48ve6uka4539vpttklssv">mempool.space — Relay BTC fill recipient (later swept) 0.60485692</a></li>
+              <li><a href="https://solscan.io/tx/2krnYJW1828TxZr4s6VpLzasYP7k6JrTjAvwCHuAVJY1ofoqDYWEMDurXndKpgETuibr459FttXuGPF5SrUVsrgX">Solscan — 14,035.65 SOL to H381HE</a></li>
+              <li><a href="https://solscan.io/account/H381HEjs48WWwZEoGzmNqv7sTQNxNnYEjiM3ud2iChvk">Solscan — H381HE hop</a></li>
+              <li><a href="https://solscan.io/tx/3NuXo7VGKbrB7TKFwrsL1HYSAZpaB27f284ZTKt3DUM1Tm5XC1GfsqczHyipY1cqN4sQft7oFQHN4snmKULCM8jP">Solscan — 6,459.88 SOL to GadT2M</a></li>
+              <li><a href="https://solscan.io/account/GadT2MS9xNkaRq9bxrkg3WDARqRSRwxm78MapFnaBCUD">Solscan — GadT2M hop</a></li>
+              <li><a href="https://solscan.io/tx/S9LCKkhhGhnLv3SrFn4ntygEdQpojwsNvzp3fQiUMKnuFVjjQW1gDFvxLoqUYGoBg6iAhfz85ngwEtJo2xj9GLS">Solscan — 5,283.29 SOL to EYNsnn</a></li>
+              <li><a href="https://solscan.io/account/EYNsnnmz6mmbT91EQSSzr7Fxf4KwLP5v1FP7AePtRK8s">Solscan — EYNsnn hop</a></li>
+              <li><a href="https://solscan.io/tx/pLgnbbheFgvp78zkydbKdyF8SZ6pRbhfi9tYot7wvV2chereKJiinvKcbhfAfNErcFsxvnxCfxMDjMdkkTsZDb7">Solscan — 6,702.45 SOL to 4yuZZk</a></li>
+              <li><a href="https://solscan.io/account/4yuZZkkuoo8KRvqxH2weGnhcQTYyBgeefWkXUH5NFAq8">Solscan — 4yuZZk hop</a></li>
+              <li><a href="https://solscan.io/tx/3th4aWUz5Gheq3jEd4Xqszcf2ghNet8PF8jXhMu9hQj9PRJ58JbWYngGbB8tc7tvWd3pMC2EdWQtWC7NBe2GfdFJ">Solscan — 6,012.76 SOL to 8T3EUo</a></li>
+              <li><a href="https://solscan.io/account/8T3EUoin1aasnTb8UCGx69XDuTN2Wgghcramd3vu2JVd">Solscan — 8T3EUo hop</a></li>
+              <li><a href="https://solscan.io/tx/3ngivDkjGbd1iFRN7PmzwbhsuT544xdgih4BHfNTabGdsRi5dJFdpdDZ1N89W14ph7sgz5oGVe5Gus7teCP6bf1F">Solscan — 14,585.57 SOL to CveMg1</a></li>
+              <li><a href="https://solscan.io/account/CveMg1V9f2EvjL1vcwsGkdYYZ5v9kHm1RQiKGghkLz7n">Solscan — CveMg1 hop</a></li>
+              <li><a href="https://solscan.io/tx/5eHRxC64xXzih1xcHFvTjPKDqXCuh5m7irNA9L9dVsv4jpsH5hjp2Xt7D4Xd5gBvnTXptSqESpVffA4k3R65XbKa">Solscan — 5,589.60 SOL to 9xwuN97</a></li>
+              <li><a href="https://solscan.io/tx/5i1UvtvNBhbct3jjA8mV3wQQCa89z8dZE7QSyTFLjpTW7QCHPFhUbZRNDtdr1uoqFLEKTZXyy6EeW3ktxp7eM2q">Solscan — 5,407.50 SOL to 9xwuN97</a></li>
+              <li><a href="https://solscan.io/account/9xwuN97BtSFuSKGBe1AaB2vsmSXLXo7w25wQDnd3tWdg">Solscan — 9xwuN97 hop</a></li>
+              <li><a href="https://solscan.io/tx/29K7A9gfc4QBsWDLaCJtwgCGMdFMXvFe8S98X8canjpUtqUFdGxKUDQuuRrS5rBokFzNVJsvHgjVZa8X3XJLfDvU">Solscan — 6,945.33 SOL to A7sos2</a></li>
+              <li><a href="https://solscan.io/account/A7sos2pEpLpiL3txGdpoo3jiigzvDBToG8iuLFEuHYch">Solscan — A7sos2 hop</a></li>
+              <li><a href="https://solscan.io/tx/3kwGQuiankMqdoeDvaWYDAkhW3V8GJSF4kkXq7CAH1fUnQWTbZhraT7qbthxRgeG6dtE6oyaGaVb4M1zBEvM4n3f">Solscan — 4,885.12 SOL to 56wmUx</a></li>
+              <li><a href="https://solscan.io/account/56wmUxFmgzozzEyq5NejJ2d2Mn219BxBedrmQRHB24Qr">Solscan — 56wmUx hop</a></li>
+              <li><a href="https://solscan.io/tx/32sNCUxScK4VFC6vpLZV31rM6eqBdDt62Ls6sQKCQiVFq4qgh1U9gw1frSoeAnUYapofZW7saZxgT7Utep6PFCec">Solscan — 4,823.44 SOL to 4fMYVT</a></li>
+              <li><a href="https://solscan.io/account/4fMYVTJDMJqY9og8uCd7vvA3ivj9NjEKuWBxQGWKgsSv">Solscan — 4fMYVT hop</a></li>
+              <li><a href="https://solscan.io/tx/zc7CtDKAriKuspceWgBxkWtfJ6EK8iLDEv7nFS65BUKd1oniqzX4ZKs8UDr86EYiQiLyn1sbA1895gznDyJBVzL">Solscan — 3,587.20 SOL to FoRNTj</a></li>
+              <li><a href="https://solscan.io/account/FoRNTjJmZZ7Sd8tEdfJHM8nSHufM6Ko9PubPnJhAx8qh">Solscan — FoRNTj hop</a></li>
+              <li><a href="https://solscan.io/tx/2G5mfq7tcPcCUHcSSEHS3yQNXakVg2sEpLrx8pxnVVXSAPkJmQqKMGsQjK4mMXHfbnKzRTf7u8cKzWTSTRe6dDQJ">Solscan — 8,723.8195 SOL FoRNTj to 7EuBfbi</a></li>
+              <li><a href="https://solscan.io/account/7EuBfbiNpco3EQWNm9az5nb4MB3HKYWqs9v3yawPvY8T">Solscan — 7EuBfbi (resting 8,723.82 SOL)</a></li>
+              <li><a href="https://solscan.io/tx/2q1KnpZ44yoZ8dStRSFcDQkoUMMbeTwdm8f2vJ7TNbHNSP5Cz8BLFiy9qSLnCg7T3p9s6JgV5ewtNckc5Jvu6msY">Solscan — 7SDu 500 SOL to hDKPza (emptied)</a></li>
+              <li><a href="https://solscan.io/tx/2guLErubNs4ihSvJ8TPQv9vuPCKQphZtsrXoezvbtNFzEBXyivsBBLTo6f39zA7ALpaCPp3WxsEsJmhNfiwCwu7w">Solscan — 7SDu 500 SOL to ArjqGb (emptied)</a></li>
+              <li><a href="https://solscan.io/tx/3Z8TMzrbkNoCbWxGoaVYtneGFPDQRc2t96HBMGRGXiJ1hKDaaQKzBquWXp4TAuzbGmcHtncDKe7AgJCAgrjg1aEA">Solscan — 7SDu 550 SOL to FpdeB1 (emptied)</a></li>
+              <li><a href="https://solscan.io/tx/3dNMpVAGHQHmcpGnoPDUBKyjMo9hbHzzgpA8aZMqbh8QCHJ1EtrAfSexf3L9jCVt5yNJrmHbNiJ8GDGERcV9USGn">Solscan — 7SDu 480 SOL to 9DyGEV (emptied)</a></li>
+              <li><a href="https://solscan.io/tx/mijBRxDWiCMbJXBG7SRLi6TkvSuLCvqguutfxnuRCEJmKLaD2Mj6yUJ59DWJcmNcbXuVG6xid7rd4FZZMbmHnAr">Solscan — 7SDu 533 SOL to 5tyxZ5 (emptied)</a></li>
+              <li><a href="https://solscan.io/tx/FwUodssZi6JiVKrZ26fSygLe2rCZN1k9va517k9KTKD8gs9wLxAFuxHj6TjS9sDeAT9sr1oiyKvrVmiVSKcnLCi">Solscan — 7SDu 489.33 SOL to 93X5eK (emptied)</a></li>
+              <li><a href="https://solscan.io/account/61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH">Solscan — RFQ program 61DFfeTKM7… (full id)</a></li>
+              <li><a href="https://solscan.io/tx/33k4MAFVSECGs3BGBHGEhmxhWGDq4mmT14CTMYamvKgFjPRVFnii5XcTor6qbaufXEMKjEmu9mhChLpqLfF1WvZ7">Solscan — FoRNTj 2,005.54 SOL to 183,212.90 USDC (RFQ)</a></li>
+              <li><a href="https://solscan.io/tx/5kDhgdqTtHxnh6u1A68GeEEnGyWXBr6jWSx2oX31u6jAepL8G5ktdkUwvAMDDh3VBYaVkULqbYNuxF17AWATswex">Solscan — CCTP DepositForBurn 88,521.98 USDC to Noble</a></li>
+              <li><a href="https://solscan.io/tx/3k8iLpFEiJEDTRdk7ULeYoC956ss72sRJMUApDif8Wj3LxPw23H6rQVqDPzj2yocesgcqTSqzHjNbQNKYqGqoRGp">Solscan — CCTP DepositForBurn 94,690.88 USDC to Noble</a></li>
+              <li><a href="https://www.mintscan.io/noble/tx/0607CEDD8E5B6F570097F5C5A02AD3E47172BA63EFEBFD8C2EA55216A892816C">Mintscan Noble — 88,521.98 USDC mint / forwarding-account register</a></li>
+              <li><a href="https://www.mintscan.io/noble/tx/499FCA41A52728F9280ECA88BBEEB49B991E6B2F0D7BD3C0EB50D6A953B26B43">Mintscan Noble — 94,690.88 USDC mint</a></li>
+              <li><a href="https://www.mintscan.io/dydx/tx/B539FBEAB80DD4719B023A1C2A50DCADD9541365EE8F7EEE648BD025027E8D71">Mintscan dYdX — 88,520.73 USDC subaccount deposit</a></li>
+              <li><a href="https://www.mintscan.io/dydx/tx/0F8A6001C5EDDA490D8F10F0439EA58E43092912F9DE41260F702B87773758AD">Mintscan dYdX — 94,690.87 USDC subaccount deposit</a></li>
+              <li><a href="https://www.mintscan.io/dydx/tx/04824832A7C460937951141005897623B6291C9427352398FC116AB9BD5628A9">Mintscan dYdX — 87,555.00 USDC IBC to Noble Orbiter</a></li>
+              <li><a href="https://www.mintscan.io/dydx/tx/1C9FBE58633B3CD44F6A41D3E0459552DA65567998D199E476C19C24B149FE2C">Mintscan dYdX — 95,656.599401 USDC IBC to Noble Orbiter</a></li>
+              <li><a href="https://solscan.io/tx/2nBcPmJrH2fjMqyBREyqnYe2yzZWrgTHrpSi3GkWggeH6yJVpJQ7ffG9VH7C47irtxtQ64NRriaRRZ8D42dtRFkd">Solscan — 4fnQuArG 183,211.0 USDC to 2,003.0125 SOL (loop return)</a></li>
+              <li><a href="https://solscan.io/account/4fnQuArGVZ5FxiieLq3iMa8icgFDQezLdieW2ZWys355">Solscan — 4fnQuArG (CCTP mint recipient owner)</a></li>
+              <li><a href="https://solscan.io/tx/4nNLqWBYU53yCSs3DtKhMujAmNLrqSfUCHgb8fw4TF3x7BtzJEYGXhLhuZxqS7Rwjf6dJsCLtxLXae2UVmNtaED2">Solscan — 1,000.2 SOL to pVdqaag</a></li>
+              <li><a href="https://solscan.io/tx/4yywC4EcLC9X7HWAPcoJgTPkNCFZ8QLV18xcjAygmttvbTbEUw65YtuaXGsE7i25ufubddTFZ3uzHHNJ2k8TQCjZ">Solscan — 1,002.98 SOL to nfkGcDh</a></li>
+              <li><a href="https://solscan.io/tx/Wfvqfa2BQu7fFbxssCVV7CoibzDDH8fTTC39Rg8C5caqhwnAPw8Qh98vEkQHKRM3UiNT4v9mq3iG3ctkLHWQDfN">Solscan — Mayan attempt 2 (GaBzy3 10 SOL → whETH)</a></li>
+              <li><a href="https://solscan.io/tx/4NJBjLbmVEXPgDnRARkPFdAJty1k4KuYhRTJ6RwxEXRZ5GLNSWCzsVLFCxkvn2eGHYEdJDtSqku6RiySGLDdtLwo">Solscan — Mayan order (GaBzy3)</a></li>
+              <li><a href="https://solscan.io/tx/23aTvxcxzAVSJVgV5nnCPAkN9nsa9mGsbUTtghy87ffQCGbb8VAUzGMELKNcyt2yMrUPVFTkx6bf2SECU879d5ds">Solscan — Mayan refund 2 (0.4074 whETH to GaBzy3)</a></li>
+              <li><a href="https://solscan.io/tx/5hsvkm31e19nrtA1xN2Y2AWth51xNfzcDepZRNa9MU53gy74o5Ly4hxb2WkhLByXqVE3ctbu8U199VKwQk79Jf7r">Solscan — Mayan refund 2 swapped back to 9.94 SOL</a></li>
+              <li><a href="https://solscan.io/tx/2VqtuiYzZrTJXwmQB16Gx7pUrFkQAbns8k5zdG6CpYgKuHCCTsQQPpeR91kCcwrR8FtbHqt8uqZVMPvNQ7gCWiWP">Solscan — Mayan attempt 3 (10 SOL, 0.4078 whETH)</a></li>
+              <li><a href="https://solscan.io/tx/4heA2QSE8b1X8uw8zS7crieJ7HGGwCDYV5Lzj3e8MdgPHWtb3xNBP6oMwJh5RpaPKtGP6Ch7gr9UwC3AhusqjpW8">Solscan — Mayan refund 3</a></li>
+              <li><a href="https://solscan.io/tx/33BHHHvSHd8CYhZ1yMd4bYzZr6kZ9wGkfFiAytrEnY9Uv5N2H9kVLJJtBDpe1RFK7uWxdDBqe1VgkrXFJm9HAdTg">Solscan — Mayan refund 3 swapped back to 9.92 SOL</a></li>
+              <li><a href="https://solscan.io/account/9fhQBbumKEFuXtMBDw8AaQyAjCorLGJQiS3skWZdQyQD">Solscan — program 9fhQBbum… (X Bridgers label unverified)</a></li>
+              <li><a href="https://solscan.io/account/L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95">Solscan — program L2TExMFK… (X Bridgers label unverified)</a></li>
+              <li><a href="https://solscan.io/account/4AV2Qzp3N4c9RfzyEbNZs2wqWfW4EwKnnxFAZCndvfGh">Solscan — 4AV2Qzp (program-owned; 480.9 SOL in)</a></li>
+              <li><a href="https://solscan.io/tx/3YciyGbHwUTNRXuVBVxYiwie4HX9B5ohRQweKkAt579TKWvaUzAmWaFrLU61NT9u9DXfjtDkk9S9TnTM4p9wak1p">Solscan — 2gEKwi 10 SOL to 4AV2Qzp</a></li>
+              <li><a href="https://solscan.io/tx/5UTpAyr3AKmeZmBZdkRxXZ4y3MJSF5RhvAnvtSJMECMTwbQhT2rGd5F7B1DXJctcEietLyGzvspjJ57unZzVdRd3">Solscan — 2gEKwi 100 SOL to 4AV2Qzp</a></li>
+              <li><a href="https://solscan.io/tx/35tEPBqgRoshod4EcT7U5ZThV6Ewmi4cPnSs5uLEftCaq5BL9TqFkTKu4rMbgfHkfcqMRp7by6pG1ojY7kAQGaht">Solscan — 2gEKwi 129 SOL to 4AV2Qzp</a></li>
+              <li><a href="https://solscan.io/tx/zAD9qsknJwMP6VxX78kPukZfKep1gZGyCVumeE3VvbHGPyhThwNHuDmFBuD26DqvVWe2SH5rnaHTrV11MzJYk7W">Solscan — 77st56x 120 SOL to 4AV2Qzp</a></li>
+              <li><a href="https://solscan.io/tx/5XNWd7LupvsvPSatzBbZSNiU8ufkbrXKgGpNYoq7NFNExSqbuuNaSkrSV3MumWpZufZE2TEbVFQPvKTxbK5FFK7E">Solscan — 77st56x 121.9 SOL to 4AV2Qzp</a></li>
+              <li><a href="https://solscan.io/account/2gEKwi4JuKWEk71rj9xvL142qmXfFLe9xCVFdTghqTzU">Solscan — 2gEKwi hop</a></li>
+              <li><a href="https://solscan.io/account/77st56xEnQLr96VQCoeJFVxuDLJME9sXoX3L4VS4KrFM">Solscan — 77st56x hop</a></li>
+              <li><a href="https://solscan.io/account/CihyoEKFbf3hUhntb2cRrP16iyCLCqhqzo8UvN2VTdAC">Solscan — CihyoEKF (Marinade hub; 721.03 SOL resting)</a></li>
+              <li><a href="https://solscan.io/account/7cnDvFe3HX7T3NWwfgKKDCFqGFCbL4tH1vYLwPM9cepu">Solscan — 7cnDvFe Marinade hub</a></li>
+              <li><a href="https://solscan.io/account/GtZgYki9hri6kdtm2w2Y6wAbWgvVdU6o1jPSGxFiuDAn">Solscan — GtZgYki Marinade hub</a></li>
+              <li><a href="https://solscan.io/account/2d62RRYedRHEfPkjq3XyXoNGNZ3BQex5wDbULbDPv4Xb">Solscan — 2d62RRY hop (Marinade stake)</a></li>
+              <li><a href="https://solscan.io/account/GL9SKYsA81n1M1xEzu1S4R2AF5yCieQcA7rU8Hss2rKJ">Solscan — GL9SKY hop</a></li>
+              <li><a href="https://solscan.io/tx/3t3DrHAQckL13tfc5wZ8QbvCL448bFQNww1zKJe32AVQayTPMzNrajvixqJDct5sKo59gMLreCnRtj2ohvZ8E4T1">Solscan — FoRNTj gather +4,584.66 SOL</a></li>
             </ol>
           </section>
 
