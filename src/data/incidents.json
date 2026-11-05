@@ -1,5 +1,119 @@
 [
   {
+    "id": "mercado-bitcoin-hot-wallet-nov-2026",
+    "title": "Mercado Bitcoin Solana hot-wallet drain",
+    "date": "2026-11-02",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "lossDescription": "This entry is the Solana side of a multi-chain exchange incident. GoPlus reported the Solana wallet transferred about 10,695.56 SOL to 3YX6WHncP1Ra4AotE9YLawFt4nPmxyux288FWXkEW97J. Bitquery reports Tether froze 1.26M USDT on Solana at that address after the attacker sold Solana tokens into it, and that some SOL/USDT later bridged via Mayan (~$1.15M ETH). Multi-chain totals in public reporting: Mercado Bitcoin ~$38M involved with $11M blocked; Hypernative >$40M; Arkham ≥$46M; Chainalysis ~$49M; Bitquery $48.6M on 10 chains with $11.8M issuer freezes. This entry does not convert the Solana SOL figure to USD and does not treat the multi-chain total as a Solana-only loss.",
+    "summary": "On 2 Nov 2026 Brazil's largest crypto exchange Mercado Bitcoin confirmed unauthorized access to one of its systems and paused deposits and withdrawals. Hot wallets on about ten chains paid an attacker within roughly half an hour; Mercado Bitcoin published Solana destination 3YX6WHncP1Ra4AotE9YLawFt4nPmxyux288FWXkEW97J for tracing. GoPlus reported about 10,695.56 SOL leaving the Solana wallet. Bitquery counts the unlabeled Solana source from behaviour and timing (it had been paying users until shortly before the attack) and notes the Solana proceeds later reached the same Ethereum attacker. The exchange said no customer would lose money and no data leaked; it has not published a root cause. Chainalysis, Tether, Circle, Paxos and others froze a portion of the multi-chain haul. This is the Solana side of that incident, four days after Binance.",
+    "details": "Official tracing addresses include EVM 0xe485e7A70b1131216Cb47CA4555c4Bbb2C742478, BTC 19qGpsHvzh1t6pVi526XNNkh6hW6prDZp, SOL 3YX6WHncP1Ra4AotE9YLawFt4nPmxyux288FWXkEW97J, and Tron TEX3HuDRHRa3tnYpy96M4UfSx62VhDyA5L. Bitquery: Solana, Tron and Stellar source wallets carry no public exchange label; they are counted because they paid users until shortly before the attack, were emptied in the same ~21-minute hot-wallet window, and Solana funds later met the same Ethereum attacker. On Ethereum the attacker also emptied 36,042 customer deposit addresses for hours after the exchange said the attack was contained — evidence the signer could authorize deposit keys, not only the hot wallet. Tether froze 1.26M USDT on Solana; Bitquery says the last Solana-token sale into that account landed one second before the freeze. Relay turned down two Solana-related orders; Mayan paid about $1.15M of ETH for SOL/USDT. Bitquery also ties ~$391K on Base/Arbitrum/Optimism the same night to wallets it labels as BitMart; BitMart has not confirmed. No DPRK attribution is included here.",
+    "rootCause": "Unpublished. Mercado Bitcoin said it identified and contained a security incident in one of its systems and has not said which system or whether a key leaked. On-chain, hot wallets across many chains paid one attacker in a tight window, and later deposit-address sweeps on Ethereum were self-signed by those deposit keys. That fits compromised hot-wallet signing plus deposit-key derivation, but the chain cannot prove the path. GoPlus noted the pattern resembles the Binance theft; that is a comparison, not attribution.",
+    "response": "Mercado Bitcoin paused deposits and withdrawals, published destination addresses, said customer assets and data were not lost, and pledged to absorb the loss. It reported working with Tether, Circle, Paxos, BRL1 and Chainalysis; Chainalysis says it helped freeze nearly $10M. Deposits to old addresses should be treated as unsafe until the exchange issues new ones. No hashed Solana recovery or restart date is included here.",
+    "tags": [
+      "mercado-bitcoin",
+      "exchange",
+      "custody",
+      "hot-wallet",
+      "keys",
+      "cross-chain"
+    ],
+    "relatedIds": [
+      "binance-hot-wallet-drain-oct-2026",
+      "upbit-sol-hot-wallet-nov-2025",
+      "candy-digital-custodial-oct-2026"
+    ],
+    "sources": [
+      {
+        "label": "Mercado Bitcoin — official destination addresses",
+        "url": "https://central.ajuda.mercadobitcoin.com.br/wiki/spaces/TF/pages/2965176322"
+      },
+      {
+        "label": "Decrypt",
+        "url": "https://decrypt.co/382459/brazil-mercado-bitcoin-will-refund-users-40-million-hack"
+      },
+      {
+        "label": "Chainalysis — freeze response",
+        "url": "https://www.chainalysis.com/blog/chainalysis-response-mercado-bitcoin/"
+      },
+      {
+        "label": "Bitquery — 10-chain investigation",
+        "url": "https://bitquery.io/investigations/mercado-bitcoin-hack"
+      },
+      {
+        "label": "Arkham",
+        "url": "https://info.arkm.com/research/mercado-bitcoin-hack-trace-the-46m-stolen-on-chain"
+      },
+      {
+        "label": "GoPlus alert via Tree News — Solana 10,695.56 SOL",
+        "url": "https://tree.news/news/goplus-security-alert-brazilian-exchange-mercadobitcoin-has-experienced-g34xflreocss"
+      }
+    ],
+    "lesson": "Exchange hot-wallet and deposit-key compromise is now a repeated Solana-side pattern (Upbit, Binance, Mercado Bitcoin): per-chain velocity limits and the ability to freeze deposit-address signing independently of the hot wallet are what bound the blast radius after the keys are already in play.",
+    "mitigations": [
+      "Strict hot/cold split with per-chain outflow ceilings and a one-click pause that covers Solana as well as EVM/Bitcoin.",
+      "Do not let a single compromised signing path authorize both hot-wallet payouts and customer deposit-address sweeps; isolate deposit-key derivation from withdrawal signing.",
+      "Delay and step-up-review withdrawals to brand-new recipient addresses; this attack paid fresh per-chain destinations.",
+      "Pre-establish issuer and analytics freeze channels (Tether, Circle, Paxos) so Solana USDT/USDC can be locked before it is swapped or bridged.",
+      "Tell users that old deposit addresses are burned after a signer compromise; publish new addresses only after keys are rotated.",
+      "Separate signing key pools per chain so a Solana compromise cannot be reused as the Ethereum/Bitcoin drain (and the reverse)."
+    ]
+  },
+  {
+    "id": "king-mev-bot-drain-nov-2026",
+    "title": "King Solana MEV bot private-key drain",
+    "date": "2026-11-02",
+    "category": "application",
+    "severity": "medium",
+    "estimatedLossUsd": 856000,
+    "lossDescription": "Bitquery's 3 Nov 2026 recount is about $856K (4,264.57 WSOL, 191.24 SOL, 359,094.73 USDC, 7,173.93 USD1, and 69,869 USDT the first count missed), using SOL at $94.28 at drain time. First reports (Onchain Lens, SlowMist, TokenPost, Cointelegraph) cited ~$786K. About $280K was later frozen at Mayan and Relay; ~251 ETH (~$574K) reached Ethereum address 0xf2fbf0292215a597f85409e753a4fe4f191663c1 and had not moved as of 2026-11-03T09:17Z. This entry uses Bitquery's $856K figure and does not re-price.",
+    "summary": "On 2 Nov 2026, seconds after the King arbitrage/MEV program stopped being called, its main hot wallet 7dGrdJRYtsNR8UYxZ3TnifXGjGc9eRYLq9sELwYpuuUu sent its balances to brand-new address BHRayETPjvgg3BCr9H82V1D6NRwxu5v44JAaVuaod3jU in five plain transfers over 146 seconds. There was no program bug and no approval trick: each transfer was signed with the bot's own key. Bitquery traces about $856K; earlier public reports said ~$786K because they missed the USDT. The attacker swapped stablecoins to SOL on Jupiter, then bridged via Mayan and Relay. The bot's long-running withdrawal address Ace7hXUYzheTYG6EAYEYec25Y6SXUfKvauavEGy3KRby offered a 20% white-hat bounty for an 80% return by 2026-11-04T13:22Z; Bitquery reports no on-chain reply. A second King wallet was not drained and was later swept to Ace7hX.",
+    "details": "King is named for program King7ki4SKMBPb3iupnQwTyjsq294jaXsgLmJo8cb7T. Bitquery: both King wallets went quiet within 4 seconds of each other; nobody has called the program since 2026-11-02T07:32:26Z, and the first theft transfer came 24 seconds later. Drained wallet 7dGrdJRYtsNR8UYxZ3TnifXGjGc9eRYLq9sELwYpuuUu; second wallet GQEZDiygN1Ric4po2zCSs42kfr6SeBL6Pz1G4DENVWyA (~$36K, later moved to Ace7hX at 08:52Z, not stolen). Drain address BHRayETPjvgg3BCr9H82V1D6NRwxu5v44JAaVuaod3jU was unused before that morning. Forwarder Ddmy5oM8xtTs1EBC6eF2SZwQfBreewQpFgtUDm51Hkqj fed Mayan. Ace7hX had received 22 withdrawals from the bot since 2 Jul 2026; after the drain it co-signed token-account closes, so the operator still held a copy of the key. Relay blocked a 499.99 SOL deposit; Mayan filled 10 orders (251.15 ETH) then refused the rest. Frozen is not recovered: refunds would likely return to attacker deposit addresses.",
+    "rootCause": "Unconfirmed. On-chain the drains are ordinary transfers signed by the bot's own hot key, which is consistent with a leaked or copied server key (the same class as Bloom a week earlier). Bitquery notes the bot stopped 24 seconds before the first theft, which also fits the operator noticing something and shutting it off. The chain does not show how the key was obtained.",
+    "response": "Ace7hX sent BHRayE an on-chain 20% bounty / 80% return note the same afternoon, expiring 2026-11-04T13:22Z; Bitquery reports no reply. Mayan and Relay blocked about a third of the bridged SOL/USDC. No hashed operator reimbursement or issuer freeze of the remaining ETH is included here. King's operator has not published a confirmation; Cointelegraph quoted Onchain Lens treating the flow as a likely wallet compromise.",
+    "tags": [
+      "king",
+      "mev",
+      "arbitrage-bot",
+      "keys",
+      "hot-wallet",
+      "custody"
+    ],
+    "relatedIds": [
+      "bloom-trading-bot-drain-oct-2026",
+      "solareum-telegram-mar-2024",
+      "banana-gun-sep-2024",
+      "dexx-key-leak-nov-2024"
+    ],
+    "sources": [
+      {
+        "label": "SlowMist Hacked DB — King",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      },
+      {
+        "label": "Bitquery — King bot investigation",
+        "url": "https://bitquery.io/investigations/king-arbitrage-bot-hack"
+      },
+      {
+        "label": "Cointelegraph via TradingView — Onchain Lens",
+        "url": "https://www.tradingview.com/news/cointelegraph:9d2e784a2094b:0-crypto-investigators-flag-suspected-106m-theft-786k-solana-bot-drain/"
+      },
+      {
+        "label": "TokenPost",
+        "url": "https://www.tokenpost.com/news/technology/46972"
+      }
+    ],
+    "lesson": "An always-signing MEV/arbitrage bot is a hot wallet: once its key is copied, the attacker does not need a program bug, and splitting funds plus destination-allowlisted withdrawals is what limited the blast radius here.",
+    "mitigations": [
+      "Do not keep a bot's full private key on the trading host with the whole treasury; use a policy-checked signer (destination allowlist, spend caps, delay) so a copied key cannot empty a new address in 146 seconds.",
+      "Split working capital across wallets so a single key compromise cannot take the whole stack; the second King wallet was salvageable because it was not drained.",
+      "Alert when a high-frequency bot stops calling its program and when the next outbound is to a never-before-seen address; both happened here in under a minute.",
+      "Treat USDC/USDT as freezeable only until swapped; a 20-minute delay before Jupiter swaps would have given issuers a window that this attacker did not leave open for long.",
+      "If a hot key may have been copied, treat that wallet as burned even if the operator still holds a copy; rotate to a new key rather than continuing to sign from the drained account."
+    ]
+  },
+  {
     "id": "binance-hot-wallet-drain-oct-2026",
     "title": "Binance hot-wallet drain",
     "date": "2026-10-29",
@@ -23,7 +137,8 @@
       "swissborg-kiln-sol-staking-sep-2025",
       "candy-digital-custodial-oct-2026",
       "bloom-trading-bot-drain-oct-2026",
-      "timefun-backend-signing-mar-2025"
+      "timefun-backend-signing-mar-2025",
+      "mercado-bitcoin-hot-wallet-nov-2026"
     ],
     "sources": [
       {
@@ -1027,7 +1142,8 @@
       "dexx-key-leak-nov-2024",
       "solareum-telegram-mar-2024",
       "banana-gun-sep-2024",
-      "timefun-backend-signing-mar-2025"
+      "timefun-backend-signing-mar-2025",
+      "king-mev-bot-drain-nov-2026"
     ],
     "sources": [
       {
@@ -1053,6 +1169,111 @@
       "Enforce per-transaction policy at the signer: destination allowlists, spend caps, and delays, so RCE or key access cannot drain wallets in 94 seconds.",
       "Alert on mass simultaneous System transfers from operator-issued wallets and halt signing within minutes.",
       "Treat a drained hot wallet as burned; refund to new user-controlled addresses, not the drained keys."
+    ]
+  },
+  {
+    "id": "blockdaemon-solflare-validator-keys-oct-2026",
+    "title": "Blockdaemon / Solflare validator operator-key compromise",
+    "date": "2026-10-26",
+    "endDate": "2026-10-27",
+    "category": "network",
+    "severity": "low",
+    "estimatedLossUsd": 135000,
+    "lossDescription": "Bitquery recounts 1,343 SOL-worth (~$135K), 62% of it JitoSOL from identity keys, bridged to Ethereum and 57.0 ETH deposited into Tornado Cash. First public counts that stated only the SOL figure were low. Delegated stake was not taken. Solflare had about 1.56M SOL delegated to the affected validator when rewards stopped; that principal stayed in users' own stake accounts. This entry uses Bitquery's $135K operational-fund figure.",
+    "summary": "On 26–27 Oct 2026 operator keys for a small set of long-running Solana validators were used to empty identity and vote accounts and to change vote-account withdraw authorities. Bitquery traces one attacker holding keys of five validators (Solflare's, Blockdaemon's, Astraeus, J21SMP, and an inactive Slow Ventures validator), taking about 1,343 SOL-worth (~$135K) in minutes, then bridging to Ethereum and depositing 57 ETH into Tornado Cash. Delegated SOL was never moved: stake accounts are controlled by the delegator's own authorities. Affected validators missed the Validator Admission Ticket and stopped earning from epoch 1070. Blockdaemon's 30 Oct update says the key material originated from a local copy on a former employee's corporate device (keys generated 2020–2022), not from a breach of current validator hosts. Solflare pledged to cover missed rewards for users who migrate to a replacement validator.",
+    "details": "Bitquery: just after 19:00 UTC on 26 Oct, identity keys of Solflare, J21SMP, Blockdaemon and Astraeus paid a brand-new wallet 9LsvNgeMJwzC5WZ7QDzYo7wVykZmGsPBRPKtXt3a5Qr8 (~1,188 SOL-worth in 3 minutes); vote accounts were emptied before the 20:58 UTC epoch check that picks the next voting set. Keys of one validator paid fees for thefts from another, so one holder signed for all five. Withdraw authorities were moved to 6sSJnc… on 27 Oct, then to five fresh keys on 28 Oct; those new keys have done nothing else, so on-chain control is not shown as returned. A 1 SOL rescue into Solflare's empty vote account was taken 5 seconds later. Bridgers and Chainflip paid Ethereum 0x9bdde8b8f610217132cd18f29864167142ee4581; 57.0 ETH went into Tornado Cash. The same Bridgers→Ethereum route was tested 11 days earlier. Blockdaemon: no unauthorized activity after 2026-10-27T10:29Z; replacement vote account 9ntyW2ufs5hGECKLwhR4p7PuQhqAbfKdAwNoYbgXsExn. Solflare did not name the provider in its first posts; Blockdaemon later published the operator-key incident report.",
+    "rootCause": "Blockdaemon (30 Oct 2026): affected credentials were generated 2020–2022; forensic analysis points to a local copy on a former employee's corporate device, with endpoint telemetry of an unauthorized transfer to personal systems. Independent review found no intrusion on current validator hosts and no unauthorized access in secrets-management or password vaults from Oct 2025 through the incident. Bitquery's on-chain record is consistent with copied identity and withdraw keys, not a protocol bug. How the former-employee copy reached the attacker is not published.",
+    "response": "Blockdaemon opened an incident on 27 Oct, told customers to deactivate and re-delegate, rotated withdraw authority on unaffected Solana validators, and published replacement vote account 9ntyW2ufs5hGECKLwhR4p7PuQhqAbfKdAwNoYbgXsExn. Solflare said user funds were untouched, moved users toward a new validator, and pledged missed-reward compensation for those who migrate in-app. CoinDesk (29 Oct) and Solana Compass warned not to stake with the old Solflare validator. No hashed recovery of the stolen operational funds is included here.",
+    "tags": [
+      "blockdaemon",
+      "solflare",
+      "validator",
+      "keys",
+      "staking",
+      "withdraw-authority"
+    ],
+    "relatedIds": [
+      "bloom-trading-bot-drain-oct-2026",
+      "step-finance-treasury-jan-2026",
+      "binance-hot-wallet-drain-oct-2026"
+    ],
+    "sources": [
+      {
+        "label": "Blockdaemon — operator-key incident report",
+        "url": "https://www.blockdaemon.com/incident-reports/operational-impact-on-solana-validators"
+      },
+      {
+        "label": "Bitquery — validator key investigation",
+        "url": "https://bitquery.io/investigations/solflare-validator-hack"
+      },
+      {
+        "label": "CoinDesk — Solflare missed rewards",
+        "url": "https://www.coindesk.com/markets/2026/10/29/solana-wallet-solflare-pledges-to-pay-missed-rewards-on-staked-usd160-million-after-validator-goes-offline"
+      },
+      {
+        "label": "Coinpaper — $135K / Tornado Cash",
+        "url": "https://coinpaper.com/38253/solana-validator-hack-exposes-five-operators-as-135-000-in-crypto-flows-into-tornado-cash"
+      }
+    ],
+    "lesson": "Validator identity keys and vote withdraw authorities are hot operational secrets: a leftover 2020–2022 copy on a departed employee's laptop is enough to empty vote accounts, steal identity-held JitoSOL, change commission, and knock the validator out of the admission set, while stakers' principal stays safe only because the protocol keeps stake authorities separate.",
+    "mitigations": [
+      "Keep vote-account withdraw authority on an offline / hardware-backed key that never lives on the validator host or in a former employee's laptop image; rotate it on every offboarding.",
+      "Do not park JitoSOL or other treasury on the identity (hot) key; that account should hold only fees needed to vote.",
+      "Inventory every historical validator key from discontinued generation practices and treat an unaccounted copy as already compromised.",
+      "Monitor identity and vote-account outflows and withdraw-authority changes; auto-alert when several validators share a fee payer on those txs.",
+      "Publish replacement vote-account addresses only on a canonical page; lookalike validator addresses circulated during this incident.",
+      "Tell delegators immediately that the old validator cannot earn, and that topping up a compromised vote account just feeds the attacker who still holds withdraw authority."
+    ]
+  },
+  {
+    "id": "padre-terminal-fake-app-oct-2026",
+    "title": "Fake Padre Terminal App Store key-import drain",
+    "date": "2026-10-25",
+    "endDate": "2026-10-29",
+    "category": "supply-chain",
+    "severity": "low",
+    "estimatedLossUsd": 23000,
+    "lossDescription": "Iris reports about 165.3 SOL + 5,441.45 USDC + memecoins drained from 27 wallets, all swapped to SOL; 229.66 SOL (~$23k) still held across two wallets as of 2026-10-29T18:41Z. This entry uses the widely cited ~$23k remaining-SOL figure and does not re-price.",
+    "summary": "From 25–29 Oct 2026 a Solana drainer emptied 27 wallets into 3LAgKYoNenWrGWT3U4XWhpgVJWyYkP9wKpiPk8TJT1LN. Investigator Iris tied at least one victim to a counterfeit \"Padre Terminal\" iOS app (App Store id 6802739263) that asked users to import private keys. Genuine Padre (now Terminal by pump.fun) is web-only at trade.padre.gg, so any native app presenting as Padre is an impersonation. Apple removed the listing (404 by 2026-10-29T17:46Z); the drainer stayed active afterward, with the latest Iris-counted theft at 2026-10-29T17:06Z. Iris has not shown the App Store route for the other 26 wallets, and at least one victim said they never installed the app.",
+    "details": "Each drain is a victim-signed transfer into 3LAgKYoNenWrGWT3U4XWhpgVJWyYkP9wKpiPk8TJT1LN (first at 2026-10-25T10:56Z; latest counted 6.86 SOL at 2026-10-29T17:06Z). Largest single victim lost 3,200 USDC at 2026-10-29T11:26Z. The drainer swapped remaining USDC (last 4,070.71 USDC → 40.50 SOL at 2026-10-29T11:52Z), leaving nothing for Circle to freeze, then moved 192 SOL to fresh H84yazsUVCF8eJ6brh27rURMHjdKEVv2BuLS4iuUUQbu at 11:53Z. As of 2026-10-29T18:41Z: drainer 37.664 SOL, hop 192.000 SOL (229.66 SOL total); nothing cashed out or bridged. Count excludes lookalike-poisoning senders, one ambiguous 0.29 USDC transfer, and one same-day 4.9993 SOL transfer. A second App Store listing (id 6717572591, live since Oct 2024) is reported as likely pump.fun's official app, not this drainer. Iris also flagged four other suspected crypto-brand impersonators on the store (Axiom Pro: Focus, GMGN AI, HyperTerminal-HyperliquidTools, Pump Fun Tokens & Analitycs) without independently confirming those thefts; Padre was not tied to that cluster.",
+    "rootCause": "Users imported private keys into a counterfeit App Store listing impersonating a web-only Solana trading front end. Iris suspects the fake app's trading UI was served remotely (not directly observed). App Store distribution is a confirmed route for one victim, not proven for the rest of the 27-wallet set.",
+    "response": "The malicious Padre Terminal listing (id 6802739263) was removed from the App Store and returned 404 by 2026-10-29T17:46Z. Removal did not stop already-imported keys from signing further drains. No hashed recovery, freeze, or official Padre/pump.fun reimbursement is included in this entry. Iris/BleepingComputer contacted Apple; no public Apple response is included here.",
+    "tags": [
+      "padre",
+      "padre-terminal",
+      "app-store",
+      "phishing",
+      "keys",
+      "impersonation"
+    ],
+    "relatedIds": [
+      "dmt-dexmaxai-airdrop-phishing-nov-2025",
+      "solana-owner-field-phishing-late-2025",
+      "solareum-telegram-mar-2024",
+      "candy-digital-custodial-oct-2026"
+    ],
+    "sources": [
+      {
+        "label": "Iris — fake Padre App Store drainer (primary)",
+        "url": "https://iriscan.app/news/fake-padre-app-store-drainer"
+      },
+      {
+        "label": "BleepingComputer",
+        "url": "https://www.bleepingcomputer.com/news/security/fake-crypto-app-on-apple-app-store-linked-to-23k-wallet-theft/"
+      },
+      {
+        "label": "BastionZero — recap",
+        "url": "https://www.bastionzero.com/blog/fake-padre-terminal-app-store-solana-wallet-theft"
+      }
+    ],
+    "lesson": "A web-only product plus an App Store listing with the same name is a key-harvesting channel: store review does not prove the binary a user later runs is the one that was reviewed, and deleting the listing does not revoke keys already typed in.",
+    "mitigations": [
+      "Never import a seed phrase or private key into a mobile app; hardware-wallet or in-wallet session signing only.",
+      "Publish official store IDs, or state explicitly that the product is web-only, so impersonating listings can be identified from the project's own site rather than store search.",
+      "Treat any native app for a web-only product as malicious by default; link to store pages only from the canonical domain.",
+      "Wallets and educators should warn that App Store presence is not authentication, especially for listings with few downloads that ask for key import.",
+      "If a key was typed into a third-party app, treat that wallet as burned: move remaining funds to a newly generated wallet, not the drained key.",
+      "Stablecoin issuers and bridges should watch known drainer addresses while freezable balances remain; once swapped to SOL there is no token-level freeze."
     ]
   },
   {
@@ -1100,6 +1321,58 @@
       "Do not honor destination-chain ReleaseToken / equivalent claims unless source-side fee settlement is verified, not only a claim signature.",
       "Monitor destination vault outflows that are unmatched to paid source withdrawals and pause release programs on divergence.",
       "Treat Arkham/Etherscan/Blockscout labels (including HitBTC) as attribution only until a chain-native label or hashed deposit proof exists."
+    ]
+  },
+  {
+    "id": "artrade-staking-oct-2026",
+    "title": "Artrade staking-system ATR drain",
+    "date": "2026-10-22",
+    "category": "application",
+    "severity": "low",
+    "estimatedLossUsd": null,
+    "lossDescription": "Artrade reported approximately 66 million ATR drained through its staking system. Darkfost reports the stolen ATR was swapped to about 196.2 SOL plus 14 additional SOL before hitting addresses attributed to HitBTC. This entry does not convert ATR or SOL to USD. Reserve-based user restoration is an official promise, not a hashed payout total.",
+    "mitigated": true,
+    "summary": "On 22 Oct 2026 Artrade, a Solana art-and-luxury marketplace, disclosed unauthorized ATR activity limited to wallets and infrastructure connected to Artrade and its program. A follow-up the same day said the incident was contained and that approximately 66 million ATR were drained through the staking system; personal wallets were not identified as compromised. The team pledged to restore affected balances from its ATR reserve, paused platform features, and temporarily suspended ATR deposits on centralized exchanges. Root cause is unpublished: contract logic, privileged authority, and operator-infrastructure compromise are all still possible.",
+    "details": "Darkfost, writing after Artrade's second update, reports 369 staker addresses were affected and that stolen ATR was collected at 9LsD3Hs6YZgwiEmWEZbkwZpRPUoCzJmDufCUVt269o74, then moved through rRmgU4dj2ND3HXBqreayVhLGDMoZwFyUSPfwXyLoMVr for ATR→WSOL (signature 45rrJDxVhHtwpnwki6hFYojR2CDM8BntSkmLRoVejGfXKyvt1irdHKPkxJhzDByHfAgWL1eFcecMu1x3zuU2fAia) and WSOL→SOL (signatures 3gdYiPVAjqJYbGUr1aC6WbcxcunTovCHxBwPf5n6rAnFmHLhwBUvz1nfejT1bnK7DT13vTSFPkVu3SecbRsuxAtW and Fq1H2d6mxoD4yYS9fZePy5W6dwq1dM6fWdt246XWrXvYgDsGLx7br2n2msVFqX8CWCDnUSezxLWHJvDJyvdGPSD). Proceeds are reported as 196.2 SOL plus 14 SOL to 8UqqJUKGDyQxKkQduUUJgJZKngn9TZGpjdhGp23Hisde then BfP2dBiHbiqYvsmESsgHEL8wQtZt25sbDNKnwmNRB34G, the same Solana hop the WAX bridge entry treats as unlabeled/HitBTC-attributed. Those addresses, signatures, the 369-staker count, and any WAX linkage are Darkfost's reporting, not independently hashed here. Artrade's docs describe per-user staking PDAs rather than a single pooled vault; that architecture claim does not by itself explain a bulk staking drain.",
+    "rootCause": "Unconfirmed. Artrade said value was removed through the staking system and that personal wallets were not compromised. This entry does not infer a program bug versus a privileged-instruction or operator-infrastructure path.",
+    "response": "Artrade 22 Oct 2026: initial incident notice (personal wallets safe; do not buy/sell/transfer ATR); CEX ATR deposits suspended; SECURITY UPDATE #2 (contained; ~66M ATR via staking; reserve will restore balances; platform features remain offline). 24 Oct 2026: recovery still ongoing, hoped to reopen the following week after security checks. Restoration from reserves is an official promise and is not hashed here.",
+    "tags": [
+      "artrade",
+      "atr",
+      "staking",
+      "marketplace",
+      "pda"
+    ],
+    "relatedIds": [
+      "wax-multi-chain-bridge-oct-2026",
+      "stake-nova-flash-loan-feb-2026"
+    ],
+    "sources": [
+      {
+        "label": "Artrade (X) — official channel",
+        "url": "https://x.com/ArtradeApp"
+      },
+      {
+        "label": "The Crypto Guardian — staking drain / UPDATE #2",
+        "url": "https://thecryptoguardian.com/artrade-says-66m-atr-drained-through-staking-system/"
+      },
+      {
+        "label": "The Latest Crypto News — Darkfost flow",
+        "url": "https://thelatestcryptonews.com/news/artrade-hacked-more-than-66-million-atr-tokens-stolen/"
+      },
+      {
+        "label": "Darkfost (X) — pointer",
+        "url": "https://x.com/Darkfost_Coc"
+      }
+    ],
+    "lesson": "A staking program is a privileged money-movement path even when docs describe per-user PDAs: if admin, emergency, or operator infrastructure can empty many stake accounts, 'isolated vaults' do not contain a bulk drain, and covering users from a token reserve is compensation rather than recovery of the stolen inventory.",
+    "mitigations": [
+      "Bound staking admin and emergency instructions so a single privileged path cannot drain every stake PDA; require a timelocked multisig for any bulk unstake or destination change.",
+      "Monitor staking-account and staking-vault outflows independently of the operator dashboard; auto-pause staking on unexplained multi-account drains.",
+      "Do not treat a whitepaper PDA-isolation claim as a control until tests show a compromised admin cannot sweep the set.",
+      "Publish which program, instruction, and address cohort were in scope, and rotate or freeze attacker-controlled destinations with CEX/issuer partners.",
+      "Keep personal-wallet funds out of operator-controlled staking authorities; if an emergency function exists, it should secure a single PDA, not empty the cohort.",
+      "Treat HitBTC or other exchange labels as attribution only until a chain-native label or hashed deposit proof exists."
     ]
   },
   {

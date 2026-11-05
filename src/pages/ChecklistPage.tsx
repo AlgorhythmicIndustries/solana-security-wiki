@@ -24,6 +24,7 @@ const sections: Section[] = [
       "Run a third-party audit (Neodyme, OtterSec, Halborn, Asymmetric, Sec3, Zellic) before mainnet TVL grows; require an audit on every privileged-instruction change.",
       "Run differential / fuzz testing against attacker-supplied accounts and instruction permutations.",
       "Build and test against a current Solana feature-flag set; runtime semantics change.",
+      "If staking uses per-user PDAs, still bound admin/emergency instructions so one privileged path cannot drain every stake account; monitor staking-account outflows independently of the operator dashboard (Artrade).",
     ],
   },
   {
@@ -82,7 +83,7 @@ const sections: Section[] = [
     id: "supply-chain",
     title: "5. Supply chain and dependencies",
     intro:
-      "Coverage for the @solana/web3.js, @kodane/patch-manager, npm wave, and Telegram-bot incidents.",
+      "Coverage for the @solana/web3.js, @kodane/patch-manager, npm wave, Telegram-bot incidents, and Bloom's third-party-module RCE.",
     items: [
       "Pin every dependency version; lockfiles committed; no wildcard ranges in production manifests.",
       "Run an SCA tool (Socket.dev, Snyk, Dependabot) on every PR with blocking severity policy.",
@@ -94,13 +95,14 @@ const sections: Section[] = [
       "Independently review any code or repo shared by an external counterparty before cloning to a privileged machine.",
       "Subscribe to security advisories for every framework you use (Anchor, Agave, Pyth, etc.).",
       "Avoid handling raw private keys in any process that loads npm packages; route signing through a separate hardened service.",
+      "Do not load unaudited third-party modules into a process that can produce user signatures; sandbox plugin surfaces (Bloom).",
     ],
   },
   {
     id: "frontend-web2",
     title: "6. Frontend, DNS, and social account hygiene",
     intro:
-      "Coverage for Raydium DNS, Parcl, BONKfun, Watt Protocol, Solar, Swarms, and the broader phishing-channel pattern.",
+      "Coverage for Raydium DNS, Parcl, BONKfun, Watt Protocol, Solar, Swarms, the Padre Terminal App Store impersonation, and the broader phishing-channel pattern.",
     items: [
       "Registrar-lock the production domain; choose a registrar with hardware-2FA and human-confirmed transfer policies.",
       "Enable DNSSEC.",
@@ -113,13 +115,14 @@ const sections: Section[] = [
       "Operate a status page and a verified backup channel users can cross-reference.",
       "Configure audit-log alerting in Discord (e.g., Wick) for destructive admin actions.",
       "Set up Cloudflare or equivalent DDoS protection for high-traffic events (claim sites, airdrops).",
+      "Publish official app-store IDs, or state explicitly that the product is web-only, so impersonating listings can be identified from the canonical site rather than store search (Padre Terminal).",
     ],
   },
   {
     id: "endpoint",
     title: "7. Endpoint and personal-device security",
     intro:
-      "Direct response to Step Finance, Drift, DEXX, Solareum, and the broader trend of executive-device compromise.",
+      "Direct response to Step Finance, Drift, DEXX, Solareum, Binance's DevOps-laptop path, Blockdaemon's former-employee validator-key copy, and the broader trend of executive-device compromise.",
     items: [
       "Hardware wallets (Ledger / Trezor) for every privileged signer; never sign from a general-purpose laptop.",
       "EDR / managed-detection on every privileged endpoint.",
@@ -130,13 +133,14 @@ const sections: Section[] = [
       "Background and reference checks for new contributors with privileged access.",
       "Mandatory phishing-defense training; refresh annually.",
       "Treat any device that ever held a hot key as compromised on suspicion; rotate keys.",
+      "On offboarding, inventory and rotate every historical validator identity and vote-withdraw key that ever lived on that person's laptop; a leftover 2020–2022 copy is enough to empty vote accounts (Blockdaemon / Solflare).",
     ],
   },
   {
     id: "backend",
     title: "8. Backend, custody, and key management",
     intro:
-      "Coverage for Thunder Terminal, Solareum, DEXX, Banana Gun, Time.fun, TradeWiz, Candy Digital, and exchange-class incidents like Upbit.",
+      "Coverage for Thunder Terminal, Solareum, DEXX, Banana Gun, Time.fun, TradeWiz, Candy Digital, Bloom Trading, King-style MEV bots, and exchange-class incidents like Upbit, Binance, and Mercado Bitcoin.",
     items: [
       "Store credentials and signing keys in HSM/KMS or MPC; never in env files, code, or logs.",
       "Use scoped, short-lived credentials with rotation; audit every issuance.",
@@ -148,6 +152,9 @@ const sections: Section[] = [
       "Scrub sensitive data at the SDK layer; configure Sentry / analytics with allow-lists, not deny-lists.",
       "Annual third-party application pentest covering data egress paths, not just smart contracts.",
       "Reserve attestation / SOC 2-equivalent for any custodial service.",
+      "Do not allow a general-purpose DevOps workstation to submit withdrawal transactions; signing should require a separate policy-checked pipeline so a compromised laptop cannot emit arbitrary hot-wallet transfers (Binance, Mercado Bitcoin).",
+      "Keep vote-account withdraw authority offline and never park JitoSOL or other treasury on the validator identity key; that account should hold only fees needed to vote (Blockdaemon / Solflare).",
+      "An always-signing MEV/arbitrage bot is a hot wallet: split working capital, allow-list withdrawal destinations, and alert when the bot stops and the next outbound is to a never-seen address (King).",
     ],
   },
   {
@@ -198,6 +205,7 @@ const sections: Section[] = [
       "Maintain a public bug bounty (Immunefi or equivalent) with clear scope and payout floor that incentivizes disclosure over exploitation.",
       "Maintain an insurance fund or partner with a coverage provider; size and policy disclosed publicly.",
       "Publish post-mortems on every incident, including narrowly-averted ones.",
+      "Never import a seed phrase or private key into a mobile app; treat any native app for a web-only product as malicious, and follow store links only from the canonical domain (Padre Terminal).",
     ],
   },
 ];
