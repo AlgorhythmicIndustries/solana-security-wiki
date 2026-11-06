@@ -578,6 +578,13 @@ details.fold > summary:focus-visible {
   color: var(--text-muted);
 }
 
+.flow-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: calc(var(--radius) - 2px);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
