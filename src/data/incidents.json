@@ -1,5 +1,126 @@
 [
   {
+    "id": "loopscale-genesis-vault-nov-2026",
+    "title": "Loopscale Genesis Vault exploits",
+    "date": "2026-11-01",
+    "endDate": "2026-11-05",
+    "category": "application",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "lossDescription": "Two separate drains of Loopscale Genesis vaults, not one bug. Vector 1 (2026-11-01): 4,597 SOL left the SOL Genesis vault (wSOL ATA 5,719.566856263 → 1,122.566856263) and was extracted as 4,596 SOL plus 1.677556797 SOL, then Relay-bridged to ~190.22 ETH. Vector 2 (2026-11-05): 586,000 USDC withdrawn against 65,000 USDC deposited (net 521,120 USDC). SOL make-whole of +4,598.434180621 wSOL is hashed on 2026-11-03. No inbound USDC to the vault token account was visible at a ~2026-11-05T23:00Z check. This entry does not convert SOL to USD. An attached reconstruction combined the two vectors at ~$950k (pointer, not independently recomputed). Loopscale later cited ~$412k and ~$521k (reported).",
+    "summary": "On 1 Nov and 5 Nov 2026 two distinct attacks hit Loopscale Genesis vaults on program 1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78. They are not the April 2025 RateX oracle incident and they are not collapsed into one bug here. Vector 1 (SOL vault, 2026-11-01T19:41:05Z, slot 464213236): signer 247Lk5YNH9URfBBvxVUtDruz8GvGX8gKGuYHVCZThpiR plus Loopscale co-signer CyNKPfqsSLAejjZtEeNG3pR4SkPhSPHXdGhuNTyudrNs ran CreateLoan, DepositCollateral, UpdateWeightMatrix, and BorrowPrincipal in mZCoHzevv7nrPsSJDjnGZVRQMeUvuwQ2BuPUeCWhCYBheaWjoRkETU6Jh6zb2o2bgrhRAA4axy2QNQtpDZNFsmD. One kySOL (9 decimals), bought for 1.310991880 SOL at 19:38:31Z, was valued using a zBTC (8 decimals) identity. Vault wSOL fell 4,597 SOL (5,719.566856263 → 1,122.566856263). The drain signer is 247Lk, not AzPh. Vector 2 (USDC vault, 2026-11-05): AzPh2dUV3duK9n8PWV6CxKMwWr9Rk7fxPNBZuv1CjwMr created its own strategy, borrowed 120 USDC against 2 wSOL, deposited 65,000 USDC for 58,326.202736 shares, set a strategy rate field to 0xfffffffffffffffe, refinanced and sold the ledger to the vault for 120.000071 USDC, then burned 465.264135 shares for 586,000 USDC at 06:09:33Z. Loopscale’s published attacker list used AzPh…CiwMr, which has no history; the real signer is …CjwMr. A Squads-gated program upgrade at 2026-11-04T04:52:42Z preceded vector 2; no later program-data upgrade was seen through ~23:00Z Nov 5. That check does not claim the program is unpatched today. SOL make-whole is hashed on 2026-11-03; no USDC make-whole was visible on the vault token account at the Nov 5 check. Loopscale stated that affected vaults were made whole and no user deposits incurred a loss; that claim is sourced and is not treated as false, and it is contrasted with the limited on-chain observation.",
+    "details": "Both attack wallets were funded from seed 2ByCbD4ZdwPH19DaHa6gqaMZoqUCvg84BRVFPWxJtMvw (FixedFloat-labelled 5ndLnEYqSFiA5yUFHo6LVZ1eWc6Rhh11K5CfJNkoHEPs and unlabeled A1safaZVY24vCompd8jFBq9k2Apu6SiBDh3xJ4DqAAGV on 2026-10-29). Co-signer CyNKPfqsSLAejjZtEeNG3pR4SkPhSPHXdGhuNTyudrNs is on every attacker Loopscale instruction in this reconstruction. Chain does not show that key was stolen and this entry does not assert it. Address-poisoning lookalikes (including AC9Y7HPSSmPouNBLo1cHTVbZoYRPZyUeVbBPSGt9jwMr) are noise, not attacker receipts. No on-chain link to Binance Oct 29 wallets was found. Admin signer bs1PuRvB9rBBZkryBjADYvxc2qYh51EVW2fsb1uTiBN posted CreateTimelock transactions after vector 2; payload semantics are not decoded here and this entry does not assert a pause from those hashes. Unresolved EVM destinations stay unresolved.",
+    "rootCause": "Two separate causes. Vector 1 (reported by r0bre, not independently binary-diffed here): an oracle_type==19 / BeamAccount early return in verify_collateral_data skipped the asset-type check, so an Orca label could be applied with the wrong mint and price identity. The exploitable on-chain effect was a 9-decimal kySOL amount valued as 8-decimal zBTC. r0bre reports the bug was introduced in the 2026-03-18T19:11:34Z upgrade and removed in the 2026-11-04T04:52:42Z upgrade. Vector 2 (inference, medium-high confidence, not an official root cause): an uncapped strategy rate field (0xfffffffffffffffe) inflated vault book value so a small LP-share burn redeemed 586,000 USDC. Loopscale’s 2026-11-06 statement described selling a loan with an extreme interest rate into the USDC Genesis Vault and inflating NAV; that is reported, not independently confirmed as the same mechanism. The Nov 4 patch is not treated as a fix for vector 2.",
+    "response": "SOL Genesis vault: LiquidateLedger by rektbdF5r7HnWrPDRvD76pC1V9rVfaGmbSY3Dsrj8Kx at 2026-11-03T13:43:50Z (47zp5i14ERm2soQQGLs5LKRk4Xi2Yigh6iuJ68URKe4VfzC9u2GpgWYbLG73fT4a645GBnUibZ5gP69kfaD7DbAo) credited +4,598.434180621 wSOL to vault ATA 8oCX3kkgviLPxYGBfSt1kCKWVmHer1pHqutPTiBYnGpu and +1 kySOL to the liquidator. That Loopscale operated the liquidator is inference. Program 1oopBoJG… was upgraded at 2026-11-04T04:52:42Z (HSuUTAA2qqzDLm5q5oKYNwjzxqpWaTKXP1XYCrSis5FkNqvDJHsU5542YsaoZJU2MGsk9jTs8FkkPWjddt4wYYi); r0bre reports that upgrade removed the type-19 early return. Vector 2 still executed after that upgrade. USDC vault token account 3GAu8zG1bLHEd2K5JUvysEjLSkfTw4aXYCFaUcQCYsA2 showed zero inbound USDC after 06:09:33Z and balance 1,638,608.740128 USDC at ~23:00Z Nov 5, so no USDC make-whole was visible on-chain at that check. Loopscale (X, 2026-11-05T10:13:27Z, 2118285556123611378) said affected vaults had been made whole and no user deposits incurred a loss, and that it paused protocol activity; pause is Loopscale’s claim, not a decoded on-chain instruction. Off-chain mitigation via the co-signer cannot be inferred. This write-up does not claim vector 2 remains unpatched after the Nov 5 check.",
+    "tags": [
+      "loopscale",
+      "lending",
+      "oracle",
+      "vault",
+      "genesis-vault",
+      "decimal-mismatch",
+      "strategy-rate",
+      "cosigner"
+    ],
+    "relatedIds": [
+      "loopscale-oracle-apr-2025",
+      "defituna-lending-jul-2026",
+      "texture-lending-jul-2025"
+    ],
+    "sources": [
+      {
+        "label": "r0bre — Loopscale hack - what happened? (X article)",
+        "url": "https://x.com/r0bre/status/2118373644887900519"
+      },
+      {
+        "label": "Loopscale (X) — 5 Nov 2026 statement (made-whole claim; CiwMr typo)",
+        "url": "https://x.com/Loopscale/status/2118285556123611378"
+      },
+      {
+        "label": "Loopscale (X) — 6 Nov 2026 update (two paths, reported)",
+        "url": "https://x.com/Loopscale/status/2118502123705159769"
+      },
+      {
+        "label": "Solscan — Loopscale program",
+        "url": "https://solscan.io/account/1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78"
+      },
+      {
+        "label": "Solscan — seed 2ByCbD4Z",
+        "url": "https://solscan.io/account/2ByCbD4ZdwPH19DaHa6gqaMZoqUCvg84BRVFPWxJtMvw"
+      },
+      {
+        "label": "Solscan — vector 1 signer 247Lk",
+        "url": "https://solscan.io/account/247Lk5YNH9URfBBvxVUtDruz8GvGX8gKGuYHVCZThpiR"
+      },
+      {
+        "label": "Solscan — vector 2 signer AzPh…CjwMr",
+        "url": "https://solscan.io/account/AzPh2dUV3duK9n8PWV6CxKMwWr9Rk7fxPNBZuv1CjwMr"
+      },
+      {
+        "label": "Solscan — published lookalike AzPh…CiwMr (no history)",
+        "url": "https://solscan.io/account/AzPh2dUV3duK9n8PWV6CxKMwWr9Rk7fxPNBZuv1CiwMr"
+      },
+      {
+        "label": "Solscan — co-signer CyNKPf",
+        "url": "https://solscan.io/account/CyNKPfqsSLAejjZtEeNG3pR4SkPhSPHXdGhuNTyudrNs"
+      },
+      {
+        "label": "Solscan — SOL Genesis vault wSOL ATA",
+        "url": "https://solscan.io/account/8oCX3kkgviLPxYGBfSt1kCKWVmHer1pHqutPTiBYnGpu"
+      },
+      {
+        "label": "Solscan — USDC Genesis vault",
+        "url": "https://solscan.io/account/6tv6XYnXUFjLSaAeap4T1GQusYeEw3nK6KTcVyyHf3ns"
+      },
+      {
+        "label": "Solscan — vector 1 drain mZCo",
+        "url": "https://solscan.io/tx/mZCoHzevv7nrPsSJDjnGZVRQMeUvuwQ2BuPUeCWhCYBheaWjoRkETU6Jh6zb2o2bgrhRAA4axy2QNQtpDZNFsmD"
+      },
+      {
+        "label": "Solscan — kySOL buy HEFb",
+        "url": "https://solscan.io/tx/HEFb6FSvW6V4sn9woKTr1fsKxhJnjjk85yWTcVWbF2wxdcTqoJJqpc3Kem6GfVMVC3d1SigNvyGT1Cz48tFHQKw"
+      },
+      {
+        "label": "Solscan — SOL make-whole 47zp",
+        "url": "https://solscan.io/tx/47zp5i14ERm2soQQGLs5LKRk4Xi2Yigh6iuJ68URKe4VfzC9u2GpgWYbLG73fT4a645GBnUibZ5gP69kfaD7DbAo"
+      },
+      {
+        "label": "Solscan — USDC withdraw 5wEu",
+        "url": "https://solscan.io/tx/5wEuYcxK19iCZkHgUwCd1Ye3HFxzowmUpfuy6cdGfZm5oB86VMWNPMnLWP6hutd7PM5CwzrRwUGhYJYevejTnkiF"
+      },
+      {
+        "label": "Solscan — 18 Mar 2026 program upgrade",
+        "url": "https://solscan.io/tx/3heQGBYSJPFu4NgvC7zNRsfjVa9jHPkpNHvyThPgc6kagHY2Ckp597WFz3wCQhoA7X6Ta414uPLwwkrT7GKkrBnN"
+      },
+      {
+        "label": "Solscan — 18 Aug 2026 program upgrade",
+        "url": "https://solscan.io/tx/5KexwFNhcdXHDSM9thZgn6AG6yvkgHveKno18bzVb5PBsXzav8TayZ1toYNUsYK12yJ1h5qGR3rEwH6o5x8ToHyk"
+      },
+      {
+        "label": "Solscan — 4 Nov 2026 program upgrade",
+        "url": "https://solscan.io/tx/HSuUTAA2qqzDLm5q5oKYNwjzxqpWaTKXP1XYCrSis5FkNqvDJHsU5542YsaoZJU2MGsk9jTs8FkkPWjddt4wYYi"
+      },
+      {
+        "label": "Etherscan — vector 1 ETH 0xB7Ec",
+        "url": "https://etherscan.io/address/0xB7Ec7eF24FD73f3000C651CA9D0Fa45b61DcF854"
+      },
+      {
+        "label": "Etherscan — vector 2 ETH 0xb8959",
+        "url": "https://etherscan.io/address/0xb8959Aca4e4C796A3BaDA66833eAe60b1BC0bfb2"
+      }
+    ],
+    "lesson": "A lending vault can be hit twice in one week by two unrelated accounting bugs. An oracle-type exception that skips asset-type checks turns a decimal mismatch into a drain, and an uncapped strategy-rate field can inflate vault NAV after a patch that only closed the first path. A mandatory co-signer is not an independent control if it will sign whatever the program would accept.",
+    "mitigations": [
+      "Require collateral mint, price identity, decimals, and asset type to be consistent; do not early-return on special oracle types such as BeamAccount before that check.",
+      "Cap strategy interest-rate fields and reject near-u64::MAX rates before refinance or sell-to-vault.",
+      "Make the backend co-signer validate mint vs price identity vs decimals independently of on-chain acceptance.",
+      "After any vault exploit, inventory remaining share-pricing and strategy-accounting paths before treating a program upgrade as complete.",
+      "Bound vault share redemption so a tiny LP-share burn cannot withdraw a disproportionate fraction of vault cash.",
+      "Publish make-whole hashes against the same token account that was drained so a depositor-whole claim can be reconciled on-chain.",
+      "Treat lookalike addresses as address-poisoning noise until a spend from a known attacker key is hashed."
+    ]
+  },
+  {
     "id": "binance-hot-wallet-drain-oct-2026",
     "title": "Binance hot-wallet drain",
     "date": "2026-10-29",
@@ -2203,6 +2324,9 @@
       "lending",
       "oracle",
       "loopscale"
+    ],
+    "relatedIds": [
+      "loopscale-genesis-vault-nov-2026"
     ],
     "sources": [
       {

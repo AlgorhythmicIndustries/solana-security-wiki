@@ -10,6 +10,14 @@ export interface InvestigationDraft {
 /** Static HTML IR notes served from /investigations/. Not live wiki articles. */
 export const investigationDrafts: InvestigationDraft[] = [
   {
+    incidentId: "loopscale-genesis-vault-nov-2026",
+    title: "Loopscale Genesis Vault exploits",
+    date: "2026-11-01",
+    href: "/investigations/loopscale-genesis-vault-investigation.html",
+    status: "draft",
+    published: false,
+  },
+  {
     incidentId: "binance-hot-wallet-drain-oct-2026",
     title: "Binance hot-wallet drain",
     date: "2026-10-29",

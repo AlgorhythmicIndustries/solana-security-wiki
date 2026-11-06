@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <script>
+      (function () {
+        var k = "solana-security-wiki-theme";
+        try {
+          var t = localStorage.getItem(k);
+          if (t !== "dark" && t !== "light") {
+            t = "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m)
+            m.setAttribute("content", t === "dark" ? "#0c0d10" : "#f4f5f9");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta name="description" content="Investigation notes for Loopscale Genesis Vault exploits, November 2026." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/investigations/investigation.css" />
+    <title>Loopscale Genesis Vault exploits — investigation</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <a href="#main-content" class="skip-link">Skip to content</a>
+      <aside class="sidebar">
+        <h1 class="brand">Solana Security Wiki</h1>
+        <p class="brand-sub">
+          A living timeline of documented incidents on Solana—apps, wallets,
+          libraries, and the L1 itself.
+        </p>
+        <div class="nav-section-title">Explore</div>
+        <ul class="nav-list">
+          <li><a href="/">Incident Timeline &amp; search</a></li>
+          <li><a href="/investigations">Investigations</a></li>
+        </ul>
+        <div class="nav-section-title">Articles</div>
+        <ul class="nav-list">
+          <li><a href="/trends">Exploitation trends &amp; defender focus</a></li>
+          <li><a href="/checklist">Defender checklist</a></li>
+          <li><a href="/videos">Video resources</a></li>
+          <li><a href="/resources">Miscellaneous resources</a></li>
+          <li><a href="/simds">SIMDs (security)</a></li>
+        </ul>
+        <div class="sidebar-secondary-wide">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+        </div>
+        <details class="sidebar-details">
+          <summary class="sidebar-details-summary">
+            Categories &amp; external sources
+          </summary>
+          <div class="sidebar-details-body">
+        <div class="nav-section-title">Jump to category</div>
+        <ul class="nav-list">
+          <li><a href="/?category=application">Application exploits</a></li>
+          <li><a href="/?category=supply-chain">Supply chain</a></li>
+          <li><a href="/?category=core-protocol">Core protocol</a></li>
+          <li><a href="/?category=network">Network / infra</a></li>
+        </ul>
+
+        <div class="nav-section-title">Core references</div>
+        <ul class="nav-list">
+          <li>
+            <a href="https://collinsdefipen.medium.com/history-of-solana-security-incidents-a-deep-dive-2332d17e6375" target="_blank" rel="noreferrer">
+              CollinsDeFiPen (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@manuelpz.dev/a-not-so-brief-historical-review-of-solanas-major-security-incidents-ef09867cb6bf" target="_blank" rel="noreferrer">
+              Manuel Pena (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://www.helius.dev/blog/solana-hacks" target="_blank" rel="noreferrer">
+              Helius incident catalog
+            </a>
+          </li>
+          <li>
+            <a href="https://hacked.slowmist.io/?c=Solana" target="_blank" rel="noreferrer">
+              SlowMist hacked DB (Solana)
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">Hackathon surveys (overlap)</div>
+        <p class="brand-sub" style="margin-top: 0.35rem">
+          Many entries recycle the same events; still useful for extra links &amp;
+          angles.
+        </p>
+        <ul class="nav-list">
+          <li>
+            <a href="https://pineanalytics.substack.com/p/the-history-of-solana-security-incidents" target="_blank" rel="noreferrer">
+              Pine Analytics (Substack)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@i2032084/history-of-solana-security-incidents-hacks-halts-and-hard-lessons-13d3052297c9" target="_blank" rel="noreferrer">
+              Abdulmalik Abdulrashid (Medium)
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@nitin132/the-history-of-solana-security-incidents-a-comprehensive-analysis-8f217c6971e6" target="_blank" rel="noreferrer">
+              Nitin132 — wide source list
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@obemarton2004/raydium-exploit-1ecbf22cd682" target="_blank" rel="noreferrer">
+              Martin Obe — Raydium deep dive
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/@samuelisaac1995/solana-security-incidents-mar-2020-apr-2025-2741069145f4" target="_blank" rel="noreferrer">
+              Zackmendel — data + Flipside
+            </a>
+          </li>
+        </ul>
+          </div>
+        </details>
+      </aside>
+      <main id="main-content" class="main" tabindex="-1">
+        <div class="main-top-bar">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode"></button>
+        </div>
+        <article class="article">
+          <p class="muted"><a href="/investigations">← Investigations</a></p>
+          <p class="muted">This investigation was AI generated.</p>
+          <div class="incident-meta">
+            <span class="pill">1–5 Nov 2026</span>
+          </div>
+          <h1>Loopscale Genesis Vault exploits</h1>
+          <p class="muted">
+            Wiki id <code>loopscale-genesis-vault-nov-2026</code>
+            · <a href="/incident/loopscale-genesis-vault-nov-2026">Live incident page</a>
+          </p>
+
+          <section class="article-section">
+            <h2>Summary</h2>
+            <p>
+              Two distinct attacks hit Loopscale Genesis vaults on program
+              <a href="https://solscan.io/account/1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78"><code>1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78</code></a>
+              on 1 Nov and 5 Nov 2026. They are not the April 2025 RateX
+              oracle incident and they are not one bug. Chain reconstruction
+              was read ~<code>2026-11-05T13:00Z</code> and re-checked
+              ~<code>23:00Z</code> the same day. Times are UTC ISO.
+            </p>
+            <p>
+              <strong>Vector 1 — SOL Genesis vault, 1 Nov 2026.</strong>
+              At <code>2026-11-01T19:41:05Z</code> slot
+              <code>464213236</code>,
+              <a href="https://solscan.io/account/247Lk5YNH9URfBBvxVUtDruz8GvGX8gKGuYHVCZThpiR"><code>247Lk5YNH9URfBBvxVUtDruz8GvGX8gKGuYHVCZThpiR</code></a>
+              plus Loopscale co-signer
+              <a href="https://solscan.io/account/CyNKPfqsSLAejjZtEeNG3pR4SkPhSPHXdGhuNTyudrNs"><code>CyNKPfqsSLAejjZtEeNG3pR4SkPhSPHXdGhuNTyudrNs</code></a>
+              ran <code>CreateLoan</code>, <code>DepositCollateral</code>,
+              <code>UpdateWeightMatrix</code>, and <code>BorrowPrincipal</code>
+              in
+              <a href="https://solscan.io/tx/mZCoHzevv7nrPsSJDjnGZVRQMeUvuwQ2BuPUeCWhCYBheaWjoRkETU6Jh6zb2o2bgrhRAA4axy2QNQtpDZNFsmD"><code>mZCoHzevv7nrPsSJDjnGZVRQMeUvuwQ2BuPUeCWhCYBheaWjoRkETU6Jh6zb2o2bgrhRAA4axy2QNQtpDZNFsmD</code></a>.
+              One kySOL (9 decimals), bought for
+              <strong>1.310991880 SOL</strong> at <code>19:38:31Z</code>, was
+              valued using a zBTC (8 decimals) identity. Vault wSOL
+              <a href="https://solscan.io/account/8oCX3kkgviLPxYGBfSt1kCKWVmHer1pHqutPTiBYnGpu"><code>8oCX3kkgviLPxYGBfSt1kCKWVmHer1pHqutPTiBYnGpu</code></a>
+              fell <strong>4,597 SOL</strong>
+              (5,719.566856263 → 1,122.566856263). Extraction was
+              <strong>4,596 SOL</strong> plus <strong>1.677556797 SOL</strong>
+              to
+              <a href="https://solscan.io/account/H1TEUnWaEmrUrp4xKykYmrZCPK8z5HYryv8RhvPFSeiJ"><code>H1TEUnWaEmrUrp4xKykYmrZCPK8z5HYryv8RhvPFSeiJ</code></a>,
+              then Relay to ~190.22 ETH at
+              <a href="https://etherscan.io/address/0xB7Ec7eF24FD73f3000C651CA9D0Fa45b61DcF854"><code>0xB7Ec7eF24FD73f3000C651CA9D0Fa45b61DcF854</code></a>.
+              The drain signer is 247Lk, not AzPh.
+            </p>
+            <p>
+              <strong>Vector 2 — USDC Genesis vault, 5 Nov 2026.</strong>
+              <a href="https://solscan.io/account/AzPh2dUV3duK9n8PWV6CxKMwWr9Rk7fxPNBZuv1CjwMr"><code>AzPh2dUV3duK9n8PWV6CxKMwWr9Rk7fxPNBZuv1CjwMr</code></a>
+              created its own strategy, borrowed 120 USDC against 2 wSOL,
+              deposited 65,000 USDC for 58,326.202736 shares, set a strategy
+              rate field to <code>0xfffffffffffffffe</code>, refinanced and
+              sold the ledger to vault
+              <a href="https://solscan.io/account/6tv6XYnXUFjLSaAeap4T1GQusYeEw3nK6KTcVyyHf3ns"><code>6tv6XYnXUFjLSaAeap4T1GQusYeEw3nK6KTcVyyHf3ns</code></a>
+              for 120.000071 USDC, then burned 465.264135 shares for
+              <strong>586,000 USDC</strong> at <code>06:09:33Z</code>
+              (net <strong>521,120 USDC</strong>). Loopscale published
+              <code>AzPh…CiwMr</code>; that address has no history. The
+              real signer is <code>…CjwMr</code>.
+            </p>
+            <p>
+              A Squads-gated upgrade at
+              <code>2026-11-04T04:52:42Z</code> preceded vector 2. No later
+              program-data upgrade was seen through ~<code>23:00Z</code>
+              Nov 5. That check does not claim the program is unpatched
+              today. SOL make-whole is hashed on 3 Nov. No USDC make-whole
+              was visible on the vault token account at the Nov 5 check.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Timeline</h2>
+            <p>
+              Times are UTC ISO. X posts are pointers. Chain facts are
+              separated from reported claims and inference.
+            </p>
+            <div class="table-scroll">
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Event</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-03-18T19:11:34Z</code></td>
+                  <td>Squads-gated BPFLoader Upgrade of <code>1oopBoJG…</code> (<a href="https://solscan.io/tx/3heQGBYSJPFu4NgvC7zNRsfjVa9jHPkpNHvyThPgc6kagHY2Ckp597WFz3wCQhoA7X6Ta414uPLwwkrT7GKkrBnN"><code>3heQ…BnN</code></a>). r0bre reports this introduced the type-19 early return — reported, not independently binary-diffed here.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-08-18T20:54:52Z</code></td>
+                  <td>Prior program-data upgrade <a href="https://solscan.io/tx/5KexwFNhcdXHDSM9thZgn6AG6yvkgHveKno18bzVb5PBsXzav8TayZ1toYNUsYK12yJ1h5qGR3rEwH6o5x8ToHyk"><code>5KexwFNhcdXHDSM9thZgn6AG6yvkgHveKno18bzVb5PBsXzav8TayZ1toYNUsYK12yJ1h5qGR3rEwH6o5x8ToHyk</code></a>. r0bre reports this binary was live during vector 1.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T18:35:40Z</code></td>
+                  <td>Seed <a href="https://solscan.io/account/2ByCbD4ZdwPH19DaHa6gqaMZoqUCvg84BRVFPWxJtMvw"><code>2ByCbD4Z…</code></a> received 9.166251 SOL from unlabeled <a href="https://solscan.io/account/A1safaZVY24vCompd8jFBq9k2Apu6SiBDh3xJ4DqAAGV"><code>A1safaZV…</code></a>.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-10-29T18:39:38Z</code></td>
+                  <td>Seed received 11.438525 SOL from <a href="https://solscan.io/account/5ndLnEYqSFiA5yUFHo6LVZ1eWc6Rhh11K5CfJNkoHEPs"><code>5ndLnEYq…</code></a> (FixedFloat per Solscan + DOJ complaint). No on-chain link to Binance Oct 29 wallets was found.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T15:32:43Z</code></td>
+                  <td>Seed: 10 SOL via Relay → 944.10 USDC to <a href="https://etherscan.io/address/0x79847b45903AEc3feF56435FD2a75Db3bdc3FE00"><code>0x79847b45…</code></a>, then Safe <a href="https://etherscan.io/address/0xC9bC3a0715A717c5195501E470141d31Dc6D0240"><code>0xC9bC3a07…</code></a>.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:33:31Z</code></td>
+                  <td>Seed → 247Lk 2 SOL.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:38:31Z</code></td>
+                  <td>Jupiter: 1.310991880 SOL → 1 kySOL to 247Lk. Wallet-level gross ~1.312485323 SOL (wrap/fee); swap spend is 1.310991880.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:41:05Z</code></td>
+                  <td>Vector 1 drain: 4,597 SOL from SOL Genesis vault. Signers 247Lk + CyNKPf. Not AzPh.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:41:38Z</code></td>
+                  <td>4,596 SOL 247Lk → H1TE…SeiJ.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:50:32Z</code>–<code>20:01:19Z</code></td>
+                  <td>Relay deposits totalling 4,597.076613 SOL → ~190.2242 ETH at 0xB7Ec…F854.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:52:38Z</code></td>
+                  <td>1.677556797 SOL 247Lk → H1TE…SeiJ.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-03T13:43:50Z</code></td>
+                  <td>SOL make-whole: LiquidateLedger +4,598.434180621 wSOL to vault ATA; liquidator +1 kySOL.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-04T04:52:42Z</code></td>
+                  <td>Squads-gated Upgrade of <code>1oopBoJG…</code> (<a href="https://solscan.io/tx/HSuUTAA2qqzDLm5q5oKYNwjzxqpWaTKXP1XYCrSis5FkNqvDJHsU5542YsaoZJU2MGsk9jTs8FkkPWjddt4wYYi"><code>HSuU…YYi</code></a>). r0bre reports this removed the type-19 early return. This upgrade precedes vector 2 and is not treated as a vector-2 patch.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T05:49:41Z</code>–<code>05:53:19Z</code></td>
+                  <td>Seed funded AzPh…CjwMr (0.5 + 9.90 SOL, 2 wSOL, 1,000 then 66,472.61 USDC).</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T05:50:04Z</code></td>
+                  <td>Lookalike <a href="https://solscan.io/account/AC9Y7HPSSmPouNBLo1cHTVbZoYRPZyUeVbBPSGt9jwMr"><code>AC9Y7HPS…jwMr</code></a> sent 0.0001 USDC to the seed (address poisoning). Signature not in this draft.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T05:56:15Z</code>–<code>06:09:33Z</code></td>
+                  <td>Vector 2: create strategy, borrow 120 USDC, deposit 65,000 USDC, set rate <code>0xfffffffffffffffe</code>, refinance, sell ledger, withdraw 586,000 USDC.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T06:15:37Z</code>–<code>06:19:11Z</code></td>
+                  <td>RFQ 587,712.611558 USDC → 6,115.604363 SOL, then Jupiter + Mayan Swift → 241.874007 ETH at 0xb8959…bfb2.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T08:35:57Z</code> onward</td>
+                  <td>Admin <a href="https://solscan.io/account/bs1PuRvB9rBBZkryBjADYvxc2qYh51EVW2fsb1uTiBN"><code>bs1PuRvB…</code></a> CreateTimelock txs. Payload semantics not decoded. This draft does not assert a pause from those hashes.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T10:13:27Z</code></td>
+                  <td>Loopscale (X) said affected vaults were made whole, no user deposits incurred a loss, and that it paused protocol activity. Reported. Published attacker list includes the CiwMr typo.</td>
+                </tr>
+                <tr>
+                  <td>~<code>2026-11-05T23:00Z</code></td>
+                  <td>Program-data check: no upgrade after <code>HSuU…YYi</code>. USDC vault ATA 3GAu8zG1… balance 1,638,608.740128 USDC; inbound USDC since 06:09:33Z: 0. Vector 2 remained unpatched on-chain at that check; off-chain co-signer mitigation cannot be inferred. This write-up does not claim it is still unpatched today.</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-06T00:34:00Z</code></td>
+                  <td>Loopscale (X) described two paths and said no user deposits will incur a loss. Reported.</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </section>
+
+          <section class="article-section">
+            <h2>Impact</h2>
+            <p>
+              Vector 1 vault loss: <strong>4,597 SOL</strong> from SOL
+              Genesis vault wSOL ATA
+              <a href="https://solscan.io/account/8oCX3kkgviLPxYGBfSt1kCKWVmHer1pHqutPTiBYnGpu"><code>8oCX3kkgviLPxYGBfSt1kCKWVmHer1pHqutPTiBYnGpu</code></a>
+              (owner path via
+              <a href="https://solscan.io/account/EPneH88gcV1kKi1ykj96XmuJsrkbF9aL5iTwvv6eZjW9"><code>EPneH88gcV1kKi1ykj96XmuJsrkbF9aL5iTwvv6eZjW9</code></a>).
+              Extracted 4,596 + 1.677556797 SOL. Cost of the 1 kySOL
+              collateral: 1.310991880 SOL swap spend.
+            </p>
+            <p>
+              Vector 2 vault loss: <strong>586,000 USDC</strong> withdrawn
+              against <strong>65,000 USDC</strong> deposited
+              (net <strong>521,120 USDC</strong>). Sale of the ledger to
+              the vault was 120.000071 USDC. Attacker net after that
+              120 USDC borrow/sale is ~520,240 USDC if that 120 is
+              subtracted; the vault-level net used here is 521,120 USDC.
+            </p>
+            <p>
+              This entry does not convert SOL to USD. An attached
+              reconstruction combined the two vectors at ~$950k (pointer).
+              Loopscale later cited ~$412k (SOL path) and ~$521k (USDC
+              path) — reported, not independently recomputed.
+            </p>
+            <p>
+              SOL make-whole of +4,598.434180621 wSOL is hashed on
+              3 Nov. No USDC make-whole was visible on
+              <a href="https://solscan.io/account/3GAu8zG1bLHEd2K5JUvysEjLSkfTw4aXYCFaUcQCYsA2"><code>3GAu8zG1bLHEd2K5JUvysEjLSkfTw4aXYCFaUcQCYsA2</code></a>
+              at ~<code>23:00Z</code> Nov 5 (balance 1,638,608.740128 USDC;
+              inbound delta 0 after the exploit).
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>On-chain evidence</h2>
+            <h3>Wallets and program accounts</h3>
+            <div class="table-scroll">
+            <table class="hash-table">
+              <thead>
+                <tr><th>Role</th><th>Address</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Loopscale program</td>
+                  <td><a href="https://solscan.io/account/1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78"><code>1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78</code></a></td>
+                </tr>
+                <tr>
+                  <td>Program data</td>
+                  <td><a href="https://solscan.io/account/8KbXd8ATqDQQTozYv2TsCzHUDoiRyWe4DmzHdmJLgdNj"><code>8KbXd8ATqDQQTozYv2TsCzHUDoiRyWe4DmzHdmJLgdNj</code></a></td>
+                </tr>
+                <tr>
+                  <td>Upgrade authority</td>
+                  <td><a href="https://solscan.io/account/DwBXwJDZ4Av4miT62sEssWJUinkzwkmPPB4Fg3fKEfft"><code>DwBXwJDZ4Av4miT62sEssWJUinkzwkmPPB4Fg3fKEfft</code></a></td>
+                </tr>
+                <tr>
+                  <td>Squads program (upgrade CPI)</td>
+                  <td><a href="https://solscan.io/account/SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf"><code>SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf</code></a></td>
+                </tr>
+                <tr>
+                  <td>API co-signer (every attacker Loopscale tx in this reconstruction)</td>
+                  <td><a href="https://solscan.io/account/CyNKPfqsSLAejjZtEeNG3pR4SkPhSPHXdGhuNTyudrNs"><code>CyNKPfqsSLAejjZtEeNG3pR4SkPhSPHXdGhuNTyudrNs</code></a></td>
+                </tr>
+                <tr>
+                  <td>Admin signer (post-vector-2 timelocks)</td>
+                  <td><a href="https://solscan.io/account/bs1PuRvB9rBBZkryBjADYvxc2qYh51EVW2fsb1uTiBN"><code>bs1PuRvB9rBBZkryBjADYvxc2qYh51EVW2fsb1uTiBN</code></a></td>
+                </tr>
+                <tr>
+                  <td>Seed</td>
+                  <td><a href="https://solscan.io/account/2ByCbD4ZdwPH19DaHa6gqaMZoqUCvg84BRVFPWxJtMvw"><code>2ByCbD4ZdwPH19DaHa6gqaMZoqUCvg84BRVFPWxJtMvw</code></a></td>
+                </tr>
+                <tr>
+                  <td>Vector 1 signer</td>
+                  <td><a href="https://solscan.io/account/247Lk5YNH9URfBBvxVUtDruz8GvGX8gKGuYHVCZThpiR"><code>247Lk5YNH9URfBBvxVUtDruz8GvGX8gKGuYHVCZThpiR</code></a></td>
+                </tr>
+                <tr>
+                  <td>Vector 2 signer (real)</td>
+                  <td><a href="https://solscan.io/account/AzPh2dUV3duK9n8PWV6CxKMwWr9Rk7fxPNBZuv1CjwMr"><code>AzPh2dUV3duK9n8PWV6CxKMwWr9Rk7fxPNBZuv1CjwMr</code></a></td>
+                </tr>
+                <tr>
+                  <td>Published typo (no history)</td>
+                  <td><a href="https://solscan.io/account/AzPh2dUV3duK9n8PWV6CxKMwWr9Rk7fxPNBZuv1CiwMr"><code>AzPh2dUV3duK9n8PWV6CxKMwWr9Rk7fxPNBZuv1CiwMr</code></a></td>
+                </tr>
+                <tr>
+                  <td>Address-poisoning lookalike</td>
+                  <td><a href="https://solscan.io/account/AC9Y7HPSSmPouNBLo1cHTVbZoYRPZyUeVbBPSGt9jwMr"><code>AC9Y7HPSSmPouNBLo1cHTVbZoYRPZyUeVbBPSGt9jwMr</code></a> — noise, not an attacker receipt</td>
+                </tr>
+                <tr>
+                  <td>SOL Genesis vault wSOL ATA</td>
+                  <td><a href="https://solscan.io/account/8oCX3kkgviLPxYGBfSt1kCKWVmHer1pHqutPTiBYnGpu"><code>8oCX3kkgviLPxYGBfSt1kCKWVmHer1pHqutPTiBYnGpu</code></a></td>
+                </tr>
+                <tr>
+                  <td>SOL vault owner path</td>
+                  <td><a href="https://solscan.io/account/EPneH88gcV1kKi1ykj96XmuJsrkbF9aL5iTwvv6eZjW9"><code>EPneH88gcV1kKi1ykj96XmuJsrkbF9aL5iTwvv6eZjW9</code></a></td>
+                </tr>
+                <tr>
+                  <td>Loan kySOL custody</td>
+                  <td><a href="https://solscan.io/account/Gb2qCYLs3dEy6D4TvdLYr7wRDMMWDCPR9oK5SzNa5Gtn"><code>Gb2qCYLs3dEy6D4TvdLYr7wRDMMWDCPR9oK5SzNa5Gtn</code></a></td>
+                </tr>
+                <tr>
+                  <td>kySOL mint (9 decimals)</td>
+                  <td><a href="https://solscan.io/account/kySo1nETpsZE2NWe5vj2C64mPSciH1SppmHb4XieQ7B"><code>kySo1nETpsZE2NWe5vj2C64mPSciH1SppmHb4XieQ7B</code></a></td>
+                </tr>
+                <tr>
+                  <td>zBTC mint (8 decimals; price identity)</td>
+                  <td><a href="https://solscan.io/account/zBTCug3er3tLyffELcvDNrKkCymbPWysGcWihESYfLg"><code>zBTCug3er3tLyffELcvDNrKkCymbPWysGcWihESYfLg</code></a></td>
+                </tr>
+                <tr>
+                  <td>H1TE extraction hop</td>
+                  <td><a href="https://solscan.io/account/H1TEUnWaEmrUrp4xKykYmrZCPK8z5HYryv8RhvPFSeiJ"><code>H1TEUnWaEmrUrp4xKykYmrZCPK8z5HYryv8RhvPFSeiJ</code></a></td>
+                </tr>
+                <tr>
+                  <td>Relay Solana depository</td>
+                  <td><a href="https://solscan.io/account/99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2"><code>99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2</code></a></td>
+                </tr>
+                <tr>
+                  <td>USDC Genesis vault</td>
+                  <td><a href="https://solscan.io/account/6tv6XYnXUFjLSaAeap4T1GQusYeEw3nK6KTcVyyHf3ns"><code>6tv6XYnXUFjLSaAeap4T1GQusYeEw3nK6KTcVyyHf3ns</code></a></td>
+                </tr>
+                <tr>
+                  <td>USDC vault token account</td>
+                  <td><a href="https://solscan.io/account/3GAu8zG1bLHEd2K5JUvysEjLSkfTw4aXYCFaUcQCYsA2"><code>3GAu8zG1bLHEd2K5JUvysEjLSkfTw4aXYCFaUcQCYsA2</code></a></td>
+                </tr>
+                <tr>
+                  <td>Attacker strategy</td>
+                  <td><a href="https://solscan.io/account/4ZSYnmNv4T35xAckPdXJCevAsWe8wY76tZxXAT1rf6NM"><code>4ZSYnmNv4T35xAckPdXJCevAsWe8wY76tZxXAT1rf6NM</code></a></td>
+                </tr>
+                <tr>
+                  <td>LP mint / shares</td>
+                  <td><a href="https://solscan.io/account/Hj3avy8d4k1skU3aScok7VWxEQSw6Bchuu5C9oV6vNz5"><code>Hj3avy8d4k1skU3aScok7VWxEQSw6Bchuu5C9oV6vNz5</code></a></td>
+                </tr>
+                <tr>
+                  <td>Liquidator (SOL make-whole)</td>
+                  <td><a href="https://solscan.io/account/rektbdF5r7HnWrPDRvD76pC1V9rVfaGmbSY3Dsrj8Kx"><code>rektbdF5r7HnWrPDRvD76pC1V9rVfaGmbSY3Dsrj8Kx</code></a> — Loopscale operating this liquidator is inference</td>
+                </tr>
+                <tr>
+                  <td>RFQ program</td>
+                  <td><a href="https://solscan.io/account/61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"><code>61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH</code></a></td>
+                </tr>
+                <tr>
+                  <td>RFQ maker</td>
+                  <td><a href="https://solscan.io/account/MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa"><code>MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa</code></a></td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+
+            <h3>Vector 1 attack steps (chain)</h3>
+            <p>
+              Drain tx instructions: <code>CreateLoan</code>,
+              <code>DepositCollateral</code> (1e9 raw kySOL;
+              zBTC mint passed in the same instruction),
+              <code>UpdateWeightMatrix</code>, <code>BorrowPrincipal</code>.
+              Signers: 247Lk + CyNKPf. 1 kySOL moved 247Lk → loan custody
+              Gb2qCYLs…. EPneH88g native −4,597 SOL.
+            </p>
+            <div class="table-scroll">
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Signature</th><th>Note</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-11-01T19:33:31Z</code></td>
+                  <td><a href="https://solscan.io/tx/2BzqTxMSha1HtURY7mMXssgPsyMb3xFiifataqzUUHh8kLbVXGPmKWh1qhQ92ypn6S4asvUgBp1zVWmpusSmHY6k"><code>2BzqTxMSha1HtURY7mMXssgPsyMb3xFiifataqzUUHh8kLbVXGPmKWh1qhQ92ypn6S4asvUgBp1zVWmpusSmHY6k</code></a></td>
+                  <td>Seed → 247Lk 2 SOL</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:38:31Z</code></td>
+                  <td><a href="https://solscan.io/tx/HEFb6FSvW6V4sn9woKTr1fsKxhJnjjk85yWTcVWbF2wxdcTqoJJqpc3Kem6GfVMVC3d1SigNvyGT1Cz48tFHQKw"><code>HEFb6FSvW6V4sn9woKTr1fsKxhJnjjk85yWTcVWbF2wxdcTqoJJqpc3Kem6GfVMVC3d1SigNvyGT1Cz48tFHQKw</code></a></td>
+                  <td>1.310991880 SOL → 1.0 kySOL (slot 464212515)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:41:05Z</code></td>
+                  <td><a href="https://solscan.io/tx/mZCoHzevv7nrPsSJDjnGZVRQMeUvuwQ2BuPUeCWhCYBheaWjoRkETU6Jh6zb2o2bgrhRAA4axy2QNQtpDZNFsmD"><code>mZCoHzevv7nrPsSJDjnGZVRQMeUvuwQ2BuPUeCWhCYBheaWjoRkETU6Jh6zb2o2bgrhRAA4axy2QNQtpDZNFsmD</code></a></td>
+                  <td>Drain 4,597 SOL; slot 464213236</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:41:38Z</code></td>
+                  <td><a href="https://solscan.io/tx/2xHViWzCY6a5F4KJSyaSa4StGhFjKMeXQCu4PRU3vTmE9TXuCU9bcaYmSMhHEgcShchSfYNBxXQpm5hJRPSNRbmU"><code>2xHViWzCY6a5F4KJSyaSa4StGhFjKMeXQCu4PRU3vTmE9TXuCU9bcaYmSMhHEgcShchSfYNBxXQpm5hJRPSNRbmU</code></a></td>
+                  <td>4,596 SOL → H1TE…SeiJ (slot 464213386)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:52:38Z</code></td>
+                  <td><a href="https://solscan.io/tx/5r2GNcEpiJaNmzNB5QVR5wv1LsXa9gWMwJcnLmFigFd1XqaN4RKqtCvyGwpNhETWtKBvo7tzZLy55sgRpYTAkx7d"><code>5r2GNcEpiJaNmzNB5QVR5wv1LsXa9gWMwJcnLmFigFd1XqaN4RKqtCvyGwpNhETWtKBvo7tzZLy55sgRpYTAkx7d</code></a></td>
+                  <td>1.677556797 SOL → H1TE…SeiJ (slot 464216473)</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+
+            <h3>Vector 2 attack steps (chain)</h3>
+            <p>
+              All of these Loopscale instructions are also co-signed by
+              CyNKPf. Rate field <code>0xfffffffffffffffe</code> is
+              u64::MAX−1.
+            </p>
+            <div class="table-scroll">
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Signature</th><th>Note</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-11-05T05:49:41Z</code></td>
+                  <td><a href="https://solscan.io/tx/TxdLrvTPjAvJwwEcYsfxttUPy9U9eHJ2cVS9GEojW6gsbS8XCAVoDBh46H8i9rjb76hy3uEch6iVJirVBgkrVbp"><code>TxdLrvTPjAvJwwEcYsfxttUPy9U9eHJ2cVS9GEojW6gsbS8XCAVoDBh46H8i9rjb76hy3uEch6iVJirVBgkrVbp</code></a></td>
+                  <td>Seed → AzPh 0.5 SOL + 1,000 USDC</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T05:53:19Z</code></td>
+                  <td><a href="https://solscan.io/tx/4oQ2AY7BPGWmwpzrEJp6zUKvQE6jaqqaVTDeTrLgBVQ3o7i6XXndbgAwKAQDF2cxrN6LrGdihRDnAjoJ2Ybu7kFc"><code>4oQ2AY7BPGWmwpzrEJp6zUKvQE6jaqqaVTDeTrLgBVQ3o7i6XXndbgAwKAQDF2cxrN6LrGdihRDnAjoJ2Ybu7kFc</code></a></td>
+                  <td>Seed → AzPh 9.90 SOL + 2 wSOL + 66,472.61 USDC</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T05:56:15Z</code></td>
+                  <td><a href="https://solscan.io/tx/3rns2ytWLaZHgE27M5URzXHp6YCBtTVooVzpzMTasYEK8JYEFXgrnZAdbBckM2TVjd7nbfyJm9g4mTuvCjsvGkmU"><code>3rns2ytWLaZHgE27M5URzXHp6YCBtTVooVzpzMTasYEK8JYEFXgrnZAdbBckM2TVjd7nbfyJm9g4mTuvCjsvGkmU</code></a></td>
+                  <td>CreateStrategy 4ZSYnmNv… + DepositStrategy 1,000 USDC</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T05:58:53Z</code></td>
+                  <td><a href="https://solscan.io/tx/4tEJ2sugZJpHxijPDk4NGuqEnLFRmMX3tQx9DQx6qD7VquPCPhVZ4pD4wp3cBTc7TWUAi2GJC5cR2kLsCwdNXArn"><code>4tEJ2sugZJpHxijPDk4NGuqEnLFRmMX3tQx9DQx6qD7VquPCPhVZ4pD4wp3cBTc7TWUAi2GJC5cR2kLsCwdNXArn</code></a></td>
+                  <td>UpdateStrategy field=60000</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T06:02:32Z</code></td>
+                  <td><a href="https://solscan.io/tx/2bYeXuQUXnft1n7tqncodDXmWYn1pHU5FhJ2btHRjJKW6muQtHHng5o6B9mthM1fBkpzt99tKS4csVvxPBHWq5au"><code>2bYeXuQUXnft1n7tqncodDXmWYn1pHU5FhJ2btHRjJKW6muQtHHng5o6B9mthM1fBkpzt99tKS4csVvxPBHWq5au</code></a></td>
+                  <td>CreateLoan: 2 wSOL collateral, borrow 120 USDC from own strategy</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T06:05:08Z</code></td>
+                  <td><a href="https://solscan.io/tx/33pCYicioygstVzUevpLtwEAEtRxCQiMbTbR5P1jqLE1XASqdQKQKiueAcJtGYojeQhjpnSZME6sEoSQKZRvHJe"><code>33pCYicioygstVzUevpLtwEAEtRxCQiMbTbR5P1jqLE1XASqdQKQKiueAcJtGYojeQhjpnSZME6sEoSQKZRvHJe</code></a></td>
+                  <td>DepositUserVault 65,000 USDC → 58,326.202736 LP</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T06:07:39Z</code></td>
+                  <td><a href="https://solscan.io/tx/4iKivnyvct5Vwkh5gamjmy9xt5ScWEj8ehEAMt2qbZfxP13L5snbTxJ7iFyCGVKnJhWPpzbpL7n9LAhZHXRt1mPe"><code>4iKivnyvct5Vwkh5gamjmy9xt5ScWEj8ehEAMt2qbZfxP13L5snbTxJ7iFyCGVKnJhWPpzbpL7n9LAhZHXRt1mPe</code></a></td>
+                  <td>UpdateStrategy field=<code>0xfffffffffffffffe</code></td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T06:07:39Z</code></td>
+                  <td><a href="https://solscan.io/tx/5MwEYgZQ6WvmXaYpSrPDNQSE3TZ9cotKifRh16XM3sEenc8QV4pW1srszG6CuzDerTQqF8xKxMC2JJEWwHLgudGU"><code>5MwEYgZQ6WvmXaYpSrPDNQSE3TZ9cotKifRh16XM3sEenc8QV4pW1srszG6CuzDerTQqF8xKxMC2JJEWwHLgudGU</code></a></td>
+                  <td>RefinanceLedger</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T06:07:39Z</code></td>
+                  <td><a href="https://solscan.io/tx/2KmVDFpZmgYNPPxAN9aF6KAN59MiXJ58qDuoLfKqD9eB4Gt7xq3kAhAHyhz28w31Xs1yR4aKYHqZZzjhn7SxoeW4"><code>2KmVDFpZmgYNPPxAN9aF6KAN59MiXJ58qDuoLfKqD9eB4Gt7xq3kAhAHyhz28w31Xs1yR4aKYHqZZzjhn7SxoeW4</code></a></td>
+                  <td>SellLedger to vault 6tv6…; sale 120.000071 USDC</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T06:09:33Z</code></td>
+                  <td><a href="https://solscan.io/tx/5wEuYcxK19iCZkHgUwCd1Ye3HFxzowmUpfuy6cdGfZm5oB86VMWNPMnLWP6hutd7PM5CwzrRwUGhYJYevejTnkiF"><code>5wEuYcxK19iCZkHgUwCd1Ye3HFxzowmUpfuy6cdGfZm5oB86VMWNPMnLWP6hutd7PM5CwzrRwUGhYJYevejTnkiF</code></a></td>
+                  <td>WithdrawUserVault burn 465.264135 LP → 586,000 USDC</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </section>
+
+          <section class="article-section">
+            <h2>Flow of funds</h2>
+            <figure class="flow-figure">
+              <figcaption>
+                Chain-only flow of funds for the two Loopscale Genesis vault
+                exploits, Solana and Ethereum, as of a ~2026-11-05T13:00Z
+                read. Left path is the 1 Nov SOL vault drain and Relay
+                bridge to 0xB7Ec…; right path is the 5 Nov USDC vault drain
+                and Mayan fill to 0xb8959…. SOL make-whole is shown; no
+                USDC make-whole was visible on the vault token account at
+                that read.
+              </figcaption>
+              <img
+                src="/investigations/assets/loopscale-genesis-vault-nov-2026-flow-of-funds.png"
+                alt="Flow-of-funds diagram for the November 2026 Loopscale Genesis Vault exploits. A shared seed wallet funds two attack paths. Vector 1 on 1 November drains 4,597 SOL from the SOL Genesis vault via 247Lk, forwards it through Relay to about 190.22 ETH at 0xB7Ec, and is later made whole on 3 November. Vector 2 on 5 November is a separate USDC vault drain by AzPh…CjwMr: 586,000 USDC withdrawn against 65,000 deposited, then swapped and bridged via Mayan to 241.874 ETH at 0xb8959. No USDC make-whole is shown on-chain."
+              />
+            </figure>
+
+            <h3>Vector 1 — Relay to Ethereum</h3>
+            <div class="table-scroll">
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Solana tx / ETH tx</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-11-01T19:50:32Z</code></td>
+                  <td><a href="https://solscan.io/tx/59hdm9A75iBpPW6jX5Eq8DmejSWEEuykAQGAxLVXkB8ztyrA2GHBiChSijdaqe9woVFCuherC7VE1U6JPshefM7M"><code>59hdm9A75iBpPW6jX5Eq8DmejSWEEuykAQGAxLVXkB8ztyrA2GHBiChSijdaqe9woVFCuherC7VE1U6JPshefM7M</code></a> → <a href="https://etherscan.io/tx/0xacf1e211f2e75bb92b38fe93ffae16ad79b39bf5bd0f2cd38565fe5ec99cf36d"><code>0xacf1e211…f36d</code></a></td>
+                  <td>2,000 SOL → 82.7894 ETH</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T19:52:56Z</code></td>
+                  <td><a href="https://solscan.io/tx/3R42GqAzVYGuVrcRZhPz1kmt7Yq2TCLQyDTpskfxUXakbsd9oVuBABNz86HpnFabbyXrrcqB2uA75HgSmnyXUZhX"><code>3R42GqAzVYGuVrcRZhPz1kmt7Yq2TCLQyDTpskfxUXakbsd9oVuBABNz86HpnFabbyXrrcqB2uA75HgSmnyXUZhX</code></a> → <a href="https://etherscan.io/tx/0x288cdd3eff04ca96b9986086fd7f7d69cbcddfa3722c41a8c51f91dfb1f3f87a"><code>0x288cdd3e…f87a</code></a></td>
+                  <td>2,000 SOL → 82.7387 ETH</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-01T20:01:19Z</code></td>
+                  <td><a href="https://solscan.io/tx/2FToEEr8pCHjRay9Wa5HvJPxujePFHcZEHwioqgcXEegnZZcGzVxwVJrFWJJfmJshP678pxnAQY4z2rn6zJAcsGy"><code>2FToEEr8pCHjRay9Wa5HvJPxujePFHcZEHwioqgcXEegnZZcGzVxwVJrFWJJfmJshP678pxnAQY4z2rn6zJAcsGy</code></a> → <a href="https://etherscan.io/tx/0xc1ae534b15429e598d0c32e6474d5313b062b357bc0ffb0c92bbab14e023d18c"><code>0xc1ae534b…d18c</code></a></td>
+                  <td>597.076613 SOL → 24.6961 ETH</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+            <p>
+              0xB7Ec…F854 outflows (Ethereum; balance 139.71315910 ETH at
+              the ~13:00Z Nov 5 read):
+            </p>
+            <div class="table-scroll">
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Tx</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-11-02T18:16:59Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x73bfbd6b12abd298eaec2308ec067dccd00bdd3baf46a4d6815f55e5b12672e5"><code>0x73bfbd6b…72e5</code></a> / Solana <a href="https://solscan.io/tx/MFs1wion4wD42WVuyw44YTJ45StRvyrRDREbWjMVW32x7ZJ8Kyi67JG1mHTvMizmNUWy4JX73jSfW2Y6CEGusxN"><code>MFs1wion…GusxN</code></a></td>
+                  <td>30 ETH Relay → 67,472.611087 USDC to seed</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-02T18:17:47Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x5e71277a80ae6208b3489d531d25f6126584bdfd9acfbb0572c4d05409aa12d9"><code>0x5e71277a…12d9</code></a> / Solana <a href="https://solscan.io/tx/3QBZ2GuxwovruaVis2Syg1B64rMZRcekezXV5rRBcPPXFSkFo9PC3AsXUA7xHJwHwV3DhYtwvGkgLMuvywGoTLj3"><code>3QBZ2Gux…TLj3</code></a></td>
+                  <td>0.2 ETH Relay → 4.871599 SOL to seed</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-03T03:48:23Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x943e59bc2121827117de136aca2ab63dea9e317e676d17c494a89437b8eb00b6"><code>0x943e59bc…00b6</code></a></td>
+                  <td>0.5 ETH Relay; destination unresolved (Relay API rate-limited)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-03T20:47:47Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0xb0294d7d57bfe6e4eafc0805a3499a43119b9c29b601f7cedf0be4347cbc9569"><code>0xb0294d7d…9569</code></a>; Across <a href="https://etherscan.io/tx/0x19cec22c9df17e8c3b8df42783a4fd0a63f4c76b46673e13c4a760aec8cdc21b"><code>0x19cec22c…c21b</code></a>; fill <a href="https://bscscan.com/tx/0x7b9b9e192cca00f7fa56633a65f42cc699cee03d646c3d7fe8c6028d02049936"><code>0x7b9b9e19…9936</code></a></td>
+                  <td>17 ETH Across → 38,937.37 USDC on BSC to <a href="https://bscscan.com/address/0x11caaa405A895e70E77684AfCbE887e1dffDB669"><code>0x11caaa40…B669</code></a> (39,044.52 in)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-03T20:49:11Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0xe37a83232f07dba67d0ca50b4237a1617d991e12f7e9be28e5a866fb9fe5aa31"><code>0xe37a8323…aa31</code></a></td>
+                  <td>0.001 ETH Across → same BSC recipient</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-04T06:03:59Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0xbaf198ea4c4836b2395a0b5c3f164740137cf709f0b952533e3a2ce7d9738754"><code>0xbaf198ea…8754</code></a>; deposit <a href="https://etherscan.io/tx/0x17afabdaa35ac02ce9c4495e26f950fb7f62ca625b72d5460581e060b67dcaf9"><code>0x17afabda…caf9</code></a>; fill <a href="https://arbiscan.io/tx/0x49f7abdb6109d30622b32d0b1cc315d896cccc8152142e573e705ac0b6061a45"><code>0x49f7abdb…1a45</code></a></td>
+                  <td>0.5 ETH Across → 1,145.94 USDC on Arbitrum to <a href="https://arbiscan.io/address/0x7fb0bE7fcce8CB60A20F050771B53134148DAC10"><code>0x7fb0bE7f…AC10</code></a></td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-04T20:16:35Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0xbc597755905e311f6644d2c0d588fab692162184f4aee4f53317dbbe3ce31b4d"><code>0xbc597755…1b4d</code></a></td>
+                  <td>2.31 ETH → <a href="https://etherscan.io/address/0x632B4FCbB6dc1f0F53c273E4585A360d5cc8bA5A"><code>0x632B4FCbB6dc1f0F53c273E4585A360d5cc8bA5A</code></a> (followed by 0-value lookalike poisoning)</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+
+            <h3>Vector 2 — USDC out to Ethereum</h3>
+            <div class="table-scroll">
+            <table class="hash-table">
+              <thead>
+                <tr><th>Time (UTC)</th><th>Signature</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>2026-11-05T06:15:37Z</code></td>
+                  <td><a href="https://solscan.io/tx/4mHMfUx8Q9apQCTSx6URghtGuGnvrtyhKs2jLd2WdRTZiScLYS22E1WKxLy8vVRVbHwbmC77Pr6JvjZAqa1aS14Z"><code>4mHMfUx8Q9apQCTSx6URghtGuGnvrtyhKs2jLd2WdRTZiScLYS22E1WKxLy8vVRVbHwbmC77Pr6JvjZAqa1aS14Z</code></a></td>
+                  <td>RFQ 587,712.611558 USDC → 6,115.604363 SOL (maker MfDuWeqS…)</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T06:18:39Z</code></td>
+                  <td><a href="https://solscan.io/tx/JL7UuHSCyd4PdazXVL9yVa5P1Wkd3FEQTGQZN3w5JGhpgb8XzsBTHKtahb7UDcqbgv8QFczaXuAk1gwmrR7hGTn"><code>JL7UuHSCyd4PdazXVL9yVa5P1Wkd3FEQTGQZN3w5JGhpgb8XzsBTHKtahb7UDcqbgv8QFczaXuAk1gwmrR7hGTn</code></a></td>
+                  <td>6.1259 SOL fee to <a href="https://solscan.io/account/14MtvNdzYPKM3kYrBya51fsjbh5WLKot8fZu7szbgC66"><code>14MtvNdz…C66</code></a>; Jupiter 6,119.7741 SOL → 587,499.187163 USDC → Mayan Swift order → 241.874007 ETH to 0xb8959…bfb2</td>
+                </tr>
+                <tr>
+                  <td><code>2026-11-05T06:19:11Z</code></td>
+                  <td><a href="https://etherscan.io/tx/0x32fcd776a9ff2f0902af3db671880cec55b21cfda4d0476dd3298bf4738ead7e"><code>0x32fcd776a9ff2f0902af3db671880cec55b21cfda4d0476dd3298bf4738ead7e</code></a></td>
+                  <td>Mayan fill 241.874 ETH; no outgoing tx from 0xb8959 at the Nov 5 read</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+            <p>
+              Parked ETH at the reconstruction read: 139.71315910
+              (0xB7Ec) + 241.874 (0xb8959) = 381.59 ETH. 30.2 ETH of the
+              0xB7Ec balance had already been Relay-returned to the seed
+              and used in vector 2; do not double-count that 30.2 ETH as
+              a second exit.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Root cause</h2>
+            <h3>Vector 1 (reported by r0bre)</h3>
+            <p>
+              <strong>Reported by r0bre</strong>
+              (<a href="https://x.com/r0bre/status/2118373644887900519">X article 2118373644887900519</a>,
+              <code>2026-11-05T16:03:29Z</code>), not independently
+              binary-diffed here:
+              <code>oracle_type == 19</code> (BeamAccount) early
+              <code>return Ok()</code> in
+              <code>verify_collateral_data</code> / <code>state/oracle.rs</code>
+              skipped the asset-type check. That allowed an Orca label with
+              the wrong mint and price identity. The exploitable on-chain
+              effect, which is hashed, is a 9-decimal kySOL amount valued
+              as 8-decimal zBTC. r0bre reports the bypass was introduced in
+              the 18 Mar 2026 upgrade and removed in the 4 Nov 2026
+              upgrade (49-byte ELF diff; Aug 18 hash
+              <code>00396af8…</code> / Nov 4 hash <code>33b6e389…</code>;
+              “four lines”; “228 days”; audit history). Those ELF and
+              audit claims stay reported.
+            </p>
+            <p>
+              r0bre also reports that CyNKPf is Loopscale’s production
+              <code>BS_AUTH</code> co-signer and infers an API policy
+              bypass rather than a stolen key. Chain shows CyNKPf signed
+              the drain. Chain does not show the key was stolen, and this
+              entry does not assert that it was.
+            </p>
+            <h3>Vector 2 (inference)</h3>
+            <p>
+              Mechanism: an uncapped strategy rate
+              (<code>0xfffffffffffffffe</code>) inflated vault book value
+              so burning 465.264135 of 58,326.202736 shares redeemed
+              586,000 USDC. That is <strong>our inference,
+              medium-high confidence, not an official root cause</strong>.
+              Loopscale’s 6 Nov statement described selling a loan with an
+              extreme interest rate into the USDC Genesis Vault and
+              inflating NAV (~$521k) — reported, and consistent with the
+              hashed steps, but not independently confirmed as the same
+              internal accounting identity. The 4 Nov patch is not treated
+              as a fix for this vector.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Response</h2>
+            <p>
+              <strong>SOL make-whole (chain).</strong>
+              <code>2026-11-03T13:43:50Z</code> slot 464920019,
+              <a href="https://solscan.io/tx/47zp5i14ERm2soQQGLs5LKRk4Xi2Yigh6iuJ68URKe4VfzC9u2GpgWYbLG73fT4a645GBnUibZ5gP69kfaD7DbAo"><code>47zp5i14ERm2soQQGLs5LKRk4Xi2Yigh6iuJ68URKe4VfzC9u2GpgWYbLG73fT4a645GBnUibZ5gP69kfaD7DbAo</code></a>:
+              LiquidateLedger by
+              <a href="https://solscan.io/account/rektbdF5r7HnWrPDRvD76pC1V9rVfaGmbSY3Dsrj8Kx"><code>rektbdF5r7HnWrPDRvD76pC1V9rVfaGmbSY3Dsrj8Kx</code></a>.
+              Vault wSOL ATA 8oCX3kkg… 2,803.423884797 → 7,401.858065418
+              = <strong>+4,598.434180621 wSOL</strong>. Liquidator kySOL
+              0.086772311 → 1.086772311 = +1.0 kySOL. Loan custody
+              Gb2qCYLs… went 1 → closed/empty. That Loopscale operated
+              this liquidator is inference.
+            </p>
+            <p>
+              <strong>Program upgrade (chain) / patch semantics (reported).</strong>
+              <code>2026-11-04T04:52:42Z</code>
+              <a href="https://solscan.io/tx/HSuUTAA2qqzDLm5q5oKYNwjzxqpWaTKXP1XYCrSis5FkNqvDJHsU5542YsaoZJU2MGsk9jTs8FkkPWjddt4wYYi"><code>HSuU…YYi</code></a>
+              upgraded <code>1oopBoJG…</code> via programdata 8KbXd8…,
+              buffer
+              <a href="https://solscan.io/account/CviYcAskKL5i61jA7um2JEPhqgNEF3EipeqC9FE1rHT7"><code>CviYcAskKL5i61jA7um2JEPhqgNEF3EipeqC9FE1rHT7</code></a>,
+              authority DwBXw…. r0bre reports this removed the type-19
+              early return. Vector 2 still ran after it. No later
+              program-data upgrade was seen through ~<code>23:00Z</code>
+              Nov 5. Off-chain co-signer mitigation cannot be inferred.
+              This write-up does not claim vector 2 is still unpatched
+              today.
+            </p>
+            <p>
+              <strong>USDC make-whole (on-chain observation vs claim).</strong>
+              Token account 3GAu8zG1… (USDC mint, owner 6tv6…) had
+              <strong>zero inbound USDC</strong> after
+              <code>06:09:33Z</code> and balance
+              <strong>1,638,608.740128 USDC</strong> at ~<code>23:00Z</code>
+              Nov 5 (five successful txs after the exploit, admin/timelock-style).
+              No on-chain USDC make-whole was visible at that check.
+              Loopscale
+              (<a href="https://x.com/Loopscale/status/2118285556123611378">2118285556123611378</a>,
+              <code>2026-11-05T10:13:27Z</code>) said “Affected vaults have
+              been made whole and no user deposits have incurred a loss.”
+              That claim is sourced. It is not called false: depositors
+              may have been made whole from other accounts, later, or
+              off-chain. The on-chain observation is only that this vault
+              token account showed no inbound USDC after the drain at that
+              check.
+            </p>
+            <p>
+              <strong>Public pause (reported, not chain-asserted).</strong>
+              The same Loopscale post said it paused protocol activity.
+              Admin CreateTimelock txs from bs1PuRvB… begin
+              <code>08:35:57Z</code> Nov 5 (first
+              <a href="https://solscan.io/tx/344b5w6QS3cJDxRsnwsNTEGKWxAGbbWqvQ5WiFCoKfth3vTrn1qVTnezUAJS8C5Uf791fh8nhkNvdGuP4TKn3cMy"><code>344b5w6Q…</code></a>,
+              executed
+              <a href="https://solscan.io/tx/2ucQJvau6HCKcEG8sxFi6FbJjFdkfa9iHArmdFis4pUdQ1dyHdGkwXdjSExGL5iFooiJpKjKwH91J3srr7urF9vh"><code>2ucQJvau…</code></a>).
+              Payload semantics are not decoded (likely pause/caps —
+              inference). This draft does not assert a pause from those
+              hashes.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Lessons</h2>
+            <p>
+              A lending vault can take two unrelated accounting hits in
+              one week. Closing an oracle-type early return does not
+              prove strategy-rate and share-pricing paths are safe. A
+              mandatory co-signer that will sign whatever the program
+              would accept is not an independent control. A
+              depositor-whole statement should be reconcilable against
+              the drained token account, or the gap should be stated.
+            </p>
+          </section>
+
+          <section class="article-section">
+            <h2>Coverage gaps</h2>
+            <ul>
+              <li>Vector 1 code-level root cause (oracle_type==19 early return, ELF hashes, audit narrative, “228 days”, “nine later upgrades”) is reported by r0bre, not independently binary-diffed here.</li>
+              <li>Vector 2 mechanism (uncapped strategy rate inflated vault book value) is inference, medium-high confidence, not an official root cause.</li>
+              <li>No later program-data upgrade was seen through ~<code>23:00Z</code> Nov 5; this write-up does not claim vector 2 remains unpatched after that check. Off-chain co-signer mitigation cannot be inferred.</li>
+              <li>USDC vault token account 3GAu8zG1… showed no inbound USDC after the drain at ~<code>23:00Z</code> Nov 5. Loopscale’s made-whole claim is sourced and is not called false.</li>
+              <li>Admin CreateTimelock payloads are not decoded. Pause is Loopscale’s claim, not a chain assertion from those hashes.</li>
+              <li>0.5 ETH Relay at <code>2026-11-03T03:48:23Z</code> (<a href="https://etherscan.io/tx/0x943e59bc2121827117de136aca2ab63dea9e317e676d17c494a89437b8eb00b6"><code>0x943e59bc…00b6</code></a>) destination unresolved.</li>
+              <li>Address-poisoning 0.0001 USDC at <code>05:50:04Z</code> Nov 5 from AC9Y7HPS…jwMr has no signature in this draft.</li>
+              <li>That Loopscale operated liquidator rektbdF5… is inference.</li>
+              <li>Co-signer CyNKPf is on every attacker Loopscale tx here. Stolen-key and API-policy-bypass readings are not asserted; r0bre’s BS_AUTH / API-bypass reading is reported.</li>
+              <li>No on-chain link to Binance Oct 29 wallets (AffzFD / Eze86) was found. This incident is not part of that entry.</li>
+              <li>Lookalike-address dust is third-party address poisoning, not attacker flow.</li>
+              <li>USD combined ~$950k is an attached-reconstruction pointer. Loopscale ~$412k / ~$521k figures are reported. This entry does not convert SOL to USD.</li>
+            </ul>
+          </section>
+
+          <section class="article-section">
+            <h2>References</h2>
+            <p>X posts are pointers. Hashes come from chain unless labeled reported.</p>
+            <ol class="sources-list">
+              <li><a href="https://x.com/r0bre/status/2118373644887900519">r0bre — Loopscale hack - what happened? (X article)</a></li>
+              <li><a href="https://x.com/Loopscale/status/2118285556123611378">Loopscale (X) — 5 Nov 2026 statement (made-whole claim; CiwMr typo)</a></li>
+              <li><a href="https://x.com/Loopscale/status/2118502123705159769">Loopscale (X) — 6 Nov 2026 update (two paths, reported)</a></li>
+              <li><a href="https://solscan.io/account/1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78">Solscan — Loopscale program</a></li>
+              <li><a href="https://solscan.io/tx/mZCoHzevv7nrPsSJDjnGZVRQMeUvuwQ2BuPUeCWhCYBheaWjoRkETU6Jh6zb2o2bgrhRAA4axy2QNQtpDZNFsmD">Solscan — vector 1 drain</a></li>
+              <li><a href="https://solscan.io/tx/5wEuYcxK19iCZkHgUwCd1Ye3HFxzowmUpfuy6cdGfZm5oB86VMWNPMnLWP6hutd7PM5CwzrRwUGhYJYevejTnkiF">Solscan — vector 2 USDC withdraw</a></li>
+              <li><a href="https://solscan.io/tx/47zp5i14ERm2soQQGLs5LKRk4Xi2Yigh6iuJ68URKe4VfzC9u2GpgWYbLG73fT4a645GBnUibZ5gP69kfaD7DbAo">Solscan — SOL make-whole</a></li>
+              <li><a href="https://etherscan.io/address/0xB7Ec7eF24FD73f3000C651CA9D0Fa45b61DcF854">Etherscan — 0xB7Ec</a></li>
+              <li><a href="https://etherscan.io/address/0xb8959Aca4e4C796A3BaDA66833eAe60b1BC0bfb2">Etherscan — 0xb8959</a></li>
+            </ol>
+          </section>
+
+          <section class="article-section">
+            <h2>Appendix A — full hashes</h2>
+            <p>Narrative shortens hashes only when linked. Full values used in this draft:</p>
+            <div class="table-scroll">
+            <table class="hash-table">
+              <thead>
+                <tr><th>Item</th><th>Full hash / address</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Program</td><td><code>1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78</code></td></tr>
+                <tr><td>Program data</td><td><code>8KbXd8ATqDQQTozYv2TsCzHUDoiRyWe4DmzHdmJLgdNj</code></td></tr>
+                <tr><td>Mar 18 upgrade</td><td><code>3heQGBYSJPFu4NgvC7zNRsfjVa9jHPkpNHvyThPgc6kagHY2Ckp597WFz3wCQhoA7X6Ta414uPLwwkrT7GKkrBnN</code></td></tr>
+                <tr><td>Mar 18 buffer</td><td><code>7FEDJymnpWdHCJHtR8r14W2TosrK3kcHfCQeSBE8Wor3</code></td></tr>
+                <tr><td>Aug 18 upgrade</td><td><code>5KexwFNhcdXHDSM9thZgn6AG6yvkgHveKno18bzVb5PBsXzav8TayZ1toYNUsYK12yJ1h5qGR3rEwH6o5x8ToHyk</code></td></tr>
+                <tr><td>Nov 4 upgrade</td><td><code>HSuUTAA2qqzDLm5q5oKYNwjzxqpWaTKXP1XYCrSis5FkNqvDJHsU5542YsaoZJU2MGsk9jTs8FkkPWjddt4wYYi</code></td></tr>
+                <tr><td>Nov 4 buffer</td><td><code>CviYcAskKL5i61jA7um2JEPhqgNEF3EipeqC9FE1rHT7</code></td></tr>
+                <tr><td>Vector 1 drain</td><td><code>mZCoHzevv7nrPsSJDjnGZVRQMeUvuwQ2BuPUeCWhCYBheaWjoRkETU6Jh6zb2o2bgrhRAA4axy2QNQtpDZNFsmD</code></td></tr>
+                <tr><td>kySOL buy</td><td><code>HEFb6FSvW6V4sn9woKTr1fsKxhJnjjk85yWTcVWbF2wxdcTqoJJqpc3Kem6GfVMVC3d1SigNvyGT1Cz48tFHQKw</code></td></tr>
+                <tr><td>4,596 SOL forward</td><td><code>2xHViWzCY6a5F4KJSyaSa4StGhFjKMeXQCu4PRU3vTmE9TXuCU9bcaYmSMhHEgcShchSfYNBxXQpm5hJRPSNRbmU</code></td></tr>
+                <tr><td>1.677556797 SOL forward</td><td><code>5r2GNcEpiJaNmzNB5QVR5wv1LsXa9gWMwJcnLmFigFd1XqaN4RKqtCvyGwpNhETWtKBvo7tzZLy55sgRpYTAkx7d</code></td></tr>
+                <tr><td>SOL make-whole</td><td><code>47zp5i14ERm2soQQGLs5LKRk4Xi2Yigh6iuJ68URKe4VfzC9u2GpgWYbLG73fT4a645GBnUibZ5gP69kfaD7DbAo</code></td></tr>
+                <tr><td>USDC withdraw</td><td><code>5wEuYcxK19iCZkHgUwCd1Ye3HFxzowmUpfuy6cdGfZm5oB86VMWNPMnLWP6hutd7PM5CwzrRwUGhYJYevejTnkiF</code></td></tr>
+                <tr><td>Mayan order / Jupiter</td><td><code>JL7UuHSCyd4PdazXVL9yVa5P1Wkd3FEQTGQZN3w5JGhpgb8XzsBTHKtahb7UDcqbgv8QFczaXuAk1gwmrR7hGTn</code></td></tr>
+                <tr><td>Mayan ETH fill</td><td><code>0x32fcd776a9ff2f0902af3db671880cec55b21cfda4d0476dd3298bf4738ead7e</code></td></tr>
+                <tr><td>Seed Oct 29 unlabeled</td><td><code>5LNTxjUuhLGo4A7MjgcpNuURpXviuHV6gwBPQBVNuaz8avr7V4Qpn5zdMhgBMBWPdVXBA2LUek8bVK5SfLY5vBXh</code></td></tr>
+                <tr><td>Seed Oct 29 FixedFloat</td><td><code>5r9ekpQPWH96Tark2EzrCwA8XHq9hZSrAvBsPnqkeW1Zecb8nggg5GmLz7iB8AFSenMWGCTAw5GByBEqSeYzonXF</code></td></tr>
+                <tr><td>Seed Nov 1 Relay USDC</td><td><code>3mR2PYTYFQMP3oFRRvBdyjL2UYzXchpD18WRGVdipUP8xhsxLaDmYCmKKg5QBVydiPguJGDwGmQgNDyoMoRxtqBQ</code></td></tr>
+                <tr><td>First post-exploit USDC timelock</td><td><code>344b5w6QS3cJDxRsnwsNTEGKWxAGbbWqvQ5WiFCoKfth3vTrn1qVTnezUAJS8C5Uf791fh8nhkNvdGuP4TKn3cMy</code></td></tr>
+                <tr><td>Timelock execute</td><td><code>2ucQJvau6HCKcEG8sxFi6FbJjFdkfa9iHArmdFis4pUdQ1dyHdGkwXdjSExGL5iFooiJpKjKwH91J3srr7urF9vh</code></td></tr>
+                <tr><td>USDC vault timelock 08:42:23Z</td><td><code>R64mQSGCMkkDeHexEvwDwYHp4MP9upg6eu9KS9cxrKmAPi5vRJ9AnB2EB9HF4T3F1T5ygu3YFH8yp1uT45GJBDG</code></td></tr>
+                <tr><td>SOL vault timelock 10:04:10Z</td><td><code>5wgPZrgh4vDHwmqWsTazTMnrLUciBbKc9n7y2CEdtEq5edELrGh54rvF9V2PdZr9Ygy6NcE54cvLrdibF12wKZju</code></td></tr>
+                <tr><td>USDC vault timelock 11:22:11Z</td><td><code>57fnj9cLTRcDvKRrbswPr6Nz21P3RXHN8VodvX1x3dip4iRXoB7qFqffJrz3VpKPW8D2cCHtveM4GLMTNZkbTbxw</code></td></tr>
+              </tbody>
+            </table>
+            </div>
+          </section>
+
+          <p class="footer-note">
+            On-chain claims without a full hash are labeled as coverage gaps.
+            Reported claims and inference are labeled as such.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script src="/investigations/investigation.js"></script>
+  </body>
+</html>
