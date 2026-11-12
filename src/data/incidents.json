@@ -1,5 +1,56 @@
 [
   {
+    "id": "degen-coin-flip-spin-nov-2026",
+    "title": "Degen Coin Flip Degen Spin exploit",
+    "date": "2026-11-06",
+    "category": "application",
+    "severity": "low",
+    "estimatedLossUsd": 10000,
+    "lossDescription": "Operator-reported ~$10,000 house loss. No independent reconstruction is published. The 30,000+ wallet figure is the project's count of participating addresses, not distinct attackers or stolen player balances.",
+    "summary": "On 6 Nov 2026 Degen Coin Flip, a Solana on-chain casino that has players bet from their own wallets, disclosed an exploit in its Degen Spin game. The project said more than 30,000 wallets took part and that damage was limited to about $10,000, all from the house. Player funds were described as safe because the project does not custody balances. Spin and side bets were paused; other games were said to be unaffected. SlowMist lists the event as a smart-contract vulnerability. The project has not published the vulnerable logic, whether the bug is on-chain or off-chain, a full attack window, or a verified fixed deployment.",
+    "details": "Official disclosure was posted at about 2026-11-06T04:04Z. A follow-up at 04:29Z named funding wallet 8JUEoHNMbWM4eegcMvx6ZQJt3V3fbo8JNjpWiCtJgxfF (Solscan Coinbase Hot Wallet label), collecting wallet 6LPotyCnDBy1uRu5F4CMoKhT7sMCS2mfFCo68cw9jFPi, and October 28 funding transaction NLgKpp9JqYGDz2mxw6Ruu8c2KKgXeAFB2p27JVGb4gx3YFk6dhaubkJYJEG3zVoaCycu3k3oDKSg7j9ebHQzmGP. That funding date does not establish when exploitation began, and a Coinbase-labelled shared hot wallet is not an attacker-only indicator. A ~$10,000 house loss across tens of thousands of wallets is consistent with a small per-round edge being taken many times, not with a treasury drain. This entry does not treat other Degen Coin Flip games as verified-safe beyond the project's statement.",
+    "rootCause": "Unpublished. SlowMist classifies it as a smart-contract vulnerability. The operator confirmed an exploited game flaw in Degen Spin and did not describe the instruction, account, or off-chain path. This entry does not infer a specific bug class.",
+    "response": "Degen Coin Flip paused Degen Spin and side bets while working on a fix and said other games remained up. No hashed patch, program upgrade, or make-whole transaction is included here. Reopening is a promise, not a verified remediation.",
+    "tags": [
+      "degen-coin-flip",
+      "degen-spin",
+      "casino",
+      "house-edge",
+      "game"
+    ],
+    "relatedIds": [
+      "stake-nova-flash-loan-feb-2026",
+      "cashio-infinite-mint-mar-2022"
+    ],
+    "sources": [
+      {
+        "label": "Degen Coin Flip (X) — disclosure",
+        "url": "https://x.com/degencoinflip/status/2118555191599616042"
+      },
+      {
+        "label": "SlowMist Hacked DB — Degen Coin Flip",
+        "url": "https://hacked.slowmist.io/?c=Solana"
+      },
+      {
+        "label": "OhShit — Degen Spin exploit",
+        "url": "https://ohshit.app/incidents/degen-spin-exploit/"
+      },
+      {
+        "label": "Blockchain Media Indonesia",
+        "url": "https://blockchainmedia.id/game-kripto-diretas-30-ribu-wallet-kok-kerugiannya-cuma-us10-ribu/"
+      }
+    ],
+    "lesson": "An on-chain game that does not custody player balances can still lose the house pot: isolate each game's bankroll, cap per-wallet and per-block payouts, and do not treat a pause of one game as proof that sibling games share no code.",
+    "mitigations": [
+      "Cap per-wallet and per-block payouts from the house pot so tens of thousands of automated wallets cannot grind a small edge into a material drain before pause.",
+      "Isolate each game's bankroll and program path; a pause of Degen Spin must not assume Crash, coin-flip, or blackjack share no vulnerable instruction.",
+      "Rate-limit new wallets and identical bet patterns against a single game; 30,000 wallets is an automation signal, not 30,000 independent players.",
+      "Publish the vulnerable instruction, program ID, and a verified fixed deployment before reopening; a pause plus a promise is not a patch.",
+      "Keep the house pot sized to worst-case automated extraction during the detection window, not to marketing TVL.",
+      "Do not treat a Coinbase-labelled funding wallet as attacker infrastructure; shared exchange hot wallets fund many users."
+    ]
+  },
+  {
     "id": "loopscale-genesis-vault-nov-2026",
     "title": "Loopscale Genesis Vault exploits",
     "date": "2026-11-01",
@@ -1330,6 +1381,64 @@
       "Enforce per-transaction policy at the signer: destination allowlists, spend caps, and delays, so RCE or key access cannot drain wallets in 94 seconds.",
       "Alert on mass simultaneous System transfers from operator-issued wallets and halt signing within minutes.",
       "Treat a drained hot wallet as burned; refund to new user-controlled addresses, not the drained keys."
+    ]
+  },
+  {
+    "id": "blockdaemon-solflare-validator-keys-oct-2026",
+    "title": "Blockdaemon / Solflare validator operator-key compromise",
+    "date": "2026-10-26",
+    "endDate": "2026-10-27",
+    "category": "network",
+    "severity": "low",
+    "estimatedLossUsd": 135000,
+    "lossDescription": "Bitquery recounts 1,343 SOL-worth (~$135K), 62% of it JitoSOL from identity keys, bridged to Ethereum and 57.0 ETH deposited into Tornado Cash. First public counts that stated only the SOL figure were low. Delegated stake was not taken. Solflare had about 1.56M SOL delegated to the affected validator when rewards stopped; that principal stayed in users' own stake accounts. This entry uses Bitquery's $135K operational-fund figure.",
+    "summary": "On 26–27 Oct 2026 operator keys for a small set of long-running Solana validators were used to empty identity and vote accounts and to change vote-account withdraw authorities. Bitquery traces one attacker holding keys of five validators (Solflare's, Blockdaemon's, Astraeus, J21SMP, and an inactive Slow Ventures validator), taking about 1,343 SOL-worth (~$135K) in minutes, then bridging to Ethereum and depositing 57 ETH into Tornado Cash. Delegated SOL was never moved: stake accounts are controlled by the delegator's own authorities. Affected validators missed the Validator Admission Ticket and stopped earning from epoch 1070. Blockdaemon's 5 Nov 2026 update (Foresite and Mandiant) says the 2020–2022 key material was copied from a former employee's corporate device to systems outside Blockdaemon during that person's December 2025 off-boarding, not from a breach of current validator hosts. Solflare pledged to cover missed rewards for users who migrate to a replacement validator.",
+    "details": "Bitquery: just after 19:00 UTC on 26 Oct, identity keys of Solflare, J21SMP, Blockdaemon and Astraeus paid a brand-new wallet 9LsvNgeMJwzC5WZ7QDzYo7wVykZmGsPBRPKtXt3a5Qr8 (~1,188 SOL-worth in 3 minutes); vote accounts were emptied before the 20:58 UTC epoch check that picks the next voting set. Keys of one validator paid fees for thefts from another, so one holder signed for all five. Withdraw authorities were moved to 6sSJnc… on 27 Oct, then to five fresh keys on 28 Oct; those new keys have done nothing else, so on-chain control is not shown as returned. A 1 SOL rescue into Solflare's empty vote account was taken 5 seconds later. Bridgers and Chainflip paid Ethereum 0x9bdde8b8f610217132cd18f29864167142ee4581; 57.0 ETH went into Tornado Cash. The same Bridgers→Ethereum route was tested 11 days earlier. Blockdaemon's 5 Nov update also names one internal operational wallet besides the five validators. No unauthorized activity after 2026-10-27T10:29Z; replacement vote account 9ntyW2ufs5hGECKLwhR4p7PuQhqAbfKdAwNoYbgXsExn. Solflare did not name the provider in its first posts; Blockdaemon later published the operator-key incident report.",
+    "rootCause": "Blockdaemon (5 Nov 2026, with Foresite and Mandiant): affected credentials were generated 2020–2022; a copy sat on a former employee's corporate device and was copied to systems outside Blockdaemon during that person's off-boarding in December 2025. The unauthorized copy was not detected at the time. Validators created in 2024 or later use a different, unaffected key-generation process. Independent review found no intrusion on current validator hosts and no unauthorized access in secrets-management or password vaults from Oct 2025 through the incident. Bitquery's on-chain record is consistent with copied identity and withdraw keys, not a protocol bug. The identity of the unauthorized party has not been determined.",
+    "response": "Blockdaemon opened an incident on 27 Oct, told customers to deactivate and re-delegate, rotated withdraw authority on unaffected Solana validators, and published replacement vote account 9ntyW2ufs5hGECKLwhR4p7PuQhqAbfKdAwNoYbgXsExn. The 5 Nov update says the incident is contained: the five affected vote accounts and identity accounts have been permanently retired, replacement validators are live, and withdraw authorities on every other Blockdaemon Solana mainnet validator have been rotated. Solflare said user funds were untouched, moved users toward a new validator, and pledged missed-reward compensation for those who migrate in-app. CoinDesk (29 Oct) and Solana Compass warned not to stake with the old Solflare validator. No hashed recovery of the stolen operational funds is included here.",
+    "tags": [
+      "blockdaemon",
+      "solflare",
+      "validator",
+      "keys",
+      "staking",
+      "withdraw-authority"
+    ],
+    "relatedIds": [
+      "bloom-trading-bot-drain-oct-2026",
+      "step-finance-treasury-jan-2026",
+      "binance-hot-wallet-drain-oct-2026"
+    ],
+    "sources": [
+      {
+        "label": "Blockdaemon — operator-key incident report",
+        "url": "https://www.blockdaemon.com/incident-reports/operational-impact-on-solana-validators"
+      },
+      {
+        "label": "Bitquery — validator key investigation",
+        "url": "https://bitquery.io/investigations/solflare-validator-hack"
+      },
+      {
+        "label": "CoinDesk — Solflare missed rewards",
+        "url": "https://www.coindesk.com/markets/2026/10/29/solana-wallet-solflare-pledges-to-pay-missed-rewards-on-staked-usd160-million-after-validator-goes-offline"
+      },
+      {
+        "label": "Coinpaper — $135K / Tornado Cash",
+        "url": "https://coinpaper.com/38253/solana-validator-hack-exposes-five-operators-as-135-000-in-crypto-flows-into-tornado-cash"
+      },
+      {
+        "label": "Parameter — Solflare bunker mode / migration window",
+        "url": "https://parameter.io/solana-wallet-provider-implements-emergency-security-protocols-following-industry-wide-breaches/"
+      }
+    ],
+    "lesson": "Validator identity keys and vote withdraw authorities are hot operational secrets: a leftover 2020–2022 copy on a departed employee's laptop is enough to empty vote accounts, steal identity-held JitoSOL, change commission, and knock the validator out of the admission set, while stakers' principal stays safe only because the protocol keeps stake authorities separate.",
+    "mitigations": [
+      "Keep vote-account withdraw authority on an offline / hardware-backed key that never lives on the validator host or in a former employee's laptop image; rotate it on every offboarding.",
+      "Do not park JitoSOL or other treasury on the identity (hot) key; that account should hold only fees needed to vote.",
+      "Inventory every historical validator key from discontinued generation practices and treat an unaccounted copy as already compromised.",
+      "Monitor identity and vote-account outflows and withdraw-authority changes; auto-alert when several validators share a fee payer on those txs.",
+      "Publish replacement vote-account addresses only on a canonical page; lookalike validator addresses circulated during this incident.",
+      "Tell delegators immediately that the old validator cannot earn, and that topping up a compromised vote account just feeds the attacker who still holds withdraw authority."
     ]
   },
   {
