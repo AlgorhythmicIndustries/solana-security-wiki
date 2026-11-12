@@ -12,7 +12,7 @@ const sections: Section[] = [
     id: "program",
     title: "1. Program (smart contract) hygiene",
     intro:
-      "These controls would have prevented or limited the contract-bug class of incidents (Wormhole, Cashio, Crema, Loopscale, Texture, Stake Nova).",
+      "These controls would have prevented or limited the contract-bug class of incidents (Wormhole, Cashio, Crema, Loopscale, Texture, Stake Nova, Degen Coin Flip).",
     items: [
       "Verify every account by canonical address or PDA derivation; never trust shape alone (especially sysvars).",
       "Assert that program-owned accounts are owned by your program ID on every read.",
@@ -24,6 +24,8 @@ const sections: Section[] = [
       "Run a third-party audit (Neodyme, OtterSec, Halborn, Asymmetric, Sec3, Zellic) before mainnet TVL grows; require an audit on every privileged-instruction change.",
       "Run differential / fuzz testing against attacker-supplied accounts and instruction permutations.",
       "Build and test against a current Solana feature-flag set; runtime semantics change.",
+      "Require collateral mint, price identity, decimals, and asset type to agree; do not early-return on special oracle types before that check (Loopscale Genesis).",
+      "Isolate each on-chain game's house pot and cap per-wallet / per-block payouts so automated wallets cannot grind a small edge before pause (Degen Coin Flip).",
     ],
   },
   {
@@ -76,6 +78,7 @@ const sections: Section[] = [
       "Circuit breakers that auto-pause borrowing on > X% mark moves in Y minutes.",
       "Treat new collateral types (PTs, LSTs, RWAs) as a separate launch with its own audit and risk review.",
       "Stress-test against flash-loan + liquidity-shock scenarios pre-launch.",
+      "Cap strategy interest-rate and NAV fields; reject near-u64::MAX rates before refinance or sell-to-vault so a second accounting path cannot inflate book value after an oracle patch (Loopscale Genesis).",
     ],
   },
   {
@@ -119,7 +122,7 @@ const sections: Section[] = [
     id: "endpoint",
     title: "7. Endpoint and personal-device security",
     intro:
-      "Direct response to Step Finance, Drift, DEXX, Solareum, and the broader trend of executive-device compromise.",
+      "Direct response to Step Finance, Drift, DEXX, Solareum, Blockdaemon's former-employee validator-key copy, and the broader trend of executive-device compromise.",
     items: [
       "Hardware wallets (Ledger / Trezor) for every privileged signer; never sign from a general-purpose laptop.",
       "EDR / managed-detection on every privileged endpoint.",
@@ -130,13 +133,14 @@ const sections: Section[] = [
       "Background and reference checks for new contributors with privileged access.",
       "Mandatory phishing-defense training; refresh annually.",
       "Treat any device that ever held a hot key as compromised on suspicion; rotate keys.",
+      "On offboarding, inventory and rotate every historical validator identity and vote-withdraw key that ever lived on that person's laptop; a leftover 2020–2022 copy is enough to empty vote accounts (Blockdaemon / Solflare).",
     ],
   },
   {
     id: "backend",
     title: "8. Backend, custody, and key management",
     intro:
-      "Coverage for Thunder Terminal, Solareum, DEXX, Banana Gun, Time.fun, TradeWiz, Candy Digital, and exchange-class incidents like Upbit.",
+      "Coverage for Thunder Terminal, Solareum, DEXX, Banana Gun, Time.fun, TradeWiz, Candy Digital, Bloom Trading, and exchange-class incidents like Upbit and Binance.",
     items: [
       "Store credentials and signing keys in HSM/KMS or MPC; never in env files, code, or logs.",
       "Use scoped, short-lived credentials with rotation; audit every issuance.",
@@ -148,6 +152,8 @@ const sections: Section[] = [
       "Scrub sensitive data at the SDK layer; configure Sentry / analytics with allow-lists, not deny-lists.",
       "Annual third-party application pentest covering data egress paths, not just smart contracts.",
       "Reserve attestation / SOC 2-equivalent for any custodial service.",
+      "Keep vote-account withdraw authority offline and never park JitoSOL or other treasury on the validator identity key; that account should hold only fees needed to vote (Blockdaemon / Solflare).",
+      "Make a backend co-signer validate mint vs price identity vs decimals independently of on-chain acceptance (Loopscale Genesis).",
     ],
   },
   {
