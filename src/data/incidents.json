@@ -1,5 +1,32 @@
 [
   {
+    "id": "proxima-wallet-log-exposure-nov-2026",
+    "title": "Proxima wallet key exposure through monitoring logs",
+    "date": "2026-11-14",
+    "category": "infrastructure",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "lossDescription": "Proxima reports 5,324.2 SOL drained from 870 Solana wallets belonging to 181 users. It says it reimbursed all confirmed SOL losses from its treasury; the loss and reimbursements have not been independently verified here. The project did not give a final USD valuation in its post-mortem.",
+    "summary": "On November 14, 2026, between 03:22 and 05:42 UTC, an attacker drained Proxima-managed Solana wallets after obtaining private keys from diagnostic logs, according to the project's post-mortem. Proxima says an outdated SigNoz monitoring instance was accessible from the internet after a firewall rule was removed, and a disclosed vulnerability enabled access to stored logs. The project reports that token holdings and EVM funds were not stolen.",
+    "details": "Proxima says debug logging exposed key material during wallet operations from November 3 until November 10 at 13:20 UTC. Although the logging was disabled, logs remained under a 15-day retention policy. The project reports log extraction from 02:16 to 05:30 UTC on November 14, emergency migration beginning at 05:23, and a final drain at 05:42. It did not identify the specific SigNoz vulnerability in its post-mortem. These are project-reported findings; no transaction-level reconstruction is provided here.",
+    "response": "Proxima says it patched and restricted the monitoring instance, rotated credentials, replaced exposed wallets and credited users with the stolen SOL. It says a small number of large token positions remained in old wallets for individual handling. Users were advised not to send funds to wallets labeled Compromised or Possibly exposed and to consider those keys compromised outside Proxima as well. Refund and remediation claims have not been independently verified here.",
+    "tags": ["proxima", "wallet", "private-key-exposure", "logging", "monitoring", "signoz"],
+    "relatedIds": ["slope-wallet-aug-2022"],
+    "sources": [
+      {"label": "Proxima — incident post-mortem (X article)", "url": "https://x.com/0xTheo__/status/2121728996631269792"},
+      {"label": "StalkChain — Proxima wallet drain report", "url": "https://stalkchain.com/blog/proxima-wallet-drain-custody-risk"},
+      {"label": "Crypto Watchdesk — post-mortem report", "url": "https://cryptowatchdesk.com/news/security-alert-proxima-post-mortem-debug-logs-held-private-keys-5324-sol-181-users-firewall-rule-removed"}
+    ],
+    "lesson": "Private keys must not enter diagnostic logs; layered monitoring access controls cannot compensate for exposing signing material to observability systems.",
+    "mitigations": [
+      "Keep private keys out of application logs and test logging paths for secret leakage before deployment.",
+      "Isolate signing services and prevent observability systems from receiving secret material.",
+      "Patch monitoring infrastructure promptly and require authenticated, restricted network access as defense in depth.",
+      "Alert on unusual log access and rapid wallet outflows, and rehearse emergency migration to freshly generated keys.",
+      "Treat exposed keys as compromised across every application and communicate wallet replacement and reimbursement status clearly."
+    ]
+  },
+  {
     "id": "loopscale-genesis-vault-nov-2026",
     "title": "Loopscale Genesis Vault exploits",
     "date": "2026-11-01",
