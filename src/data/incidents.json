@@ -1,5 +1,66 @@
 [
   {
+    "id": "proxima-wallet-log-exposure-nov-2026",
+    "title": "Proxima wallet key exposure through monitoring logs",
+    "date": "2026-11-14",
+    "category": "supply-chain",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "lossDescription": "Proxima's post-mortem reports 5,324.2 SOL drained from 870 wallets belonging to 181 users (about 0.1% of wallets). Only SOL was taken; token holdings and EVM balances were not reported stolen. An earlier same-day estimate was about $200k–$250k; the post-mortem gave SOL only. Third-party write-ups convert 5,324.2 SOL at the attack-window price to about $400k. This entry does not convert SOL to USD. BlockintAI independently traced 2,863.6 SOL from 574 sending addresses into three collection wallets, then through 100 one-time addresses into ChangeNow-labelled hot wallet B48kNVXs4YK4amkBCH2XokQiv1SeiVQGHDR17xDeKAAn. That trace does not cover the remaining ~2,460 SOL. Refund claims are project-reported; Pashov Audit Group said it verified refunds on-chain without publishing the hashes reviewed.",
+    "mitigated": true,
+    "summary": "On 14 Nov 2026, between 03:22 and 05:42 UTC, an attacker drained Proxima-managed Solana wallets after obtaining private keys from diagnostic logs, according to the project's post-mortem. Proxima, a Solana token-launch and trading app that generates and stores keys for managed wallets, said a debug-level log line wrote key material between 3 Nov and 13:20 UTC on 10 Nov after production log level was lowered from info to debug. Those logs sat for 15 days in an outdated SigNoz monitoring instance that Proxima says had a publicly disclosed unauthenticated-access vulnerability, a postponed upgrade, and a Cloudflare firewall rule that had been removed. The attacker pulled logs from 02:16 to 05:30 UTC on 14 Nov and drained wallets while extraction was still running. Proxima says primary databases were not directly breached, that it reimbursed all confirmed SOL losses from treasury, and that Pashov Audit Group later said it verified the refunds on-chain. Those refund and verification claims are reported, not independently hashed here.",
+    "details": "Every drain transfer BlockintAI sampled was signed by the drained wallet's own key, consistent with a key leak rather than a program bug or token-approval drain. Collection wallets 8XogbzdFefmfuUtiBW3kTZECy1fysAjwL8o8jns3HHud, 7M2wSDdZBnvsjqQvBtobnC6iUPiJ3YhUxoFQRaJHPVB7, and 2Gh3X1yBvAgRWxzVzkZNytaU2HvMk5QWzbtTZRQErcHs took 2,863.6 SOL from 574 addresses; 100 one-time hops then forwarded 2,863.617 SOL to B48kNVXs… (Solscan label ChangeNow: Hot Wallet 1), with fee payer DScDQ1zV4qVMU8HQmfcJkjZhfo5QqCWdV7dbxkb2gU9C. Proxima's 5,324.2 SOL / 870-wallet count leaves ~2,460 SOL untraced in that write-up. Exposed wallets were those whose keys appeared in the 3–10 Nov logs; wallets created after 13:20 UTC on 10 Nov were said not to be in this exposure. Proxima labelled old wallets Compromised or Possibly exposed, created replacement wallets, paused autobuy/autosell/market-making, required 2FA for key exports, and said a small number of large launch token positions were left in original wallets for individual handling. No specific SigNoz CVE is asserted.",
+    "rootCause": "Project-reported, not independently verified: (1) a debug log line emitted private-key material in production when log level was lowered; (2) logs retained 15 days on an outdated SigNoz instance with a disclosed unauthenticated-access bug whose upgrade had been postponed; (3) a Cloudflare firewall rule that was supposed to keep the instance off the public internet was removed. This is the same class as Slope 2022 (secrets in telemetry), with a custodial-wallet blast radius.",
+    "response": "Proxima says it took the app offline, patched and restricted the monitoring instance, stopped logging secrets, rotated credentials, replaced exposed wallets, credited refund wallets with stolen SOL, and reopened the same evening. Pashov Audit Group said at 00:00 UTC on 15 Nov that it verified refunds on-chain; neither post listed the transactions reviewed. Users were told not to send funds to Compromised / Possibly exposed wallets and to treat those keys as burned everywhere, including outside Proxima.",
+    "tags": [
+      "proxima",
+      "wallet",
+      "private-key-exposure",
+      "logging",
+      "monitoring",
+      "signoz",
+      "custody"
+    ],
+    "relatedIds": [
+      "slope-wallet-aug-2022",
+      "candy-digital-custodial-oct-2026",
+      "bloom-trading-bot-drain-oct-2026",
+      "tradewiz-key-export-sep-2026",
+      "dexx-key-leak-nov-2024"
+    ],
+    "sources": [
+      {
+        "label": "Proxima — incident post-mortem (X article)",
+        "url": "https://x.com/0xTheo__/status/2121728996631269792"
+      },
+      {
+        "label": "BlockintAI — ChangeNow exit trace",
+        "url": "https://blockint.ai/blog/proxima-solana-drain-keys-in-debug-logs-2864-sol-traced-to-changenow"
+      },
+      {
+        "label": "StalkChain — Proxima wallet drain report",
+        "url": "https://stalkchain.com/blog/proxima-wallet-drain-custody-risk"
+      },
+      {
+        "label": "Crypto Watchdesk — post-mortem report",
+        "url": "https://cryptowatchdesk.com/news/security-alert-proxima-post-mortem-debug-logs-held-private-keys-5324-sol-181-users-firewall-rule-removed"
+      },
+      {
+        "label": "Pashov Audit Group (X) — refund verification claim",
+        "url": "https://x.com/PashovAuditGrp/status/2121755141984366601"
+      }
+    ],
+    "lesson": "Private keys must never enter diagnostic logs. An observability backend (SigNoz, Sentry, or equivalent) is a secret store the moment it receives key material: patch it, authenticate it, and do not treat a single firewall rule as the perimeter.",
+    "mitigations": [
+      "Keep private keys and seed material out of application logs at every log level; test logging paths for secret leakage before production.",
+      "Isolate signing so observability systems cannot receive key material even if debug logging is turned on.",
+      "Patch monitoring infrastructure on a fixed SLA; do not postpone known unauthenticated-access upgrades on a system that holds logs.",
+      "Require authenticated, network-restricted access to observability UIs and APIs; alert on firewall-rule or WAF-rule deletion rather than relying on one Cloudflare rule as the only perimeter.",
+      "Alert on unusual log-store access and on mass simultaneous System transfers from operator-issued wallets, and rehearse emergency migration to freshly generated keys.",
+      "Treat exposed keys as compromised across every application; refund to new wallets and tell users not to send funds to the old addresses."
+    ]
+  },
+  {
     "id": "loopscale-genesis-vault-nov-2026",
     "title": "Loopscale Genesis Vault exploits",
     "date": "2026-11-01",
@@ -1304,7 +1365,8 @@
       "dexx-key-leak-nov-2024",
       "solareum-telegram-mar-2024",
       "banana-gun-sep-2024",
-      "timefun-backend-signing-mar-2025"
+      "timefun-backend-signing-mar-2025",
+      "proxima-wallet-log-exposure-nov-2026"
     ],
     "sources": [
       {
@@ -1406,7 +1468,8 @@
       "dexx-key-leak-nov-2024",
       "solareum-telegram-mar-2024",
       "banana-gun-sep-2024",
-      "timefun-backend-signing-mar-2025"
+      "timefun-backend-signing-mar-2025",
+      "proxima-wallet-log-exposure-nov-2026"
     ],
     "sources": [
       {
@@ -3372,6 +3435,9 @@
       "Run static analysis to detect any path that logs or transmits values matching mnemonic/key patterns.",
       "Annual third-party app pentests (mobile and extension) covering data egress, not only smart-contract calls.",
       "Push users toward hardware-wallet pairing for non-trivial balances; surface a clear in-app warning above a threshold."
+    ],
+    "relatedIds": [
+      "proxima-wallet-log-exposure-nov-2026"
     ]
   },
   {

@@ -24,6 +24,7 @@ const sections: Section[] = [
       "Run a third-party audit (Neodyme, OtterSec, Halborn, Asymmetric, Sec3, Zellic) before mainnet TVL grows; require an audit on every privileged-instruction change.",
       "Run differential / fuzz testing against attacker-supplied accounts and instruction permutations.",
       "Build and test against a current Solana feature-flag set; runtime semantics change.",
+      "Require collateral mint, price identity, decimals, and asset type to agree; do not early-return on special oracle types before that check (Loopscale Genesis).",
     ],
   },
   {
@@ -76,13 +77,14 @@ const sections: Section[] = [
       "Circuit breakers that auto-pause borrowing on > X% mark moves in Y minutes.",
       "Treat new collateral types (PTs, LSTs, RWAs) as a separate launch with its own audit and risk review.",
       "Stress-test against flash-loan + liquidity-shock scenarios pre-launch.",
+      "Cap strategy interest-rate and NAV fields; reject near-u64::MAX rates before refinance or sell-to-vault so a second accounting path cannot inflate book value after an oracle patch (Loopscale Genesis).",
     ],
   },
   {
     id: "supply-chain",
     title: "5. Supply chain and dependencies",
     intro:
-      "Coverage for the @solana/web3.js, @kodane/patch-manager, npm wave, and Telegram-bot incidents.",
+      "Coverage for the @solana/web3.js, @kodane/patch-manager, npm wave, Telegram-bot, and Proxima/SigNoz logging incidents.",
     items: [
       "Pin every dependency version; lockfiles committed; no wildcard ranges in production manifests.",
       "Run an SCA tool (Socket.dev, Snyk, Dependabot) on every PR with blocking severity policy.",
@@ -94,6 +96,7 @@ const sections: Section[] = [
       "Independently review any code or repo shared by an external counterparty before cloning to a privileged machine.",
       "Subscribe to security advisories for every framework you use (Anchor, Agave, Pyth, etc.).",
       "Avoid handling raw private keys in any process that loads npm packages; route signing through a separate hardened service.",
+      "Never emit private keys or seed material at any log level; treat observability backends (SigNoz, Sentry) as untrusted secret stores, keep them patched and authenticated-only, and alert on firewall-rule deletion (Proxima).",
     ],
   },
   {
@@ -113,6 +116,7 @@ const sections: Section[] = [
       "Operate a status page and a verified backup channel users can cross-reference.",
       "Configure audit-log alerting in Discord (e.g., Wick) for destructive admin actions.",
       "Set up Cloudflare or equivalent DDoS protection for high-traffic events (claim sites, airdrops).",
+      "Alert on deletion or disablement of WAF/firewall rules that hide admin or observability endpoints; a single Cloudflare rule is not a perimeter (Proxima).",
     ],
   },
   {
@@ -136,7 +140,7 @@ const sections: Section[] = [
     id: "backend",
     title: "8. Backend, custody, and key management",
     intro:
-      "Coverage for Thunder Terminal, Solareum, DEXX, Banana Gun, Time.fun, TradeWiz, Candy Digital, and exchange-class incidents like Upbit.",
+      "Coverage for Thunder Terminal, Solareum, DEXX, Banana Gun, Time.fun, TradeWiz, Candy Digital, Bloom Trading, Proxima, and exchange-class incidents like Upbit and Binance.",
     items: [
       "Store credentials and signing keys in HSM/KMS or MPC; never in env files, code, or logs.",
       "Use scoped, short-lived credentials with rotation; audit every issuance.",
@@ -148,6 +152,8 @@ const sections: Section[] = [
       "Scrub sensitive data at the SDK layer; configure Sentry / analytics with allow-lists, not deny-lists.",
       "Annual third-party application pentest covering data egress paths, not just smart contracts.",
       "Reserve attestation / SOC 2-equivalent for any custodial service.",
+      "Make a backend co-signer validate mint vs price identity vs decimals independently of on-chain acceptance (Loopscale Genesis).",
+      "Isolate signing so observability systems cannot receive key material even if debug logging is turned on; treat exposed operator-issued keys as burned everywhere (Proxima).",
     ],
   },
   {
