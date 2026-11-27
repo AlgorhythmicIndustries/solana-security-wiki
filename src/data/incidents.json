@@ -79,6 +79,50 @@
       "Alert on inbound message nonces that exceed the source chain's outbound count, and on mints far above a route's historical volume.",
       "Treat a verifier-key compromise as an infrastructure compromise: generate replacement keys on clean hardware, remove all exposed keys from the signer list, and pause the route until both are done.",
       "Keep a tested emergency pause for the Solana OFT program and the remote lockbox that does not depend on the possibly compromised verifier admin."
+    "id": "bullpen-beta-account-drain-nov-2026",
+    "title": "Bullpen legacy beta account compromise and wallet drains",
+    "date": "2026-11-24",
+    "category": "infrastructure",
+    "severity": "high",
+    "estimatedLossUsd": null,
+    "lossDescription": "Total loss across affected users is not established. Decrypt, citing Bitquery, reported $2.57 million moved in connection with Ansem's wallets, including approximately $2.1 million from meme coin sales; this is not a verified aggregate loss across all affected accounts.",
+    "summary": "On November 24, 2026, Bullpen reported unauthorized transfers involving accounts opened in its April–June 2024 early beta. It initially estimated 18–19 affected accounts and later reported 19. The incident included Solana wallets associated with Ansem, according to Decrypt; the total number of affected users and full losses remain uncertain.",
+    "details": "Bullpen said attackers took over a small group of legacy beta accounts, exposing wallets imported into those accounts and enabling drains. The initial access vector and precise vulnerability were not disclosed in the cited statements; account takeover should not be mistaken for a confirmed root cause. Decrypt reported that Ansem said a Solana private key had been imported into his Bullpen account. The reported $2.57 million movement was not independently reconstructed for this entry.",
+    "response": "Bullpen said it took the affected test service offline and would contact affected users. In its November 25, 03:07 UTC update, Bullpen said it had seen no further movement and impact remained limited to 19 identified beta accounts; this is a time-bound project statement, not an independent verification of the final scope.",
+    "tags": [
+      "bullpen",
+      "wallet",
+      "account-compromise",
+      "private-key-exposure",
+      "solana"
+    ],
+    "relatedIds": [
+      "proxima-wallet-log-exposure-nov-2026"
+    ],
+    "sources": [
+      {
+        "label": "Bullpen — initial statement, November 24, 16:35 UTC",
+        "url": "https://x.com/BullpenFi/status/2125267130870272331"
+      },
+      {
+        "label": "Bullpen — account takeover update, November 24, 19:44 UTC",
+        "url": "https://x.com/BullpenFi/status/2125314569136463949"
+      },
+      {
+        "label": "Bullpen — scope update, November 25, 03:07 UTC",
+        "url": "https://x.com/BullpenFi/status/2125426080328700198"
+      },
+      {
+        "label": "Decrypt — Bullpen breach and Ansem wallet report, November 24",
+        "url": "https://decrypt.co/383889/ansem-meme-coin-crashes-wallet-drain-bullpen-security-breach"
+      }
+    ],
+    "lesson": "Account compromise can expose imported wallets; protect wallet access independently of account authentication and treat an exposed signing key as compromised.",
+    "mitigations": [
+      "Limit access to imported signing keys and separate wallet authorization from ordinary account access.",
+      "Apply strong authentication, session protections and monitoring to legacy accounts and services.",
+      "Inventory and retire test services and legacy infrastructure when no longer needed.",
+      "Alert on unusual account access and wallet outflows, and prepare key rotation and user notification procedures."
     ]
   },
   {
