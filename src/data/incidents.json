@@ -79,6 +79,9 @@
       "Alert on inbound message nonces that exceed the source chain's outbound count, and on mints far above a route's historical volume.",
       "Treat a verifier-key compromise as an infrastructure compromise: generate replacement keys on clean hardware, remove all exposed keys from the signer list, and pause the route until both are done.",
       "Keep a tested emergency pause for the Solana OFT program and the remote lockbox that does not depend on the possibly compromised verifier admin."
+    ]
+  },
+  {
     "id": "bullpen-beta-account-drain-nov-2026",
     "title": "Bullpen legacy beta account compromise and wallet drains",
     "date": "2026-11-24",
